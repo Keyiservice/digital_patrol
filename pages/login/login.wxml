@@ -1,0 +1,54 @@
+<!--login.wxml-->
+<custom-header />
+<view class="container">
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <!-- <image class="logo" src="C:\Users\Administrator\WeChatProjects\miniprogram-1\logo.jepg" mode="aspectFit"></image> -->
+  </view>
+  
+  <!-- 页面标题 -->
+  <view class="title-section">
+    <text class="title">HELLO!</text>
+    <text class="subtitle">SIGN IN YOUR ACCOUNT</text>
+  </view>
+  
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- ACCOUNT NAME 账户名 -->
+    <view class="form-item">
+      <text class="form-label">ACCOUNT NAME</text>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入账户名"
+        value="{{formData.accountName}}"
+        bindinput="onAccountNameInput"
+        maxlength="30"
+      />
+    </view>
+    
+    <!-- PASSWORD 密码 -->
+    <view class="form-item">
+      <text class="form-label">PASSWORD</text>
+      <input 
+        class="form-input" 
+        type="password" 
+        placeholder="请输入密码"
+        value="{{formData.password}}"
+        bindinput="onPasswordInput"
+        maxlength="20"
+      />
+    </view>
+  </view>
+  
+  <!-- 登录按钮 -->
+  <view class="button-section">
+    <button class="signin-btn" bindtap="onSubmit">SIGN IN</button>
+  </view>
+  
+  <!-- 底部注册链接 -->
+  <view class="bottom-section">
+    <text class="link-text">DON'T HAVE A ACCOUNT</text>
+    <text class="link-btn" bindtap="goToRegister">SIGN UP</text>
+  </view>
+</view>

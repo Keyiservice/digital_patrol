@@ -1,0 +1,172 @@
+/* index.wxss - 微信小程序样式表 */
+
+/* 主容器 - 整个页面的布局容器 */
+.container {
+  min-height: 100vh;          /* 最小高度为视口高度，确保页面占满屏幕 */
+  width: 100%; /* 使用100%而非100vw，更稳定 */
+  display: flex;              /* 使用弹性布局 */
+  flex-direction: column;     /* 垂直排列子元素 */
+  justify-content: flex-start;/* 子元素从顶部开始排列 */
+  padding: 40rpx 10rpx;       /* 页面整体左右间距减小 */
+  box-sizing: border-box;     /* 包含边框和内边距在内的盒模型 */
+  background-color: #f5f5f5;  /* 浅灰色背景 */
+  /* overflow-x: hidden; */ /* 移除，防止宽度计算问题导致 */
+}
+
+.content-section {
+  width: 100%; /* 标题和按钮都用这个宽度 */
+  margin: 0 auto;
+}
+
+/* 头部logo区域 - 顶部的蓝色横幅 */
+.header {
+  width: 90%;                 /* 宽度为父容器的90% */
+  height: 120rpx;            /* 固定高度120rpx */
+  background-color: #1e3a8a; /* 深蓝色背景 */
+  border-radius: 20rpx;      /* 圆角边框 */
+  display: flex;             /* 弹性布局 */
+  align-items: center;       /* 垂直居中 */
+  justify-content: center;   /* 水平居中 */
+  margin-bottom: 60rpx;      /* 底部外边距60rpx */
+}
+
+/* logo图片样式 */
+.logo {
+  width: 200rpx;             /* logo宽度 */
+  height: 60rpx;             /* logo高度 */
+}
+
+/* 标题区域 - 包含主标题的容器 */
+.title-section {
+  margin-bottom: 120rpx;      /* 底部外边距40rpx */
+  width: 100%;               /* 确保标题区域宽度 */
+}
+
+/* 主标题样式 */
+.title {
+  display: block;            /* 块级元素显示 */
+  font-size: 80rpx;         /* 字体大小调整为50rpx */
+  font-weight: bold;        /* 粗体字 */
+  color: #0d3371;          /* 深蓝色文字 */
+  text-align: center;      /* 文字居中对齐 */
+  letter-spacing: 5rpx;    /* 字母间距调整为2rpx */
+  text-shadow: 2rpx 4rpx 4rpx rgba(0,0,0,0.1); /* 文字阴影效果 */
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* 功能按钮区域 - 包含所有菜单按钮的容器 */
+.menu-section {
+  width: 100%; /* 适配父容器宽度，与.container的padding对齐 */
+  margin-bottom: 40rpx;      /* 底部外边距40rpx */
+  display: flex;             /* 弹性布局 */
+  flex-direction: column;    /* 垂直排列按钮 */
+  /* align-items: center; */ /* 移除，避免内部收窄 */
+  /* padding: 0 15rpx; */ /* 移除，由container统一管理 */
+  box-sizing: border-box;     /* 包含内边距的盒模型 */
+}
+
+/* 菜单按钮样式 - 主要的功能按钮 */
+.menu-btn {
+  width: 100%; /* 占满父容器的可用宽度 */
+  height: 120rpx;             /* 按钮高度120rpx */
+  white-space: nowrap;        /* 文字不换行 */
+  font-size: 36rpx;           /* 字体大小36rpx */
+  background-color: #0d3371;  /* 深蓝色背景 */
+  color: white;               /* 白色文字 */
+  font-weight: bold;          /* 粗体字 */
+  border: none;                /* 无边框 */
+  border-radius: 20rpx;        /* 圆角边框20rpx */
+  margin-bottom: 30rpx;        /* 只保留底部margin */
+  display: flex;               /* 弹性布局 */
+  align-items: center;         /* 内容垂直居中 */
+  justify-content: center;     /* 内容水平居中 */
+  letter-spacing: 2rpx;         /* 字母间距2rpx */
+  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3); /* 阴影效果，增加立体感 */
+  box-sizing: border-box;       /* 包含边框和内边距的盒模型 */
+  /* padding: 0 20rpx; */ /* 移除，除非文字过长需要内边距 */
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+/* 按钮按下时的样式 - 提供用户反馈 */
+.menu-btn:active {
+  background-color: #0b2a5e; /* 按下时变为更深的蓝色 */
+  transform: translateY(2rpx); /* 向下移动2rpx，模拟按压效果 */
+}
+
+/* 最后一个按钮样式 - 移除底部外边距 */
+.menu-btn:last-child {
+  margin-bottom: 0;          /* 最后一个按钮不需要底部外边距 */
+}
+
+/* 底部登录注册区域 - 页面底部的认证按钮容器 */
+.bottom-section {
+  width: 100%; /* 适配父容器宽度，与.container的padding对齐 */
+  /* padding: 0 15rpx; */ /* 移除，由container统一管理 */
+  box-sizing: border-box;      /* 包含边框和内边距的盒模型 */
+  display: flex;                /* 弹性布局 */
+  justify-content: space-between;/* 子元素从顶部开始排列 */
+  /* gap: 30rpx; */ /* 移除，通过flex和flex:1实现 */
+  margin-top: auto;             /* 自动外边距 */
+  margin-bottom: 500rpx;         /* 底部外边距600rpx */
+}
+
+/* 认证按钮基础样式 - 登录和注册按钮的共同样式 */
+.auth-btn {
+  flex: 1; /* 关键：让两个按钮平分空间并自动产生间隙 */
+  height: 80rpx;         /* 按钮高度80rpx */
+  font-size: 28rpx;      /* 字体大小28rpx */
+  font-weight: bold;     /* 粗体字 */
+  border-radius: 15rpx;  /* 圆角边框15rpx */
+  border: none;          /* 无边框 */
+  letter-spacing: 2rpx;  /* 字母间距2rpx */
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+/* 登录按钮样式 */
+.signin-btn {
+  background-color: #0d3371; /* 深蓝色背景 */
+  color: white;              /* 白色文字 */
+  /* margin-right: 30rpx; */ /* 移除，由flex和justify-content: space-between处理 */
+}
+
+/* 注册按钮样式 */
+.signup-btn {
+  background-color: #0d3371; /* 深蓝色背景，与登录按钮保持一致 */
+  color: white;              /* 白色文字 */
+}
+
+/* 认证按钮按下时的样式 - 提供用户反馈 */
+.auth-btn:active {
+  transform: translateY(2rpx); /* 向下移动2rpx，模拟按压效果 */
+  opacity: 0.8;               /* 降低透明度到80% */
+}
+
+/* 响应式适配 - 针对较小屏幕的样式调整 */
+@media screen and (max-width: 750rpx) {
+  /* 小屏幕下的标题样式 */
+  .title {
+    font-size: 40rpx;        /* 减小字体大小到40rpx */
+  }
+  
+  /* 小屏幕下的菜单按钮样式 */
+  .menu-btn {
+    font-size: 28rpx;        /* 减小字体大小到28rpx */
+    height: 90rpx;           /* 减小按钮高度到90rpx */
+  }
+  
+  /* 小屏幕下的认证按钮样式 */
+  .auth-btn {
+    font-size: 26rpx;        /* 减小字体大小到26rpx */
+    height: 70rpx;           /* 减小按钮高度到70rpx */
+  }  
+}
+
+/* 全局字体设置 */
+page {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}

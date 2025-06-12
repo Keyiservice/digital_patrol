@@ -1,0 +1,72 @@
+<!--qua-patrol.wxml-->
+<custom-header />
+<view class="container">
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
+  </view>
+  
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">QUA ONLINE PATROL</text>
+  </view>
+  
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- PROJECT 项目 -->
+    <view class="form-item">
+      <text class="form-label">PROJECT</text>
+      <picker bindchange="onProjectChange" value="{{projectIndex}}" range="{{projectList}}">
+        <view class="picker-input {{projectIndex === -1 ? 'placeholder' : ''}}">
+          {{projectIndex === -1 ? '请选择项目' : projectList[projectIndex]}}
+        </view>
+      </picker>
+    </view>
+    
+    <!-- PROCESS 流程 -->
+    <view class="form-item">
+      <text class="form-label">PROCESS</text>
+      <picker bindchange="onProcessChange" value="{{processIndex}}" range="{{processList}}">
+        <view class="picker-input {{processIndex === -1 ? 'placeholder' : ''}}">
+          {{processIndex === -1 ? '请选择流程' : processList[processIndex]}}
+        </view>
+      </picker>
+    </view>
+    
+    <!-- DATE & TIME 日期和时间 -->
+    <view class="form-row">
+      <view class="form-item half">
+        <text class="form-label">DATE</text>
+        <picker mode="date" value="{{currentDate}}" bindchange="onDateChange">
+          <view class="picker-input date-input" >
+            {{displayDate}}
+          </view>
+        </picker>
+      </view>
+      
+      <view class="form-item half">
+        <text class="form-label">TIME</text>
+        <picker mode="time" value="{{currentTime}}" bindchange="onTimeChange">
+          <view class="picker-input time-input" >
+            {{displayTime}}
+          </view>
+        </picker>
+      </view>
+    </view>
+    
+    <!-- SHIFT 班次 -->
+    <view class="form-item">
+      <text class="form-label">SHIFT</text>
+      <picker bindchange="onShiftChange" value="{{shiftIndex}}" range="{{shiftList}}">
+        <view class="picker-input {{shiftIndex === -1 ? 'placeholder' : ''}}">
+          {{shiftIndex === -1 ? '请选择班次' : shiftList[shiftIndex]}}
+        </view>
+      </picker>
+    </view>
+  </view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="next-btn" bindtap="onNext">NEXT</button>
+  </view>
+</view>

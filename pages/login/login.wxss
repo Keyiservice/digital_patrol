@@ -1,0 +1,218 @@
+/* login.wxss */
+.container {
+  min-height: 100vh;          /* 最小高度为视口高度，确保页面占满屏幕 */
+  width: 100%; /* 使用100%而非100vw，更稳定 */
+  display: flex;              /* 使用弹性布局 */
+  flex-direction: column;     /* 垂直排列子元素 */
+  justify-content: flex-start;/* 子元素从顶部开始排列 */
+  padding: 40rpx 10rpx;       /* 页面整体左右间距减小 */
+  box-sizing: border-box;     /* 包含边框和内边距在内的盒模型 */
+  background-color: #f5f5f5;  /* 浅灰色背景 */
+  /* overflow-x: hidden; */ /* 移除，防止宽度计算问题导致 */
+}
+
+/* 头部logo区域 */
+.header {
+  width: 90%;                 /* 宽度为父容器的90% */
+  height: 120rpx;            /* 固定高度120rpx */
+  background-color: #F5F5F5; /* 深蓝色背景 */
+  border-radius: 20rpx;      /* 圆角边框 */
+  display: flex;             /* 弹性布局 */
+  align-items: center;       /* 垂直居中 */
+  justify-content: center;   /* 水平居中 */
+  margin-bottom: 60rpx;      /* 底部外边距60rpx */
+}
+
+.logo {
+  width: 200rpx;
+  height: 60rpx;
+}
+
+/* 页面标题 */
+.title-section {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.title {
+  display: block;
+  font-size: 80rpx;
+  font-weight: bold;
+  color: #0d3371;
+  letter-spacing: 4rpx;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0,0,0,0.1);
+  margin-bottom: 20rpx;
+  font-family: Arial, sans-serif;
+}
+
+.subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #0d3371;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  text-shadow: 1rpx 1rpx 2rpx rgba(0,0,0,0.1);
+}
+
+/* 表单区域 */
+.form-section {
+  flex: 1;
+  margin-bottom: 80rpx;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  display: block;
+  color: #0d3371;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  letter-spacing: 1rpx;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  text-shadow: 1rpx 1rpx 2rpx rgba(0,0,0,0.1);
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  background-color: #f8f4f4;
+  border-radius: 10rpx;
+  padding: 0 30rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  border: 2rpx solid transparent;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  text-align: center;
+}
+
+.form-input:focus {
+  border-color: #0d3371;
+  background-color: #fff;
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+/* 按钮区域 */
+.button-section {
+  margin-bottom: 660rpx;
+}
+
+.signin-btn {
+  width: 100%;
+  height: 80rpx;
+  background-color: #0d3371;
+  color: #F5F5F5;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  border-radius: 15rpx;
+  letter-spacing: 3rpx;
+  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+  font-family: Arial, sans-serif;
+}
+
+.signin-btn:active {
+  background-color: #0d3371;
+  transform: translateY(2rpx);
+}
+
+/* 底部链接区域 */
+.bottom-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.link-text {
+  color: #1e3a8a;
+  font-size: 26rpx;
+  font-weight: 500;
+  font-family: Arial, sans-serif;
+}
+
+.link-btn {
+  color: #1e3a8a;
+  font-size: 26rpx;
+  font-weight: bold;
+  text-decoration: underline;
+  font-family: Arial, sans-serif;
+}
+
+.link-btn:active {
+  opacity: 0.7;
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 750rpx) {
+  .container {
+    padding: 0 30rpx 40rpx 30rpx;
+  }
+  
+  .header {
+    margin: 0 -30rpx 60rpx -30rpx;
+  }
+  
+  .title {
+    font-size: 70rpx;
+  }
+  
+  .subtitle {
+    font-size: 26rpx;
+  }
+  
+  .form-label {
+    font-size: 26rpx;
+  }
+  
+  .form-input {
+    height: 70rpx;
+    font-size: 26rpx;
+    padding: 0 25rpx;
+  }
+  
+  .signin-btn {
+    height: 70rpx;
+    font-size: 28rpx;
+  }
+  
+  .link-text, .link-btn {
+    font-size: 24rpx;
+  }
+}
+
+/* 全局字体设置 */
+page {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.login-title {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.input-group input {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.login-btn {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.register-link {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}

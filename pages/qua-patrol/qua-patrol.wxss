@@ -1,0 +1,181 @@
+/* qua-patrol.wxss */
+.container {
+  min-height: 100vh;          /* 最小高度为视口高度，确保页面占满屏幕 */
+  width: 100%;                /* 使用100%而非100vw，更稳定 */
+  display: flex;              /* 使用弹性布局 */
+  flex-direction: column;     /* 垂直排列子元素 */
+  justify-content: flex-start;/* 子元素从顶部开始排列 */
+  padding: 40rpx 20rpx;       /* 页面整体左右内边距恢复为20rpx */
+  box-sizing: border-box;     /* 包含边框和内边距在内的盒模型 */
+  background-color: #f5f5f5;  /* 浅灰色背景 */
+}
+
+/* 头部logo区域 */
+.header {
+  width: 90%;                 /* 宽度为父容器的90% */
+  height: 120rpx;            /* 固定高度120rpx */
+  background-color: #F5F5F5; /* 深蓝色背景 */
+  border-radius: 20rpx;      /* 圆角边框 */
+  display: flex;             /* 弹性布局 */
+  align-items: center;       /* 垂直居中 */
+  justify-content: center;   /* 水平居中 */
+  margin-bottom: 0rpx;      /* 底部外边距进一步调整为0rpx，标题继续上移 */
+}
+
+.logo {
+  width: 200rpx;
+  height: 60rpx;
+}
+
+/* 页面标题 */
+.page-title {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.title-text {
+  display: block;
+  font-size: 55rpx;
+  font-weight: bold;
+  color: #0d3371;
+  letter-spacing: 2rpx;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0,0,0,0.1);
+  margin-bottom: 20rpx;
+  font-family: Arial, sans-serif;
+}
+
+/* 表单区域 */
+.form-section {
+  flex: 1;
+  margin-bottom: 80rpx;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  display: block;
+  color: #0d3371;
+  font-size: 32rpx; /* 字体大小增大到32rpx */
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  letter-spacing: 1rpx;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  text-shadow: 1rpx 1rpx 2rpx rgba(0,0,0,0.1);
+}
+
+.picker-input {
+  width: 100%;
+  height: 80rpx;
+  background-color: #f8f4f4;
+  border-radius: 10rpx;
+  padding: 0 15rpx; /* 恢复左右内边距，使其内容不紧贴边框 */
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  border: 2rpx solid transparent;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;     /* 强制文本不换行 */
+  overflow: hidden;        /* 隐藏溢出内容 */
+  text-overflow: ellipsis; /* 溢出部分显示省略号 */
+}
+
+.picker-input:focus {
+  border-color: #0d3371;
+  background-color: #fff;
+}
+
+.picker-input.placeholder {
+  color: #999;
+}
+
+/* 日期时间行布局 */
+.form-row {
+  display: flex;
+  justify-content: space-around; /* 均匀分布，使其更美观协调 */
+  gap: 20rpx; /* 调整间距，使其更协调 */
+  margin-bottom: 30rpx;
+}
+
+.form-item.half {
+  width: 240rpx; /* 调整固定宽度，确保能容纳日期和时间并美观 */
+  flex-shrink: 0; /* 防止收缩 */
+  margin-bottom: 0;
+}
+
+.date-input, .time-input {
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 底部按钮区域 */
+.bottom-section {
+  margin-bottom: 480rpx; /* 调整底部外边距，让按钮向下移动并与内容保持适当距离 */
+}
+
+.next-btn {
+  width: 100%;
+  height: 80rpx;
+  background-color: #0d3371;
+  color: #F5F5F5;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  border-radius: 15rpx;
+  letter-spacing: 3rpx;
+  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+  font-family: Arial, sans-serif;
+}
+
+.next-btn:active {
+  background-color: #0d3371;
+  transform: translateY(2rpx);
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 750rpx) {
+  .container {
+    padding: 0 10rpx 40rpx 10rpx; /* 响应式调整container左右内边距 */
+  }
+  
+  .header {
+    margin: 0 -30rpx 0rpx -30rpx;
+  }
+  
+  .title-text {
+    font-size: 70rpx;
+  }
+  
+  .form-label {
+    font-size: 28rpx;
+  }
+  
+  .form-item.half {
+    width: 340rpx; /* 响应式调整宽度与桌面端保持一致，确保在小屏幕下也协调 */
+    flex-shrink: 0;
+  }
+  
+  .picker-input {
+    height: 70rpx;
+    font-size: 26rpx;
+    padding: 0 10rpx; /* 响应式恢复左右内边距 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .next-btn {
+    height: 70rpx;
+    font-size: 28rpx;
+  }
+}
+
+/* 全局字体设置 */
+page {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}

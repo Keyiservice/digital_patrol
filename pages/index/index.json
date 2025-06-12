@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "Digital Patrol",
+  "navigationBarBackgroundColor": "#1e3a8a",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f5f5f5",
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": false,
+  "disableScroll": true,
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header"
+  }
+}

@@ -1,0 +1,25 @@
+<!--index.wxml-->
+<custom-header />
+<view class="container">
+  
+  <!-- 标题区域 -->
+  <view class="title-section">
+    <text class="title">DIGITAL PATROL</text>
+
+  </view>
+  
+  <!-- 功能按钮区域 -->
+  <view class="menu-section">
+    <button style="width:80vw" class="menu-btn" bindtap="onQUAPatrol">QUA ONLINE PATROL</button>
+    <button style="width:80vw" class="menu-btn" bindtap="onNPManagement">NP MANAGEMENT</button>
+    <button style="width:80vw" class="menu-btn" bindtap="onMainPatrol">MAIN ONLINE PATROL</button>
+    <button style="width:80vw" class="menu-btn" bindtap="onTPM">TPM EVIDENCE</button>
+    <button style="width:80vw" class="menu-btn" bindtap="onTPM">BREAKDOWN RECORD</button>
+  </view>
+  
+  <!-- 底部登录注册区域 -->
+  <view class="bottom-section">
+    <button  class="auth-btn signin-btn" bindtap="onSignIn">SIGN IN</button>
+    <button  class="auth-btn signup-btn" bindtap="onSignUp">SIGN UP</button>
+  </view>
+</view>
