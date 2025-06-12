@@ -143,14 +143,14 @@ Page({
     });
 
     // 这里可以添加跳转到下一个页面的逻辑
-    // wx.navigateTo({
-    //   url: '/pages/patrol-detail/patrol-detail?data=' + JSON.stringify(formData)
-    // });
+    wx.navigateTo({
+      url: '/pages/cookie_number/cookie_number'
+    });
     
     // 或者返回上一页
-    setTimeout(() => {
-      wx.navigateBack();
-    }, 2000);
+    // setTimeout(() => {
+    //   wx.navigateBack();
+    // }, 2000);
   },
 
   onShow() {

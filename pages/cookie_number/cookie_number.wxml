@@ -1,0 +1,24 @@
+<view class="container">
+  <custom-header></custom-header>
+
+  <view class="header">
+    <view class="title-text">QUA ONLINE PATROL</view>
+  </view>
+
+  <view class="form-section">
+    <view class="form-item">
+      <text class="form-label">T-NUMBER</text>
+      <input class="input-field" type="text" placeholder="请输入 T-NUMBER" bindinput="onTNumberInput" value="{{tNumber}}" />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">COOKIE NUMBER</text>
+      <input class="input-field" type="text" placeholder="请输入 COOKIE NUMBER" bindinput="onCookieNumberInput" value="{{cookieNumber}}" />
+    </view>
+  </view>
+
+  <view class="bottom-section">
+    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
+    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
+  </view>
+</view> 

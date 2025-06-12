@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/login/login",
     "pages/register/register",
-    "pages/qua-patrol/qua-patrol"
+    "pages/qua-patrol/qua-patrol",
+    "pages/cookie_number/cookie_number"
   ],
   "window": {
     "navigationBarTextStyle": "black",
