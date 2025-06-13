@@ -1,16 +1,41 @@
 // index.js
 Page({
   data: {
-    // 页面数据
+    isLogin: false,
+    userName: ''
   },
 
   onLoad() {
     // 页面加载时执行
     console.log('Digital Patrol 页面加载完成');
+    this.checkLoginStatus();
+  },
+  
+  // 检查登录状态
+  checkLoginStatus() {
+    const isLogin = wx.getStorageSync('isLogin') || false;
+    if (isLogin) {
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      this.setData({
+        isLogin: true,
+        userName: userInfo.accountName || '用户'
+      });
+    } else {
+      this.setData({
+        isLogin: false,
+        userName: ''
+      });
+    }
   },
 
   // QUA ONLINE PATROL 按钮点击事件
   onQUAPatrol() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/qua-patrol/qua-patrol'
     });
@@ -18,6 +43,12 @@ Page({
 
   // NP MANAGEMENT 按钮点击事件
   onNPManagement() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
     wx.showToast({
       title: 'NP管理功能',
       icon: 'success',
@@ -31,6 +62,12 @@ Page({
 
   // MAIN ONLINE PATROL 按钮点击事件
   onMainPatrol() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
     wx.showToast({
       title: '主线巡检功能',
       icon: 'success',
@@ -44,6 +81,12 @@ Page({
 
   // TPM 按钮点击事件
   onTPM() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
     wx.showToast({
       title: 'TPM功能',
       icon: 'success',
@@ -53,6 +96,22 @@ Page({
     // wx.navigateTo({
     //   url: '/pages/tpm/tpm'
     // });
+  },
+  
+  // 显示需要登录的提示
+  showLoginRequiredToast() {
+    wx.showModal({
+      title: '需要登录',
+      content: '请先登录后再使用此功能',
+      confirmText: '去登录',
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({
+            url: '/pages/login/login'
+          });
+        }
+      }
+    });
   },
 
   // 登录按钮点击事件
@@ -68,9 +127,37 @@ Page({
       url: '/pages/register/register'
     });
   },
+  
+  // 退出登录按钮点击事件
+  onLogout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          // 清除登录状态
+          wx.removeStorageSync('isLogin');
+          wx.removeStorageSync('userInfo');
+          
+          // 更新页面状态
+          this.setData({
+            isLogin: false,
+            userName: ''
+          });
+          
+          wx.showToast({
+            title: '已退出登录',
+            icon: 'success',
+            duration: 2000
+          });
+        }
+      }
+    });
+  },
 
   onShow() {
-    // 页面显示时执行
+    // 页面显示时执行，每次回到这个页面时检查登录状态
+    this.checkLoginStatus();
   },
 
   onReady() {

@@ -1,8 +1,16 @@
+<custom-header />
 <view class="container">
-  <custom-header></custom-header>
-
+  <!-- 用户信息区域 -->
+  <user-info />
+  
+  <!-- 头部logo区域 -->
   <view class="header">
-    <view class="title-text">QUA ONLINE PATROL</view>
+    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
+  </view>
+  
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">QUA ONLINE PATROL</text>
   </view>
 
   <view class="form-section">

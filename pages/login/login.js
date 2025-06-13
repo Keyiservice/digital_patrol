@@ -66,7 +66,9 @@ Page({
 
   // 提交登录
   onSubmit() {
+    console.log('点击登录按钮');
     if (!this.validateForm()) {
+      console.log('表单验证失败');
       return;
     }
 
@@ -75,6 +77,7 @@ Page({
       title: '登录中...'
     });
 
+    console.log('开始登录流程');
     // 模拟API请求
     setTimeout(() => {
       wx.hideLoading();
@@ -84,35 +87,48 @@ Page({
       
       // 模拟登录验证
       const { accountName, password } = this.data.formData;
+      console.log('验证账户:', accountName, '密码:', password);
       
       // 简单的模拟验证（实际开发中应该调用后端API）
       if (accountName === 'admin' && password === '123456') {
-        wx.showToast({
-          title: '登录成功',
-          icon: 'success',
-          duration: 2000
-        });
-
+        console.log('验证成功');
+        
         // 保存登录状态（实际开发中应该保存token）
         wx.setStorageSync('isLogin', true);
         wx.setStorageSync('userInfo', {
           accountName: accountName,
           loginTime: new Date().getTime()
         });
+        console.log('保存登录状态完成');
 
         // 登录成功后跳转到主页面
-        setTimeout(() => {
-          wx.switchTab({
-            url: '/pages/index/index'
-          });
-        }, 2000);
+        console.log('准备跳转到主页');
+        wx.showToast({
+          title: '登录成功',
+          icon: 'success',
+          duration: 1000,
+          mask: true,
+          complete: () => {
+            console.log('执行跳转');
+            wx.reLaunch({
+              url: '/pages/index/index',
+              success: function() {
+                console.log('跳转成功');
+              },
+              fail: function(error) {
+                console.error('跳转失败:', error);
+              }
+            });
+          }
+        });
       } else {
+        console.log('验证失败');
         wx.showToast({
           title: '账户名或密码错误',
           icon: 'none'
         });
       }
-    }, 1500);
+    }, 1000);
   },
 
   // 跳转到注册页面

@@ -13,6 +13,22 @@
   /* overflow-x: hidden; */ /* 移除，防止宽度计算问题导致 */
 }
 
+/* 用户信息区域 */
+.user-info {
+  width: 100%;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.welcome-text {
+  font-size: 28rpx;
+  color: #0d3371;
+  font-weight: bold;
+}
+
 .content-section {
   width: 100%; /* 标题和按钮都用这个宽度 */
   margin: 0 auto;
@@ -137,6 +153,14 @@
 .signup-btn {
   background-color: #0d3371; /* 深蓝色背景，与登录按钮保持一致 */
   color: white;              /* 白色文字 */
+}
+
+/* 退出登录按钮样式 */
+.logout-btn {
+  background-color: #d32f2f; /* 红色背景 */
+  color: white;              /* 白色文字 */
+  max-width: 50%;            /* 最大宽度为50% */
+  margin: 0 auto;            /* 水平居中 */
 }
 
 /* 认证按钮按下时的样式 - 提供用户反馈 */

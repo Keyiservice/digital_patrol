@@ -1,0 +1,96 @@
+<!--pages/special/special.wxml-->
+<custom-header />
+<view class="container">
+  <!-- 用户信息区域 -->
+  <user-info />
+  
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
+  </view>
+  
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">SPECIAL CHECK</text>
+  </view>
+  
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- 特殊检查项目 -->
+    <view class="form-item">
+      <text class="form-label">FLOW MARK</text>
+      <radio-group class="radio-group" bindchange="onFlowMarkChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">SILVER STREAK</text>
+      <radio-group class="radio-group" bindchange="onSilverStreakChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">BLACK DOT</text>
+      <radio-group class="radio-group" bindchange="onBlackDotChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">BUBBLE</text>
+      <radio-group class="radio-group" bindchange="onBubbleChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">DISCOLORATION</text>
+      <radio-group class="radio-group" bindchange="onDiscolorationChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+  </view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
+    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
+  </view>
+</view> 

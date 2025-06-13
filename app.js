@@ -15,5 +15,27 @@ App({
   },
   globalData: {
     userInfo: null
+  },
+  
+  // 全局登录检查函数
+  checkLoginStatus: function() {
+    const isLogin = wx.getStorageSync('isLogin') || false;
+    if (!isLogin) {
+      wx.showModal({
+        title: '需要登录',
+        content: '请先登录后再使用此功能',
+        confirmText: '去登录',
+        showCancel: false,
+        success: (res) => {
+          if (res.confirm) {
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }
+        }
+      });
+      return false;
+    }
+    return true;
   }
 })

@@ -4,7 +4,13 @@
     "pages/login/login",
     "pages/register/register",
     "pages/qua-patrol/qua-patrol",
-    "pages/cookie_number/cookie_number"
+    "pages/cookie_number/cookie_number",
+    "pages/appearance_first/appearance_first",
+    "pages/appearance_second/appearance_second",
+    "pages/thickness/thickness",
+    "pages/special/special",
+    "pages/fc/fc",
+    "pages/asm/asm"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -24,5 +30,9 @@
   },
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header",
+    "user-info": "/components/user-info/user-info"
+  }
 }

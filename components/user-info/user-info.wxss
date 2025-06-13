@@ -1,0 +1,15 @@
+/* components/user-info/user-info.wxss */
+.user-info-container {
+  width: 100%;
+  padding: 10rpx 20rpx;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.welcome-text {
+  font-size: 28rpx;
+  color: #0d3371;
+  font-weight: bold;
+} 

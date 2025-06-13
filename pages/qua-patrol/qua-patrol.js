@@ -23,11 +23,35 @@ Page({
 
   onLoad() {
     console.log('QUA ONLINE PATROL 页面加载');
+    
+    // 检查登录状态
+    this.checkLoginStatus();
+    
     this.initDateTime();
     // 启动定时器，每秒更新日期和时间
     this.data.timerId = setInterval(() => {
       this.initDateTime();
     }, 1000);
+  },
+  
+  // 检查登录状态
+  checkLoginStatus() {
+    const isLogin = wx.getStorageSync('isLogin') || false;
+    if (!isLogin) {
+      wx.showModal({
+        title: '需要登录',
+        content: '请先登录后再使用此功能',
+        confirmText: '去登录',
+        showCancel: false,
+        success: (res) => {
+          if (res.confirm) {
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }
+        }
+      });
+    }
   },
 
   // 初始化日期时间
@@ -158,9 +182,12 @@ Page({
     if (!this.data.timerId) {
       this.initDateTime();
       this.data.timerId = setInterval(() => {
-        this.initDateTime();
+    this.initDateTime();
       }, 1000);
     }
+    
+    // 再次检查登录状态
+    this.checkLoginStatus();
   },
 
   onReady() {

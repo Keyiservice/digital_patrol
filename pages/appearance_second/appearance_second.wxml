@@ -1,0 +1,96 @@
+<!--pages/appearance_second/appearance_second.wxml-->
+<custom-header />
+<view class="container">
+  <!-- 用户信息区域 -->
+  <user-info />
+  
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
+  </view>
+  
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">APPEARANCE CHECK 2/2</text>
+  </view>
+  
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- 外观检查项目 -->
+    <view class="form-item">
+      <text class="form-label">CRACK</text>
+      <radio-group class="radio-group" bindchange="onCrackChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">FLASH</text>
+      <radio-group class="radio-group" bindchange="onFlashChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">SINK MARK</text>
+      <radio-group class="radio-group" bindchange="onSinkMarkChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">WELD LINE</text>
+      <radio-group class="radio-group" bindchange="onWeldLineChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">DEFORMATION</text>
+      <radio-group class="radio-group" bindchange="onDeformationChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+  </view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
+    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
+  </view>
+</view> 

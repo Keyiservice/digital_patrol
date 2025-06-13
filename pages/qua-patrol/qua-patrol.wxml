@@ -1,6 +1,9 @@
 <!--qua-patrol.wxml-->
 <custom-header />
 <view class="container">
+  <!-- 用户信息区域 -->
+  <user-info />
+  
   <!-- 头部logo区域 -->
   <view class="header">
     <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->

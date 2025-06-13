@@ -1,0 +1,96 @@
+<!--pages/asm/asm.wxml-->
+<custom-header />
+<view class="container">
+  <!-- 用户信息区域 -->
+  <user-info />
+  
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
+  </view>
+  
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">ASM INSPECTION</text>
+  </view>
+  
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- ASM检查项目 -->
+    <view class="form-item">
+      <text class="form-label">ASSEMBLY DEFECT</text>
+      <radio-group class="radio-group" bindchange="onAssemblyDefectChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">MISSING PARTS</text>
+      <radio-group class="radio-group" bindchange="onMissingPartsChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">WRONG PARTS</text>
+      <radio-group class="radio-group" bindchange="onWrongPartsChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">DAMAGED PARTS</text>
+      <radio-group class="radio-group" bindchange="onDamagedPartsChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+    
+    <view class="form-item">
+      <text class="form-label">FUNCTION TEST</text>
+      <radio-group class="radio-group" bindchange="onFunctionTestChange">
+        <view class="radio-item">
+          <radio value="ok" color="#0d3371" />
+          <text class="radio-text">OK</text>
+        </view>
+        <view class="radio-item">
+          <radio value="ng" color="#0d3371" />
+          <text class="radio-text">NG</text>
+        </view>
+      </radio-group>
+    </view>
+  </view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
+    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
+  </view>
+</view> 

@@ -1,0 +1,4 @@
+<!-- components/user-info/user-info.wxml -->
+<view class="user-info-container" wx:if="{{isLogin}}">
+  <text class="welcome-text">欢迎，{{userName}}</text>
+</view> 

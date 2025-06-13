@@ -2,6 +2,11 @@
 <custom-header />
 <view class="container">
   
+  <!-- 用户信息区域 -->
+  <view class="user-info" wx:if="{{isLogin}}">
+    <text class="welcome-text">欢迎，{{userName}}</text>
+  </view>
+  
   <!-- 标题区域 -->
   <view class="title-section">
     <text class="title">DIGITAL PATROL</text>
@@ -18,8 +23,13 @@
   </view>
   
   <!-- 底部登录注册区域 -->
-  <view class="bottom-section">
-    <button  class="auth-btn signin-btn" bindtap="onSignIn">SIGN IN</button>
-    <button  class="auth-btn signup-btn" bindtap="onSignUp">SIGN UP</button>
+  <view class="bottom-section" wx:if="{{!isLogin}}">
+    <button class="auth-btn signin-btn" bindtap="onSignIn">SIGN IN</button>
+    <button class="auth-btn signup-btn" bindtap="onSignUp">SIGN UP</button>
+  </view>
+  
+  <!-- 已登录时显示退出登录按钮 -->
+  <view class="bottom-section" wx:if="{{isLogin}}">
+    <button class="auth-btn logout-btn" bindtap="onLogout">LOGOUT</button>
   </view>
 </view>
