@@ -12,64 +12,56 @@
   <!-- 页面标题 -->
   <view class="page-title">
     <text class="title-text">QUA ONLINE PATROL</text>
+    <text class="sub-title-text">QUALITATIVE ONLINE PATROL</text>
   </view>
   
   <!-- 表单区域 -->
   <view class="form-section">
-    <!-- PROJECT 项目 -->
-    <view class="form-item">
-      <text class="form-label">PROJECT</text>
-      <picker bindchange="onProjectChange" value="{{projectIndex}}" range="{{projectList}}">
-        <view class="picker-input {{projectIndex === -1 ? 'placeholder' : ''}}">
-          {{projectIndex === -1 ? '请选择项目' : projectList[projectIndex]}}
+    <block wx:for="{{items}}" wx:for-item="item" wx:for-index="itemIndex" wx:key="id">
+      <view class="inspection-item">
+        <!-- 检查内容区域 -->
+        <view class="inspection-content-box">
+          <text class="item-number">{{item.id}})</text>
+          <text class="item-description">{{item.description}}</text>
         </view>
-      </picker>
-    </view>
-    
-    <!-- PROCESS 流程 -->
-    <view class="form-item">
-      <text class="form-label">PROCESS</text>
-      <picker bindchange="onProcessChange" value="{{processIndex}}" range="{{processList}}">
-        <view class="picker-input {{processIndex === -1 ? 'placeholder' : ''}}">
-          {{processIndex === -1 ? '请选择流程' : processList[processIndex]}}
-        </view>
-      </picker>
-    </view>
-    
-    <!-- DATE & TIME 日期和时间 -->
-    <view class="form-row">
-      <view class="form-item half">
-        <text class="form-label">DATE</text>
-        <picker mode="date" value="{{currentDate}}" bindchange="onDateChange">
-          <view class="picker-input date-input" >
-            {{displayDate}}
+
+        <!-- 结果和拍照区域 -->
+        <view class="result-photo-row">
+          <view class="result-section">
+            <text class="result-label">RESULT</text>
+            <radio-group class="radio-group" data-item-index="{{itemIndex}}" bindchange="onResultChange">
+              <label class="radio-label">
+                <radio value="OK" checked="{{item.result === 'OK'}}" color="#0d3371" />
+                <text>OK</text>
+              </label>
+              <label class="radio-label">
+                <radio value="NG" checked="{{item.result === 'NG'}}" color="#0d3371" />
+                <text>NG</text>
+              </label>
+            </radio-group>
           </view>
-        </picker>
-      </view>
-      
-      <view class="form-item half">
-        <text class="form-label">TIME</text>
-        <picker mode="time" value="{{currentTime}}" bindchange="onTimeChange">
-          <view class="picker-input time-input" >
-            {{displayTime}}
+
+          <view class="picture-section">
+            <text class="picture-label">PICTURE</text>
+            <view class="photo-group-container">
+              <view class="photo-button" bindtap="takePhoto" data-item-index="{{itemIndex}}">
+                <text class="photo-text">点击拍摄</text>
+              </view>
+              <block wx:for="{{item.photos}}" wx:for-item="photo" wx:for-index="photoIndex" wx:key="*this">
+                <view wx:if="{{photo}}" class="photo-preview-container">
+                  <image class="item-photo" src="{{photo}}" mode="aspectFill" bindtap="previewImage" data-item-index="{{itemIndex}}" data-photo-index="{{photoIndex}}"></image>
+                </view>
+              </block>
+            </view>
           </view>
-        </picker>
-      </view>
-    </view>
-    
-    <!-- SHIFT 班次 -->
-    <view class="form-item">
-      <text class="form-label">SHIFT</text>
-      <picker bindchange="onShiftChange" value="{{shiftIndex}}" range="{{shiftList}}">
-        <view class="picker-input {{shiftIndex === -1 ? 'placeholder' : ''}}">
-          {{shiftIndex === -1 ? '请选择班次' : shiftList[shiftIndex]}}
         </view>
-      </picker>
-    </view>
+      </view>
+    </block>
   </view>
   
   <!-- 底部按钮 -->
   <view class="bottom-section">
-    <button class="next-btn" bindtap="onNext">NEXT</button>
+    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
+    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
   </view>
 </view>

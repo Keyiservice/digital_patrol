@@ -1,4 +1,4 @@
-<!--pages/special/special.wxml-->
+<!--pages/summary/summary.wxml-->
 <custom-header />
 <view class="container">
   <!-- 用户信息区域 -->
@@ -12,7 +12,7 @@
   <!-- 页面标题 -->
   <view class="page-title">
     <text class="title-text">QUA ONLINE PATROL</text>
-    <text class="sub-title-text">TANK SHELL SPECIAL POINT CHECK</text>
+    <text class="sub-title-text">PATROL SUMMARY</text>
   </view>
   
   <!-- 表单区域 -->

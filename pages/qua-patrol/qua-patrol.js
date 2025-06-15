@@ -1,212 +1,144 @@
-// qua-patrol.js
+// pages/qua-patrol/qua-patrol.js
 Page({
+  /**
+   * 页面的初始数据
+   */
   data: {
-    // 项目列表
-    projectList: ['项目A', '项目B', '项目C', '项目D'],
-    projectIndex: -1,
-    
-    // 流程列表
-    processList: ['流程1', '流程2', '流程3', '流程4'],
-    processIndex: -1,
-    
-    // 班次列表
-    shiftList: ['白班', '夜班', '中班'],
-    shiftIndex: -1,
-    
-    // 日期时间
-    currentDate: '',
-    currentTime: '',
-    displayDate: '',
-    displayTime: '',
-    timerId: null, // 添加 timerId 用于存储定时器ID
+    isLogin: false,
+    userName: '',
+    items: [
+      {
+        id: 1,
+        description: '通用检查项: 请根据实际情况进行检查并选择结果。',
+        result: '',
+        photos: []
+      }
+    ],
+    previousPageData: null // 存储上一页传递的数据
   },
 
-  onLoad() {
-    console.log('QUA ONLINE PATROL 页面加载');
-    
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
     // 检查登录状态
-    this.checkLoginStatus();
+    const app = getApp();
+    if (!app.checkLoginStatus()) {
+      return;
+    }
     
-    this.initDateTime();
-    // 启动定时器，每秒更新日期和时间
-    this.data.timerId = setInterval(() => {
-      this.initDateTime();
-    }, 1000);
+    // 获取上一页传递的参数
+    const eventChannel = this.getOpenerEventChannel();
+    eventChannel.on('acceptDataFromPreviousPage', (data) => {
+      console.log('接收到上一页数据:', data);
+      this.setData({
+        previousPageData: data.data
+      });
+    });
   },
   
-  // 检查登录状态
-  checkLoginStatus() {
-    const isLogin = wx.getStorageSync('isLogin') || false;
-    if (!isLogin) {
-      wx.showModal({
-        title: '需要登录',
-        content: '请先登录后再使用此功能',
-        confirmText: '去登录',
-        showCancel: false,
-        success: (res) => {
-          if (res.confirm) {
-            wx.redirectTo({
-              url: '/pages/login/login'
-            });
-          }
-        }
-      });
-    }
-  },
-
-  // 初始化日期时间
-  initDateTime() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    
-    this.setData({
-      currentDate: `${year}-${month}-${day}`,
-      currentTime: `${hours}:${minutes}`,
-      displayDate: `${year}-${month}-${day}`, // 始终显示精确日期
-      displayTime: `${hours}:${minutes}`      // 始终显示精确时间
-    });
-  },
-
-  // 项目选择
-  onProjectChange(e) {
-    console.log('选择项目:', this.data.projectList[e.detail.value]);
-    this.setData({
-      projectIndex: e.detail.value
-    });
-  },
-
-  // 流程选择
-  onProcessChange(e) {
-    console.log('选择流程:', this.data.processList[e.detail.value]);
-    this.setData({
-      processIndex: e.detail.value
-    });
-  },
-
-  // 日期选择
-  onDateChange(e) {
-    console.log('选择日期:', e.detail.value);
-    // 移除判断是否为今天的逻辑，始终显示选择的日期
-    this.setData({
-      currentDate: e.detail.value,
-      displayDate: e.detail.value
-    });
-  },
-
-  // 时间选择
-  onTimeChange(e) {
-    console.log('选择时间:', e.detail.value);
-    // 移除判断是否为当前时间的逻辑，始终显示选择的时间
-    this.setData({
-      currentTime: e.detail.value,
-      displayTime: e.detail.value
-    });
-  },
-
-  // 班次选择
-  onShiftChange(e) {
-    console.log('选择班次:', this.data.shiftList[e.detail.value]);
-    this.setData({
-      shiftIndex: e.detail.value
-    });
-  },
-
-  // 时间转换为分钟数（用于比较）
-  timeToMinutes(timeStr) {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes;
-  },
-
-  // 下一步按钮
-  onNext() {
-    // 验证表单
-    if (this.data.projectIndex === -1) {
-      wx.showToast({
-        title: '请选择项目',
-        icon: 'none'
-      });
-      return;
-    }
-    
-    if (this.data.processIndex === -1) {
-      wx.showToast({
-        title: '请选择流程',
-        icon: 'none'
-      });
-      return;
-    }
-    
-    if (this.data.shiftIndex === -1) {
-      wx.showToast({
-        title: '请选择班次',
-        icon: 'none'
-      });
-      return;
-    }
-
-    // 收集表单数据
-    const formData = {
-      project: this.data.projectList[this.data.projectIndex],
-      process: this.data.processList[this.data.processIndex],
-      date: this.data.currentDate,
-      time: this.data.currentTime,
-      shift: this.data.shiftList[this.data.shiftIndex]
-    };
-
-    console.log('表单数据:', formData);
-
-    // 显示成功提示
-    wx.showToast({
-      title: '提交成功',
-      icon: 'success',
-      duration: 2000
-    });
-
-    // 这里可以添加跳转到下一个页面的逻辑
-    wx.navigateTo({
-      url: '/pages/cookie_number/cookie_number'
-    });
-    
-    // 或者返回上一页
-    // setTimeout(() => {
-    //   wx.navigateBack();
-    // }, 2000);
-  },
-
-  onShow() {
-    // 页面显示时，如果定时器未启动，则重新启动，并更新时间
-    if (!this.data.timerId) {
-      this.initDateTime();
-      this.data.timerId = setInterval(() => {
-    this.initDateTime();
-      }, 1000);
-    }
-    
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function() {
     // 再次检查登录状态
-    this.checkLoginStatus();
+    const app = getApp();
+    app.checkLoginStatus();
   },
 
-  onReady() {
-    // 页面初次渲染完成
+  /**
+   * 处理单选按钮变化
+   */
+  onResultChange(e) {
+    const { itemIndex } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    const { items } = this.data;
+    items[itemIndex].result = value;
+    this.setData({ items });
   },
+  
+  /**
+   * 拍照功能
+   */
+  takePhoto: function(e) {
+    const { itemIndex } = e.currentTarget.dataset;
+    const { items } = this.data;
+    const currentPhotos = items[itemIndex].photos || [];
 
-  onHide() {
-    // 页面隐藏时，清除定时器
-    if (this.data.timerId) {
-      clearInterval(this.data.timerId);
-      this.data.timerId = null;
+    wx.chooseImage({
+      count: 5 - currentPhotos.length, // 最多选择5张，减去已有的照片数
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePaths = res.tempFilePaths;
+        const newPhotos = currentPhotos.concat(tempFilePaths);
+        items[itemIndex].photos = newPhotos.slice(0, 5); // 确保不超过5张
+        this.setData({ items });
+      }
+    });
+  },
+  
+  /**
+   * 预览图片
+   */
+  previewImage: function(e) {
+    const { itemIndex, photoIndex } = e.currentTarget.dataset;
+    const { items } = this.data;
+    const current = items[itemIndex].photos[photoIndex];
+    const urls = items[itemIndex].photos; // 预览所有照片
+    wx.previewImage({
+      current: current,
+      urls: urls
+    });
+  },
+  
+  /**
+   * 验证表单是否填写完整
+   */
+  validateForm: function() {
+    for (let i = 0; i < this.data.items.length; i++) {
+      if (!this.data.items[i].result) {
+        wx.showToast({
+          title: `请选择第${i + 1}项检查结果`,
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
     }
+    return true;
   },
 
-  onUnload() {
-    // 页面卸载时，清除定时器
-    if (this.data.timerId) {
-      clearInterval(this.data.timerId);
-      this.data.timerId = null;
+  /**
+   * 处理上一页按钮点击
+   */
+  onPrevious: function() {
+    wx.navigateBack({
+      delta: 1
+    });
+  },
+
+  /**
+   * 处理下一页按钮点击
+   */
+  onNext: function() {
+    // 验证表单
+    if (!this.validateForm()) {
+      return;
     }
+    
+    // 保存数据并跳转到下一页
+    const data = {
+      ...this.data.previousPageData, // 包含上一页的数据
+      quaPatrolItems: this.data.items
+    };
+    
+    wx.navigateTo({
+      url: '/pages/summary/summary',
+      success: function(res) {
+        // 传递数据给下一页
+        res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
+      }
+    });
   }
-});
+})

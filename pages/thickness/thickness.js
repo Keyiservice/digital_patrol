@@ -4,58 +4,113 @@ Page({
    * 页面的初始数据
    */
   data: {
-    point1: '',
-    point2: '',
-    point3: '',
-    point4: '',
-    point5: '',
-    previousPageData: null
+    isLogin: false,
+    userName: '',
+    items: [
+      {
+        id: 'point1',
+        name: '测量点1',
+        unit: 'mm',
+        value: '',
+        description: '测量点1 (mm)'  // 用于显示，可以根据数据库中的名称动态生成
+      },
+      {
+        id: 'point2',
+        name: '测量点2',
+        unit: 'mm',
+        value: '',
+        description: '测量点2 (mm)'
+      },
+      {
+        id: 'point3',
+        name: '测量点3',
+        unit: 'mm',
+        value: '',
+        description: '测量点3 (mm)'
+      },
+      {
+        id: 'point4',
+        name: '测量点4',
+        unit: 'mm',
+        value: '',
+        description: '测量点4 (mm)'
+      },
+      {
+        id: 'point5',
+        name: '测量点5',
+        unit: 'mm',
+        value: '',
+        description: '测量点5 (mm)'
+      }
+    ],
+    previousPageData: null // 存储上一页传递的数据
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 获取上一页传递的数据
+    // 检查登录状态
+    const app = getApp();
+    if (!app.checkLoginStatus()) {
+      return;
+    }
+    
+    // 获取上一页传递的参数
     const eventChannel = this.getOpenerEventChannel();
     eventChannel.on('acceptDataFromPreviousPage', (data) => {
+      console.log('接收到上一页数据:', data);
       this.setData({
         previousPageData: data.data
       });
     });
+
+    // 这里可以添加从数据库获取测量点配置的代码
+    // this.loadMeasurementPoints();
+  },
+
+  /**
+   * 从数据库加载测量点配置
+   */
+  loadMeasurementPoints: function() {
+    // 示例：从数据库获取测量点配置
+    wx.request({
+      url: 'your-api-endpoint/measurement-points',
+      method: 'GET',
+      success: (res) => {
+        if (res.data && res.data.length > 0) {
+          // 更新测量点配置
+          const items = res.data.map(point => ({
+            id: point.id,
+            name: point.name,
+            unit: point.unit || 'mm',
+            value: '',
+            description: `${point.name} (${point.unit || 'mm'})`
+          }));
+          this.setData({ items });
+        }
+      }
+    });
+  },
+  
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function() {
+    // 再次检查登录状态
+    const app = getApp();
+    app.checkLoginStatus();
   },
 
   /**
    * 处理输入框变化
    */
-  onPoint1Input: function(e) {
-    this.setData({
-      point1: e.detail.value
-    });
-  },
-
-  onPoint2Input: function(e) {
-    this.setData({
-      point2: e.detail.value
-    });
-  },
-
-  onPoint3Input: function(e) {
-    this.setData({
-      point3: e.detail.value
-    });
-  },
-
-  onPoint4Input: function(e) {
-    this.setData({
-      point4: e.detail.value
-    });
-  },
-
-  onPoint5Input: function(e) {
-    this.setData({
-      point5: e.detail.value
-    });
+  onInputChange(e) {
+    const { index } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    const { items } = this.data;
+    items[index].value = value;
+    this.setData({ items });
   },
   
   /**
@@ -63,65 +118,23 @@ Page({
    */
   validateForm: function() {
     // 检查是否为空
-    if (!this.data.point1.trim()) {
-      wx.showToast({
-        title: '请输入POINT 1的厚度值',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.point2.trim()) {
-      wx.showToast({
-        title: '请输入POINT 2的厚度值',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.point3.trim()) {
-      wx.showToast({
-        title: '请输入POINT 3的厚度值',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.point4.trim()) {
-      wx.showToast({
-        title: '请输入POINT 4的厚度值',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.point5.trim()) {
-      wx.showToast({
-        title: '请输入POINT 5的厚度值',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
+    for (let i = 0; i < this.data.items.length; i++) {
+      if (!this.data.items[i].value.trim()) {
+        wx.showToast({
+          title: `请输入${this.data.items[i].name}的厚度值`,
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
     }
     
     // 检查是否为有效数字
-    const points = [
-      { value: this.data.point1, name: 'POINT 1' },
-      { value: this.data.point2, name: 'POINT 2' },
-      { value: this.data.point3, name: 'POINT 3' },
-      { value: this.data.point4, name: 'POINT 4' },
-      { value: this.data.point5, name: 'POINT 5' }
-    ];
-    
-    for (let point of points) {
-      const num = parseFloat(point.value);
+    for (let i = 0; i < this.data.items.length; i++) {
+      const num = parseFloat(this.data.items[i].value);
       if (isNaN(num) || num <= 0) {
         wx.showToast({
-          title: `${point.name}的厚度值无效`,
+          title: `${this.data.items[i].name}的厚度值无效`,
           icon: 'none',
           duration: 2000
         });
@@ -150,21 +163,17 @@ Page({
       return;
     }
     
-    // 合并数据并跳转到下一页
-    const combinedData = {
-      ...this.data.previousPageData,
-      point1: this.data.point1,
-      point2: this.data.point2,
-      point3: this.data.point3,
-      point4: this.data.point4,
-      point5: this.data.point5
+    // 保存数据并跳转到下一页
+    const data = {
+      ...this.data.previousPageData, // 包含上一页的数据
+      thicknessItems: this.data.items
     };
     
     wx.navigateTo({
       url: '/pages/special/special',
       success: function(res) {
         // 传递数据给下一页
-        res.eventChannel.emit('acceptDataFromPreviousPage', { data: combinedData });
+        res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
       }
     });
   }

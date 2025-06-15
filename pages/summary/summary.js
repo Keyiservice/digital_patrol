@@ -1,4 +1,3 @@
-// pages/special/special.js
 Page({
   /**
    * 页面的初始数据
@@ -9,13 +8,7 @@ Page({
     items: [
       {
         id: 1,
-        description: '铭牌 ID Plate检查: 条形码无缺失、无漏贴、褶皱，粘贴在指定位置框里，扫描区域清晰、无模糊',
-        result: '',
-        photos: []
-      },
-      {
-        id: 2,
-        description: '检查油箱内部是否存在合模线气泡等目视可见缺陷 (需要机加开泵口查看)',
+        description: '巡检总结: 请确认所有检查项已完成并提交。',
         result: '',
         photos: []
       }
@@ -136,15 +129,23 @@ Page({
     // 保存数据并跳转到下一页
     const data = {
       ...this.data.previousPageData, // 包含上一页的数据
-      specialItems: this.data.items
+      summaryItems: this.data.items
     };
     
-    wx.navigateTo({
-      url: '/pages/qua-patrol/qua-patrol',
-      success: function(res) {
-        // 传递数据给下一页
-        res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
-      }
+    // 这里可以添加将所有巡检数据提交到数据库的逻辑
+    console.log('所有巡检数据:', data);
+
+    wx.showToast({
+      title: '巡检完成，数据已提交！',
+      icon: 'success',
+      duration: 2000
     });
+
+    // 跳转到主页或完成页面
+    setTimeout(() => {
+      wx.redirectTo({
+        url: '/pages/index/index' // 假设这是主页
+      });
+    }, 2000);
   }
 }) 

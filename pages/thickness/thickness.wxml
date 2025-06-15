@@ -11,41 +11,23 @@
   
   <!-- 页面标题 -->
   <view class="page-title">
-    <text class="title-text">THICKNESS CHECK</text>
+    <text class="title-text">QUA ONLINE PATROL</text>
+    <text class="sub-title-text">TANK SHELL THICKNESS</text>
   </view>
   
   <!-- 表单区域 -->
   <view class="form-section">
-    <!-- 厚度检查点 -->
-    <view class="form-item">
-      <text class="form-label">POINT 1 (mm)</text>
-      <input class="input-field" type="digit" placeholder="请输入厚度值" bindinput="onPoint1Input" value="{{point1}}" />
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">POINT 2 (mm)</text>
-      <input class="input-field" type="digit" placeholder="请输入厚度值" bindinput="onPoint2Input" value="{{point2}}" />
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">POINT 3 (mm)</text>
-      <input class="input-field" type="digit" placeholder="请输入厚度值" bindinput="onPoint3Input" value="{{point3}}" />
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">POINT 4 (mm)</text>
-      <input class="input-field" type="digit" placeholder="请输入厚度值" bindinput="onPoint4Input" value="{{point4}}" />
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">POINT 5 (mm)</text>
-      <input class="input-field" type="digit" placeholder="请输入厚度值" bindinput="onPoint5Input" value="{{point5}}" />
-    </view>
+    <block wx:for="{{items}}" wx:for-item="item" wx:key="id">
+      <view class="form-item">
+        <text class="form-label">{{item.description}}</text>
+        <input class="input-field" type="digit" placeholder="请输入{{item.unit}}值" bindinput="onInputChange" data-index="{{index}}" value="{{item.value}}" />
+      </view>
+    </block>
   </view>
-  
-  <!-- 底部按钮 -->
-  <view class="bottom-section">
-    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
-    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
-  </view>
+</view>
+
+<!-- 底部按钮 -->
+<view class="bottom-section">
+  <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
+  <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
 </view> 
