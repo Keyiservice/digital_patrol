@@ -4,19 +4,23 @@ Page({
    * 页面的初始数据
    */
   data: {
-    scratch: '',
-    dent: '',
-    stain: '',
-    foreignMaterial: '',
-    appearanceDefect: '',
-    previousPageData: null, // 存储上一页传递的数据
-    
-    // 照片存储
-    scratchPhoto: '',
-    dentPhoto: '',
-    stainPhoto: '',
-    foreignMaterialPhoto: '',
-    appearanceDefectPhoto: ''
+    isLogin: false,
+    userName: '',
+    items: [
+      {
+        id: 1,
+        description: '条码外观检验: 条形码无缺失、无漏贴、褶皱，粘贴在指定位置框里，扫描区域清晰、无模糊',
+        result: '',
+        photos: []
+      },
+      {
+        id: 2,
+        description: '油箱外观检验: 表面无损伤、变形、脏污、枯料；污渍；ICV、Nipple、铺泵焊接面无油渍、表面平整；安装排气管的clip区域无破损、变形、多料',
+        result: '',
+        photos: []
+      }
+    ],
+    previousPageData: null // 存储上一页传递的数据
   },
 
   /**
@@ -51,64 +55,31 @@ Page({
   /**
    * 处理单选按钮变化
    */
-  onScratchChange: function(e) {
-    this.setData({
-      scratch: e.detail.value
-    });
-  },
-
-  onDentChange: function(e) {
-    this.setData({
-      dent: e.detail.value
-    });
-  },
-
-  onStainChange: function(e) {
-    this.setData({
-      stain: e.detail.value
-    });
-  },
-
-  onForeignMaterialChange: function(e) {
-    this.setData({
-      foreignMaterial: e.detail.value
-    });
-  },
-
-  onAppearanceDefectChange: function(e) {
-    this.setData({
-      appearanceDefect: e.detail.value
-    });
+  onResultChange(e) {
+    const { itemIndex } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    const { items } = this.data;
+    items[itemIndex].result = value;
+    this.setData({ items });
   },
   
   /**
    * 拍照功能
    */
   takePhoto: function(e) {
-    const item = e.currentTarget.dataset.item;
-    const that = this;
-    
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['camera'],
-      camera: 'back',
+    const { itemIndex } = e.currentTarget.dataset;
+    const { items } = this.data;
+    const currentPhotos = items[itemIndex].photos || [];
+
+    wx.chooseImage({
+      count: 5 - currentPhotos.length, // 最多选择5张，减去已有的照片数
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
       success: (res) => {
-        console.log('拍照成功:', res);
-        const tempFilePath = res.tempFiles[0].tempFilePath;
-        
-        // 根据不同的检查项保存照片路径
-        const photoData = {};
-        photoData[`${item}Photo`] = tempFilePath;
-        
-        that.setData(photoData);
-      },
-      fail: (err) => {
-        console.error('拍照失败:', err);
-        wx.showToast({
-          title: '拍照失败',
-          icon: 'none'
-        });
+        const tempFilePaths = res.tempFilePaths;
+        const newPhotos = currentPhotos.concat(tempFilePaths);
+        items[itemIndex].photos = newPhotos.slice(0, 5); // 确保不超过5张
+        this.setData({ items });
       }
     });
   },
@@ -117,10 +88,13 @@ Page({
    * 预览图片
    */
   previewImage: function(e) {
-    const src = e.currentTarget.dataset.src;
+    const { itemIndex, photoIndex } = e.currentTarget.dataset;
+    const { items } = this.data;
+    const current = items[itemIndex].photos[photoIndex];
+    const urls = items[itemIndex].photos; // 预览所有照片
     wx.previewImage({
-      current: src,
-      urls: [src]
+      current: current,
+      urls: urls
     });
   },
   
@@ -128,51 +102,16 @@ Page({
    * 验证表单是否填写完整
    */
   validateForm: function() {
-    if (!this.data.scratch) {
-      wx.showToast({
-        title: '请选择SCRATCH状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
+    for (let i = 0; i < this.data.items.length; i++) {
+      if (!this.data.items[i].result) {
+        wx.showToast({
+          title: `请选择第${i + 1}项检查结果`,
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
     }
-    
-    if (!this.data.dent) {
-      wx.showToast({
-        title: '请选择DENT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.stain) {
-      wx.showToast({
-        title: '请选择STAIN状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.foreignMaterial) {
-      wx.showToast({
-        title: '请选择FOREIGN MATERIAL状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.appearanceDefect) {
-      wx.showToast({
-        title: '请选择APPEARANCE DEFECT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
     return true;
   },
 
@@ -197,17 +136,7 @@ Page({
     // 保存数据并跳转到下一页
     const data = {
       ...this.data.previousPageData, // 包含上一页的数据
-      scratch: this.data.scratch,
-      dent: this.data.dent,
-      stain: this.data.stain,
-      foreignMaterial: this.data.foreignMaterial,
-      appearanceDefect: this.data.appearanceDefect,
-      // 添加照片数据
-      scratchPhoto: this.data.scratchPhoto,
-      dentPhoto: this.data.dentPhoto,
-      stainPhoto: this.data.stainPhoto,
-      foreignMaterialPhoto: this.data.foreignMaterialPhoto,
-      appearanceDefectPhoto: this.data.appearanceDefectPhoto
+      appearanceFirstItems: this.data.items
     };
     
     wx.navigateTo({

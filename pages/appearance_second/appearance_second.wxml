@@ -11,81 +11,52 @@
   
   <!-- 页面标题 -->
   <view class="page-title">
-    <text class="title-text">APPEARANCE CHECK 2/2</text>
+    <text class="title-text">QUA ONLINE PATROL</text>
+    <text class="sub-title-text">TANK SHELL APPEARANCE</text>
   </view>
   
   <!-- 表单区域 -->
   <view class="form-section">
-    <!-- 外观检查项目 -->
-    <view class="form-item">
-      <text class="form-label">CRACK</text>
-      <radio-group class="radio-group" bindchange="onCrackChange">
-        <view class="radio-item">
-          <radio value="ok" color="#0d3371" />
-          <text class="radio-text">OK</text>
+    <block wx:for="{{items}}" wx:for-item="item" wx:for-index="itemIndex" wx:key="id">
+      <view class="inspection-item">
+        <!-- 检查内容区域 -->
+        <view class="inspection-content-box">
+          <text class="item-number">{{item.id}})</text>
+          <text class="item-description">{{item.description}}</text>
         </view>
-        <view class="radio-item">
-          <radio value="ng" color="#0d3371" />
-          <text class="radio-text">NG</text>
+
+        <!-- 结果和拍照区域 -->
+        <view class="result-photo-row">
+          <view class="result-section">
+            <text class="result-label">RESULT</text>
+            <radio-group class="radio-group" data-item-index="{{itemIndex}}" bindchange="onResultChange">
+              <label class="radio-label">
+                <radio value="OK" checked="{{item.result === 'OK'}}" color="#0d3371" />
+                <text>OK</text>
+              </label>
+              <label class="radio-label">
+                <radio value="NG" checked="{{item.result === 'NG'}}" color="#0d3371" />
+                <text>NG</text>
+              </label>
+            </radio-group>
+          </view>
+
+          <view class="picture-section">
+            <text class="picture-label">PICTURE</text>
+            <view class="photo-group-container">
+              <view class="photo-button" bindtap="takePhoto" data-item-index="{{itemIndex}}">
+                <text class="photo-text">点击拍摄</text>
+              </view>
+              <block wx:for="{{item.photos}}" wx:for-item="photo" wx:for-index="photoIndex" wx:key="*this">
+                <view wx:if="{{photo}}" class="photo-preview-container">
+                  <image class="item-photo" src="{{photo}}" mode="aspectFill" bindtap="previewImage" data-item-index="{{itemIndex}}" data-photo-index="{{photoIndex}}"></image>
+                </view>
+              </block>
+            </view>
+          </view>
         </view>
-      </radio-group>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">FLASH</text>
-      <radio-group class="radio-group" bindchange="onFlashChange">
-        <view class="radio-item">
-          <radio value="ok" color="#0d3371" />
-          <text class="radio-text">OK</text>
-        </view>
-        <view class="radio-item">
-          <radio value="ng" color="#0d3371" />
-          <text class="radio-text">NG</text>
-        </view>
-      </radio-group>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">SINK MARK</text>
-      <radio-group class="radio-group" bindchange="onSinkMarkChange">
-        <view class="radio-item">
-          <radio value="ok" color="#0d3371" />
-          <text class="radio-text">OK</text>
-        </view>
-        <view class="radio-item">
-          <radio value="ng" color="#0d3371" />
-          <text class="radio-text">NG</text>
-        </view>
-      </radio-group>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">WELD LINE</text>
-      <radio-group class="radio-group" bindchange="onWeldLineChange">
-        <view class="radio-item">
-          <radio value="ok" color="#0d3371" />
-          <text class="radio-text">OK</text>
-        </view>
-        <view class="radio-item">
-          <radio value="ng" color="#0d3371" />
-          <text class="radio-text">NG</text>
-        </view>
-      </radio-group>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">DEFORMATION</text>
-      <radio-group class="radio-group" bindchange="onDeformationChange">
-        <view class="radio-item">
-          <radio value="ok" color="#0d3371" />
-          <text class="radio-text">OK</text>
-        </view>
-        <view class="radio-item">
-          <radio value="ng" color="#0d3371" />
-          <text class="radio-text">NG</text>
-        </view>
-      </radio-group>
-    </view>
+      </view>
+    </block>
   </view>
   
   <!-- 底部按钮 -->

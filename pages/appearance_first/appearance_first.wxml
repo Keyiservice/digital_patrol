@@ -11,116 +11,52 @@
   
   <!-- 页面标题 -->
   <view class="page-title">
-    <text class="title-text">APPEARANCE CHECK 1/2</text>
+    <text class="title-text">QUA ONLINE PATROL</text>
+    <text class="sub-title-text">TANK SHELL APPEARANCE</text>
   </view>
   
   <!-- 表单区域 -->
   <view class="form-section">
-    <!-- 外观检查项目 -->
-    <view class="form-item">
-      <text class="form-label">SCRATCH</text>
-      <view class="form-content">
-        <radio-group class="radio-group" bindchange="onScratchChange">
-          <view class="radio-item">
-            <radio value="ok" color="#0d3371" />
-            <text class="radio-text">OK</text>
-          </view>
-          <view class="radio-item">
-            <radio value="ng" color="#0d3371" />
-            <text class="radio-text">NG</text>
-          </view>
-        </radio-group>
-        <view class="photo-button" bindtap="takePhoto" data-item="scratch">
-          <view class="camera-icon">📷</view>
-          <text class="photo-text">拍照</text>
+    <block wx:for="{{items}}" wx:for-item="item" wx:for-index="itemIndex" wx:key="id">
+      <view class="inspection-item">
+        <!-- 检查内容区域 -->
+        <view class="inspection-content-box">
+          <text class="item-number">{{item.id}})</text>
+          <text class="item-description">{{item.description}}</text>
         </view>
-        <image wx:if="{{scratchPhoto}}" class="item-photo" src="{{scratchPhoto}}" mode="aspectFit" bindtap="previewImage" data-src="{{scratchPhoto}}"></image>
-      </view>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">DENT</text>
-      <view class="form-content">
-        <radio-group class="radio-group" bindchange="onDentChange">
-          <view class="radio-item">
-            <radio value="ok" color="#0d3371" />
-            <text class="radio-text">OK</text>
+
+        <!-- 结果和拍照区域 -->
+        <view class="result-photo-row">
+          <view class="result-section">
+            <text class="result-label">RESULT</text>
+            <radio-group class="radio-group" data-item-index="{{itemIndex}}" bindchange="onResultChange">
+              <label class="radio-label">
+                <radio value="OK" checked="{{item.result === 'OK'}}" color="#0d3371" />
+                <text>OK</text>
+              </label>
+              <label class="radio-label">
+                <radio value="NG" checked="{{item.result === 'NG'}}" color="#0d3371" />
+                <text>NG</text>
+              </label>
+            </radio-group>
           </view>
-          <view class="radio-item">
-            <radio value="ng" color="#0d3371" />
-            <text class="radio-text">NG</text>
+
+          <view class="picture-section">
+            <text class="picture-label">PICTURE</text>
+            <view class="photo-group-container">
+              <view class="photo-button" bindtap="takePhoto" data-item-index="{{itemIndex}}">
+                <text class="photo-text">点击拍摄</text>
+              </view>
+              <block wx:for="{{item.photos}}" wx:for-item="photo" wx:for-index="photoIndex" wx:key="*this">
+                <view wx:if="{{photo}}" class="photo-preview-container">
+                  <image class="item-photo" src="{{photo}}" mode="aspectFill" bindtap="previewImage" data-item-index="{{itemIndex}}" data-photo-index="{{photoIndex}}"></image>
+                </view>
+              </block>
+            </view>
           </view>
-        </radio-group>
-        <view class="photo-button" bindtap="takePhoto" data-item="dent">
-          <view class="camera-icon">📷</view>
-          <text class="photo-text">拍照</text>
         </view>
-        <image wx:if="{{dentPhoto}}" class="item-photo" src="{{dentPhoto}}" mode="aspectFit" bindtap="previewImage" data-src="{{dentPhoto}}"></image>
       </view>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">STAIN</text>
-      <view class="form-content">
-        <radio-group class="radio-group" bindchange="onStainChange">
-          <view class="radio-item">
-            <radio value="ok" color="#0d3371" />
-            <text class="radio-text">OK</text>
-          </view>
-          <view class="radio-item">
-            <radio value="ng" color="#0d3371" />
-            <text class="radio-text">NG</text>
-          </view>
-        </radio-group>
-        <view class="photo-button" bindtap="takePhoto" data-item="stain">
-          <view class="camera-icon">📷</view>
-          <text class="photo-text">拍照</text>
-        </view>
-        <image wx:if="{{stainPhoto}}" class="item-photo" src="{{stainPhoto}}" mode="aspectFit" bindtap="previewImage" data-src="{{stainPhoto}}"></image>
-      </view>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">FOREIGN MATERIAL</text>
-      <view class="form-content">
-        <radio-group class="radio-group" bindchange="onForeignMaterialChange">
-          <view class="radio-item">
-            <radio value="ok" color="#0d3371" />
-            <text class="radio-text">OK</text>
-          </view>
-          <view class="radio-item">
-            <radio value="ng" color="#0d3371" />
-            <text class="radio-text">NG</text>
-          </view>
-        </radio-group>
-        <view class="photo-button" bindtap="takePhoto" data-item="foreignMaterial">
-          <view class="camera-icon">📷</view>
-          <text class="photo-text">拍照</text>
-        </view>
-        <image wx:if="{{foreignMaterialPhoto}}" class="item-photo" src="{{foreignMaterialPhoto}}" mode="aspectFit" bindtap="previewImage" data-src="{{foreignMaterialPhoto}}"></image>
-      </view>
-    </view>
-    
-    <view class="form-item">
-      <text class="form-label">APPEARANCE DEFECT</text>
-      <view class="form-content">
-        <radio-group class="radio-group" bindchange="onAppearanceDefectChange">
-          <view class="radio-item">
-            <radio value="ok" color="#0d3371" />
-            <text class="radio-text">OK</text>
-          </view>
-          <view class="radio-item">
-            <radio value="ng" color="#0d3371" />
-            <text class="radio-text">NG</text>
-          </view>
-        </radio-group>
-        <view class="photo-button" bindtap="takePhoto" data-item="appearanceDefect">
-          <view class="camera-icon">📷</view>
-          <text class="photo-text">拍照</text>
-        </view>
-        <image wx:if="{{appearanceDefectPhoto}}" class="item-photo" src="{{appearanceDefectPhoto}}" mode="aspectFit" bindtap="previewImage" data-src="{{appearanceDefectPhoto}}"></image>
-      </view>
-    </view>
+    </block>
   </view>
   
   <!-- 底部按钮 -->

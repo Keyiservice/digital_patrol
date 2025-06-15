@@ -4,7 +4,7 @@
   justify-content: center; /* 水平居中LOGO */
   padding: 0; /* 移除垂直内边距，实现纯粹居中 */
   width: 100%;
-  height: 150px; /* 增加头部高度，使其更显著 */
+  height: 250rpx; /* 再次增加头部高度，确保内容向下移动 */
   background-color: #0d3371; /* 深蓝色背景，参照INDEX.jpeg */
   box-sizing: border-box;
 }
@@ -12,7 +12,7 @@
 .logo-image {
   width: 100%; /* 增加宽度百分比以放大LOGO */
   height: auto; /* 保持宽高比 */
-  max-height: 150px; /* 增加最大高度以放大LOGO */
+  max-height: 250rpx; /* 调整最大高度以适应新的头部高度 */
   /* max-width: 100%; */ /* 可选：限制LOGO最大宽度，防止过宽 */
 }
 
