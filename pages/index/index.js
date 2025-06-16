@@ -37,7 +37,11 @@ Page({
     }
     
     wx.navigateTo({
-      url: '/pages/qua-patrol/qua-patrol'
+      url: '/pages/qua-patrol/qua-patrol',
+      success: function(res) {
+        // 传递初始化空数据
+        res.eventChannel.emit('acceptDataFromPreviousPage', { data: {} });
+      }
     });
   },
 

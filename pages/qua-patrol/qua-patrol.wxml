@@ -15,48 +15,62 @@
     <text class="sub-title-text">QUALITATIVE ONLINE PATROL</text>
   </view>
   
-  <!-- 表单区域 -->
+  <!-- 选择表单区域 -->
   <view class="form-section">
-    <block wx:for="{{items}}" wx:for-item="item" wx:for-index="itemIndex" wx:key="id">
-      <view class="inspection-item">
-        <!-- 检查内容区域 -->
-        <view class="inspection-content-box">
-          <text class="item-number">{{item.id}})</text>
-          <text class="item-description">{{item.description}}</text>
-        </view>
-
-        <!-- 结果和拍照区域 -->
-        <view class="result-photo-row">
-          <view class="result-section">
-            <text class="result-label">RESULT</text>
-            <radio-group class="radio-group" data-item-index="{{itemIndex}}" bindchange="onResultChange">
-              <label class="radio-label">
-                <radio value="OK" checked="{{item.result === 'OK'}}" color="#0d3371" />
-                <text>OK</text>
-              </label>
-              <label class="radio-label">
-                <radio value="NG" checked="{{item.result === 'NG'}}" color="#0d3371" />
-                <text>NG</text>
-              </label>
-            </radio-group>
-          </view>
-
-          <view class="picture-section">
-            <text class="picture-label">PICTURE</text>
-            <view class="photo-group-container">
-              <view class="photo-button" bindtap="takePhoto" data-item-index="{{itemIndex}}">
-                <text class="photo-text">点击拍摄</text>
-              </view>
-              <block wx:for="{{item.photos}}" wx:for-item="photo" wx:for-index="photoIndex" wx:key="*this">
-                <view wx:if="{{photo}}" class="photo-preview-container">
-                  <image class="item-photo" src="{{photo}}" mode="aspectFill" bindtap="previewImage" data-item-index="{{itemIndex}}" data-photo-index="{{photoIndex}}"></image>
-                </view>
-              </block>
-            </view>
-          </view>
-        </view>
+    <!-- 项目选择 -->
+    <view class="selection-item">
+      <text class="selection-title">项目选择:</text>
+      <view class="selection-options">
+        <radio-group class="radio-group" bindchange="onProjectChange">
+          <label class="radio-label">
+            <radio value="G68" checked="{{projectSelected === 'G68'}}" color="#0d3371" />
+            <text>G68</text>
+          </label>
+          <label class="radio-label">
+            <radio value="P71A" checked="{{projectSelected === 'P71A'}}" color="#0d3371" />
+            <text>P71A</text>
+          </label>
+        </radio-group>
       </view>
-    </block>
+    </view>
+
+    <!-- 流程选择 -->
+    <view class="selection-item">
+      <text class="selection-title">流程选择:</text>
+      <view class="selection-options">
+        <radio-group class="radio-group" bindchange="onProcessChange">
+          <label class="radio-label">
+            <radio value="BMM" checked="{{processSelected === 'BMM'}}" color="#0d3371" />
+            <text>BMM</text>
+          </label>
+          <label class="radio-label">
+            <radio value="FC" checked="{{processSelected === 'FC'}}" color="#0d3371" />
+            <text>FC</text>
+          </label>
+          <label class="radio-label">
+            <radio value="ASM" checked="{{processSelected === 'ASM'}}" color="#0d3371" />
+            <text>ASM</text>
+          </label>
+        </radio-group>
+      </view>
+    </view>
+
+    <!-- 班次选择 -->
+    <view class="selection-item">
+      <text class="selection-title">班次选择:</text>
+      <view class="selection-options">
+        <radio-group class="radio-group" bindchange="onShiftChange">
+          <label class="radio-label">
+            <radio value="day" checked="{{shiftSelected === 'day'}}" color="#0d3371" />
+            <text>白班</text>
+          </label>
+          <label class="radio-label">
+            <radio value="night" checked="{{shiftSelected === 'night'}}" color="#0d3371" />
+            <text>夜班</text>
+          </label>
+        </radio-group>
+      </view>
+    </view>
   </view>
   
   <!-- 底部按钮 -->

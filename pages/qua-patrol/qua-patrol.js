@@ -6,6 +6,9 @@ Page({
   data: {
     isLogin: false,
     userName: '',
+    projectSelected: '', // 选择的项目
+    processSelected: '', // 选择的流程
+    shiftSelected: '',   // 选择的班次
     items: [
       {
         id: 1,
@@ -28,13 +31,20 @@ Page({
     }
     
     // 获取上一页传递的参数
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on('acceptDataFromPreviousPage', (data) => {
-      console.log('接收到上一页数据:', data);
-      this.setData({
-        previousPageData: data.data
+    try {
+      const eventChannel = this.getOpenerEventChannel();
+      eventChannel.on('acceptDataFromPreviousPage', (data) => {
+        console.log('接收到上一页数据:', data);
+        this.setData({
+          previousPageData: data.data || {}
+        });
       });
-    });
+    } catch (error) {
+      console.error('获取上一页数据失败:', error);
+      this.setData({
+        previousPageData: {}
+      });
+    }
   },
   
   /**
@@ -44,6 +54,33 @@ Page({
     // 再次检查登录状态
     const app = getApp();
     app.checkLoginStatus();
+  },
+
+  /**
+   * 处理项目选择变化
+   */
+  onProjectChange: function(e) {
+    this.setData({
+      projectSelected: e.detail.value
+    });
+  },
+
+  /**
+   * 处理流程选择变化
+   */
+  onProcessChange: function(e) {
+    this.setData({
+      processSelected: e.detail.value
+    });
+  },
+
+  /**
+   * 处理班次选择变化
+   */
+  onShiftChange: function(e) {
+    this.setData({
+      shiftSelected: e.detail.value
+    });
   },
 
   /**
@@ -96,16 +133,33 @@ Page({
    * 验证表单是否填写完整
    */
   validateForm: function() {
-    for (let i = 0; i < this.data.items.length; i++) {
-      if (!this.data.items[i].result) {
-        wx.showToast({
-          title: `请选择第${i + 1}项检查结果`,
-          icon: 'none',
-          duration: 2000
-        });
-        return false;
-      }
+    if (!this.data.projectSelected) {
+      wx.showToast({
+        title: '请选择项目',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
     }
+    
+    if (!this.data.processSelected) {
+      wx.showToast({
+        title: '请选择流程',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
+    }
+    
+    if (!this.data.shiftSelected) {
+      wx.showToast({
+        title: '请选择班次',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
+    }
+    
     return true;
   },
 
@@ -127,14 +181,38 @@ Page({
       return;
     }
     
-    // 保存数据并跳转到下一页
+    // 保存选择数据
     const data = {
       ...this.data.previousPageData, // 包含上一页的数据
-      quaPatrolItems: this.data.items
+      projectSelected: this.data.projectSelected,
+      processSelected: this.data.processSelected,
+      shiftSelected: this.data.shiftSelected
     };
     
+    // 根据选择的流程决定跳转路径
+    let nextPage = '';
+    
+    switch (this.data.processSelected) {
+      case 'BMM':
+        nextPage = '/pages/appearance_first/appearance_first';
+        break;
+      case 'FC':
+        nextPage = '/pages/fc/fc';
+        break;
+      case 'ASM':
+        nextPage = '/pages/asm/asm';
+        break;
+      default:
+        wx.showToast({
+          title: '请选择有效的流程',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+    }
+    
     wx.navigateTo({
-      url: '/pages/summary/summary',
+      url: nextPage,
       success: function(res) {
         // 传递数据给下一页
         res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });

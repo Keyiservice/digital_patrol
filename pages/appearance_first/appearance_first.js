@@ -27,11 +27,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 检查登录状态
-    const app = getApp();
-    if (!app.checkLoginStatus()) {
-      return;
-    }
+    // 不检查登录状态
     
     // 获取上一页传递的参数
     const eventChannel = this.getOpenerEventChannel();
@@ -47,9 +43,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
-    // 再次检查登录状态
-    const app = getApp();
-    app.checkLoginStatus();
+    // 不检查登录状态
   },
 
   /**

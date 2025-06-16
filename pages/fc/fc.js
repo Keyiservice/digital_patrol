@@ -128,14 +128,15 @@ Page({
       return;
     }
     
-    // 合并数据并跳转到下一页
+    // 合并数据并跳转到下一页 (暂时用ASM作为FC第二页)
     const combinedData = {
       ...this.data.previousPageData,
       solderDefect: this.data.solderDefect,
       missingComponent: this.data.missingComponent,
       wrongComponent: this.data.wrongComponent,
       damagedComponent: this.data.damagedComponent,
-      misalignment: this.data.misalignment
+      misalignment: this.data.misalignment,
+      fcPageOne: true // 标记已经过了FC第一页
     };
     
     wx.navigateTo({

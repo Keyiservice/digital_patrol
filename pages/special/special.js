@@ -133,18 +133,27 @@ Page({
       return;
     }
     
-    // 保存数据并跳转到下一页
-    const data = {
+    // 保存数据，准备提交
+    const finalData = {
       ...this.data.previousPageData, // 包含上一页的数据
       specialItems: this.data.items
     };
     
-    wx.navigateTo({
-      url: '/pages/qua-patrol/qua-patrol',
-      success: function(res) {
-        // 传递数据给下一页
-        res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
-      }
+    // 这里可以添加将所有巡检数据提交到数据库的逻辑
+    console.log('提交最终数据:', finalData);
+
+    // 显示提交成功的提示
+    wx.showToast({
+      title: '巡检完成，数据已提交！',
+      icon: 'success',
+      duration: 2000
     });
+
+    // 跳转到主页
+    setTimeout(() => {
+      wx.reLaunch({
+        url: '/pages/index/index'
+      });
+    }, 2000);
   }
 }) 

@@ -91,6 +91,6 @@
   <!-- 底部按钮 -->
   <view class="bottom-section">
     <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
-    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
+    <button class="nav-btn next-btn" bindtap="onNext">{{(processType === 'FC' && currentStep === 4) || (processType === 'ASM' && currentStep === 4) ? 'SUBMIT' : 'NEXT'}}</button>
   </view>
 </view> 

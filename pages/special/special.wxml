@@ -62,6 +62,6 @@
   <!-- 底部按钮 -->
   <view class="bottom-section">
     <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
-    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
+    <button class="nav-btn next-btn" bindtap="onNext">SUBMIT</button>
   </view>
 </view> 
