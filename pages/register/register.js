@@ -109,32 +109,37 @@ Page({
     if (!this.validateForm()) {
       return;
     }
-
-    // 显示加载中
-    wx.showLoading({
-      title: '注册中...'
+    const { name, plant, password } = this.data.formData;
+    wx.showLoading({ title: '注册中...' });
+    // 先检查用户名是否已存在
+    wx.cloud.database().collection('users').where({ name }).get({
+      success: res => {
+        if (res.data && res.data.length > 0) {
+          wx.hideLoading();
+          wx.showToast({ title: '该用户已注册', icon: 'none' });
+        } else {
+          // 写入新用户
+          wx.cloud.database().collection('users').add({
+            data: { name, plant, password },
+            success: () => {
+              wx.hideLoading();
+              wx.showToast({ title: '注册成功', icon: 'success', duration: 2000 });
+              setTimeout(() => {
+                wx.redirectTo({ url: '/pages/login/login' });
+              }, 2000);
+            },
+            fail: () => {
+              wx.hideLoading();
+              wx.showToast({ title: '注册失败', icon: 'none' });
+            }
+          });
+        }
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '网络错误', icon: 'none' });
+      }
     });
-
-    // 模拟API请求
-    setTimeout(() => {
-      wx.hideLoading();
-      
-      // 这里应该调用实际的注册API
-      console.log('注册数据:', this.data.formData);
-      
-      wx.showToast({
-        title: '注册成功',
-        icon: 'success',
-        duration: 2000
-      });
-
-      // 注册成功后跳转到登录页面
-      setTimeout(() => {
-        wx.redirectTo({
-          url: '/pages/login/login'
-        });
-      }, 2000);
-    }, 1500);
   },
 
   // 跳转到登录页面

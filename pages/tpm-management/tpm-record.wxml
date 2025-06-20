@@ -1,0 +1,68 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">TPM EVIDENCE</text>
+    <text class="sub-title-text">TPM RECORD</text>
+  </view>
+
+  <!-- 表单内容 -->
+  <scroll-view scroll-y="true" style="height: calc(100vh - 420rpx);">
+    <view class="form-section" style="padding-bottom: 300rpx;">
+      <!-- 项目/设备从属选择 -->
+      <view class="form-item">
+        <text class="form-label">项目/设备从属</text>
+        <picker mode="selector" range="{{projectOptions}}" value="{{projectIndex}}" bindchange="onProjectChange" disabled="{{isViewMode}}">
+          <view class="picker-content">{{projectOptions[projectIndex] || '请选择项目/设备'}}</view>
+        </picker>
+      </view>
+      <!-- 设备名称二级联动 -->
+      <view class="form-item">
+        <text class="form-label">设备名称</text>
+        <picker mode="selector" range="{{deviceOptions}}" value="{{deviceIndex}}" bindchange="onDeviceChange" disabled="{{isViewMode}}">
+          <view class="picker-content">{{deviceOptions[deviceIndex] || '请选择设备'}}</view>
+        </picker>
+      </view>
+      <!-- 日期 -->
+      <view class="form-item">
+        <text class="form-label">日期</text>
+        <view class="picker-box">
+          <picker mode="date" value="{{currentDate}}" bindchange="onDateChange" disabled="{{isViewMode}}">
+            <view class="picker-content">{{currentDate}}</view>
+          </picker>
+        </view>
+      </view>
+      <!-- 时间 -->
+      <view class="form-item">
+        <text class="form-label">时间</text>
+        <view class="picker-box">
+          <picker mode="time" value="{{currentTime}}" bindchange="onTimeChange" disabled="{{isViewMode}}">
+            <view class="picker-content">{{currentTime}}</view>
+          </picker>
+        </view>
+      </view>
+      <!-- 保养人 -->
+      <view class="form-item">
+        <text class="form-label">保养人</text>
+        <view class="picker-content">{{maintainer}}</view>
+      </view>
+      <!-- 多图上传 -->
+      <view class="form-item">
+        <text class="form-label">照片（最多50张）</text>
+        <view class="photo-list">
+          <block wx:for="{{photos}}" wx:key="index">
+            <image class="photo-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-index="{{index}}"></image>
+          </block>
+          <view wx:if="{{!isViewMode && photos.length < 50}}" class="photo-add" bindtap="onAddPhoto">
+            <text class="add-icon">+</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn exit-btn" bindtap="onExit">EXIT</button>
+    <button class="nav-btn save-btn" bindtap="onSave" disabled="{{isViewMode}}">SAVING</button>
+  </view>
+</view>

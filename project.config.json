@@ -30,12 +30,17 @@
     "swc": false,
     "disableSWC": true,
     "disableUseStrict": false,
-    "useCompilerPlugins": false
+    "useCompilerPlugins": false,
+    "cloudfunctionRoot": "cloudfunctions/"
   },
   "condition": {},
   "editorSetting": {
     "tabIndent": "auto",
     "tabSize": 2
   },
-  "simulatorPluginLibVersion": {}
+  "simulatorPluginLibVersion": {},
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "srcMiniprogramRoot": "miniprogram/",
+  "cloud": true
 }

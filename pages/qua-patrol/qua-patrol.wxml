@@ -13,12 +13,19 @@
   <view class="page-title">
     <text class="title-text">QUA ONLINE PATROL</text>
     <text class="sub-title-text">QUALITATIVE ONLINE PATROL</text>
+    <view class="datetime-box">
+      <text class="datetime-text">{{currentDate}} {{currentTime}}</text>
+    </view>
   </view>
   
   <!-- 选择表单区域 -->
-  <view class="form-section">
+  <view class="form-section beautiful-form">
+    <!-- 日期时间内容 -->
+    <view class="datetime-content beautiful-card">
+      <text class="datetime-content-text">{{items[0].description}}</text>
+    </view>
     <!-- 项目选择 -->
-    <view class="selection-item">
+    <view class="selection-item beautiful-card">
       <text class="selection-title">项目选择:</text>
       <view class="selection-options">
         <radio-group class="radio-group" bindchange="onProjectChange">
@@ -35,7 +42,7 @@
     </view>
 
     <!-- 流程选择 -->
-    <view class="selection-item">
+    <view class="selection-item beautiful-card">
       <text class="selection-title">流程选择:</text>
       <view class="selection-options">
         <radio-group class="radio-group" bindchange="onProcessChange">
@@ -56,7 +63,7 @@
     </view>
 
     <!-- 班次选择 -->
-    <view class="selection-item">
+    <view class="selection-item beautiful-card">
       <text class="selection-title">班次选择:</text>
       <view class="selection-options">
         <radio-group class="radio-group" bindchange="onShiftChange">

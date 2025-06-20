@@ -1,0 +1,48 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">TPM EVIDENCE</text>
+    <text class="sub-title-text">TPM LIST</text>
+  </view>
+  <!-- 记录列表 -->
+  <scroll-view scroll-y="true" style="height: calc(100vh - 420rpx);">
+    <view class="list-section" style="padding-bottom: 140rpx;">
+      <view class="empty-list" wx:if="{{records.length === 0}}">
+        <text class="empty-text">No records found</text>
+      </view>
+      <view class="record-list" wx:else>
+        <view class="record-item" wx:for="{{records}}" wx:key="_id" bindtap="onViewRecord" data-id="{{item._id}}">
+          <view class="record-header">
+            <text class="record-title">{{item.project}} - {{item.device}}</text>
+            <text class="record-date">{{item.date}} {{item.time}}</text>
+          </view>
+          <view class="record-body">
+            <view class="record-detail">
+              <text class="detail-label">Maintainer:</text>
+              <text class="detail-value">{{item.maintainer}}</text>
+            </view>
+            <view class="record-detail">
+              <text class="detail-label">Photos:</text>
+              <view class="photo-list">
+                <image wx:for="{{item.photos}}" wx:key="index" class="photo-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-photos="{{item.photos}}" data-index="{{index}}"></image>
+              </view>
+            </view>
+          </view>
+          <view class="record-footer">
+            <view class="record-icons">
+              <view class="icon-box" catchtap="onDeleteRecord" data-id="{{item._id}}">
+                <text class="icon-text">Delete</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn exit-btn" bindtap="onBack">BACK</button>
+    <button class="nav-btn add-btn" bindtap="onAddNew">NEW ENTRY</button>
+  </view>
+</view>

@@ -1,0 +1,251 @@
+/* 全局页面样式设置 */
+page {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  background-color: #f5f5f5;
+}
+
+/* 主容器样式 */
+.container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0rpx 20rpx;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+}
+
+/* 头部logo区域 */
+.header {
+  width: 90%;
+  height: 0rpx;
+  background-color: #F5F5F5;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0rpx;
+}
+
+/* Logo图片样式 */
+.logo {
+  width: 200rpx;
+  height: 60rpx;
+}
+
+/* 页面标题区域 */
+.page-title {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+/* 主标题文本样式 */
+.title-text {
+  display: block;
+  font-size: 55rpx;
+  font-weight: bold;
+  color: #0d3371;
+  letter-spacing: 2rpx;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0,0,0,0.1);
+  margin-bottom: 5rpx;
+  font-family: Arial, sans-serif;
+}
+
+/* 副标题文本样式 */
+.sub-title-text {
+  display: block;
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #0d3371;
+  letter-spacing: 1rpx;
+  font-family: Arial, sans-serif;
+  margin-bottom: 20rpx;
+}
+
+/* 列表区域样式 */
+.list-section {
+  flex: 1;
+  margin-bottom: 120rpx;
+  width: 100%;
+}
+
+/* 空列表提示样式 */
+.empty-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 15rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  padding: 100rpx 0;
+  margin-top: 40rpx;
+}
+
+/* 空列表文本样式 */
+.empty-text {
+  color: #999;
+  font-size: 32rpx;
+  letter-spacing: 1rpx;
+}
+
+/* 记录列表样式 */
+.record-list {
+  width: 100%;
+}
+
+/* 记录项样式 */
+.record-item {
+  background-color: #fff;
+  border-radius: 15rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  margin-bottom: 20rpx;
+  padding: 25rpx;
+  box-sizing: border-box;
+}
+
+/* 记录头部样式 */
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+  padding-bottom: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+/* 记录标题样式 */
+.record-title {
+  font-size: 32rpx;
+  color: #0d3371;
+  font-weight: bold;
+  letter-spacing: 1rpx;
+  max-width: 60%;
+}
+
+/* 记录日期样式 */
+.record-date {
+  font-size: 24rpx;
+  color: #666;
+  letter-spacing: 0.5rpx;
+}
+
+/* 记录内容区域样式 */
+.record-body {
+  margin-bottom: 15rpx;
+}
+
+/* 记录详情行样式 */
+.record-detail {
+  display: flex;
+  margin-bottom: 10rpx;
+  align-items: baseline;
+}
+
+/* 详情标签样式 */
+.detail-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 10rpx;
+  min-width: 120rpx;
+}
+
+/* 详情值样式 */
+.detail-value {
+  font-size: 28rpx;
+  color: #555;
+  flex: 1;
+  word-break: break-word;
+}
+
+/* 记录底部样式 */
+.record-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 15rpx;
+}
+
+/* 记录状态样式 */
+.record-status {
+  font-size: 26rpx;
+  font-weight: bold;
+  padding: 6rpx 20rpx;
+  border-radius: 30rpx;
+  background-color: rgba(0,0,0,0.05);
+}
+
+/* 图标区域样式 */
+.record-icons {
+  display: flex;
+  gap: 15rpx;
+}
+
+/* 图标盒子样式 */
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50rpx;
+  border-radius: 8rpx;
+  padding: 0 30rpx;
+  min-width: 90rpx;
+  background-color: #f5f5f5;
+  white-space: nowrap;
+}
+
+/* 图标文本样式 */
+.icon-text {
+  font-size: 26rpx;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* 底部按钮区域样式 */
+.bottom-section {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 100rpx;
+  background-color: #f5f5f5;
+  z-index: 100;
+  align-items: center;
+}
+
+/* 导航按钮样式 */
+.nav-btn {
+  width: 45%;
+  height: 80rpx;
+  font-size: 32rpx;
+  border-radius: 15rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: none;
+  letter-spacing: 3rpx;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  text-shadow: 1rpx 1rpx 2rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 返回按钮样式 */
+.exit-btn {
+  background-color: #777;
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 添加按钮样式 */
+.add-btn {
+  background-color: #0d3371;
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+} 

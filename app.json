@@ -1,4 +1,5 @@
 {
+  "cloud":true,
   "pages": [
     "pages/index/index",
     "pages/login/login",
@@ -10,7 +11,11 @@
     "pages/thickness/thickness",
     "pages/special/special",
     "pages/fc/fc",
-    "pages/asm/asm"
+    "pages/asm/asm",
+    "pages/np-management/np-entry",
+    "pages/np-management/np-list",
+    "pages/tpm-management/tpm-record",
+    "pages/tpm-management/tpm-list"
   ],
   "window": {
     "navigationBarTextStyle": "black",

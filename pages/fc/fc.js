@@ -4,109 +4,99 @@ Page({
    * 页面的初始数据
    */
   data: {
-    solderDefect: '',
-    missingComponent: '',
-    wrongComponent: '',
-    damagedComponent: '',
-    misalignment: '',
-    previousPageData: null
+    items: [
+      { id: 1, description: 'SOLDER DEFECT', result: '', photos: [] },
+      { id: 2, description: 'MISSING COMPONENT', result: '', photos: [] },
+      { id: 3, description: 'WRONG COMPONENT', result: '', photos: [] }
+    ],
+    previousPageData: null, // 存储上一页传递的数据
+    currentDate: '', // 当前日期
+    currentTime: ''  // 当前时间
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 获取上一页传递的数据
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on('acceptDataFromPreviousPage', (data) => {
+    let previousPageData = {};
+    try {
+      const eventChannel = this.getOpenerEventChannel && this.getOpenerEventChannel();
+      if (eventChannel && typeof eventChannel.on === 'function') {
+        eventChannel.on('acceptDataFromPreviousPage', (data) => {
+          previousPageData = data.data || {};
+          this.setData({
+            previousPageData
+          });
+        });
+      } else {
+        this.setData({
+          previousPageData
+        });
+      }
+    } catch (e) {
       this.setData({
-        previousPageData: data.data
+        previousPageData
       });
-    });
+    }
   },
 
   /**
    * 处理单选按钮变化
    */
-  onSolderDefectChange: function(e) {
-    this.setData({
-      solderDefect: e.detail.value
+  onResultChange(e) {
+    const { itemIndex } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    const { items } = this.data;
+    items[itemIndex].result = value;
+    this.setData({ items });
+  },
+
+  /**
+   * 拍照功能
+   */
+  takePhoto: function(e) {
+    const { itemIndex } = e.currentTarget.dataset;
+    const { items } = this.data;
+    const currentPhotos = items[itemIndex].photos || [];
+
+    wx.chooseImage({
+      count: 5 - currentPhotos.length, // 最多5张
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePaths = res.tempFilePaths;
+        const newPhotos = currentPhotos.concat(tempFilePaths);
+        items[itemIndex].photos = newPhotos.slice(0, 5);
+        this.setData({ items });
+      }
     });
   },
 
-  onMissingComponentChange: function(e) {
-    this.setData({
-      missingComponent: e.detail.value
-    });
+  /**
+   * 预览图片
+   */
+  previewImage: function(e) {
+    const { itemIndex, photoIndex } = e.currentTarget.dataset;
+    const { items } = this.data;
+    const current = items[itemIndex].photos[photoIndex];
+    const urls = items[itemIndex].photos;
+    wx.previewImage({ current, urls });
   },
 
-  onWrongComponentChange: function(e) {
-    this.setData({
-      wrongComponent: e.detail.value
-    });
-  },
-
-  onDamagedComponentChange: function(e) {
-    this.setData({
-      damagedComponent: e.detail.value
-    });
-  },
-  
-  onMisalignmentChange: function(e) {
-    this.setData({
-      misalignment: e.detail.value
-    });
-  },
-  
   /**
    * 验证表单是否填写完整
    */
   validateForm: function() {
-    if (!this.data.solderDefect) {
-      wx.showToast({
-        title: '请选择SOLDER DEFECT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
+    for (let i = 0; i < this.data.items.length; i++) {
+      if (!this.data.items[i].result) {
+        wx.showToast({
+          title: `请选择第${i + 1}项检查结果`,
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
     }
-    
-    if (!this.data.missingComponent) {
-      wx.showToast({
-        title: '请选择MISSING COMPONENT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.wrongComponent) {
-      wx.showToast({
-        title: '请选择WRONG COMPONENT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.damagedComponent) {
-      wx.showToast({
-        title: '请选择DAMAGED COMPONENT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
-    if (!this.data.misalignment) {
-      wx.showToast({
-        title: '请选择MISALIGNMENT状态',
-        icon: 'none',
-        duration: 2000
-      });
-      return false;
-    }
-    
     return true;
   },
 
@@ -114,37 +104,25 @@ Page({
    * 处理上一页按钮点击
    */
   onPrevious: function() {
-    wx.navigateBack({
-      delta: 1
-    });
+    wx.navigateBack({ delta: 1 });
   },
 
   /**
    * 处理下一页按钮点击
    */
   onNext: function() {
-    // 验证表单
-    if (!this.validateForm()) {
-      return;
-    }
-    
-    // 合并数据并跳转到下一页 (暂时用ASM作为FC第二页)
-    const combinedData = {
+    if (!this.validateForm()) return;
+
+    const data = {
       ...this.data.previousPageData,
-      solderDefect: this.data.solderDefect,
-      missingComponent: this.data.missingComponent,
-      wrongComponent: this.data.wrongComponent,
-      damagedComponent: this.data.damagedComponent,
-      misalignment: this.data.misalignment,
-      fcPageOne: true // 标记已经过了FC第一页
+      fcItems: this.data.items
     };
-    
+
     wx.navigateTo({
       url: '/pages/asm/asm',
       success: function(res) {
-        // 传递数据给下一页
-        res.eventChannel.emit('acceptDataFromPreviousPage', { data: combinedData });
+        res.eventChannel.emit('acceptDataFromPreviousPage', { data });
       }
     });
   }
-}) 
+}); 

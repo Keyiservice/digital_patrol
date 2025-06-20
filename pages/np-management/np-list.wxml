@@ -1,0 +1,59 @@
+<!--pages/np-management/np-list.wxml-->
+<custom-header />
+<view class="container">
+  <!-- 用户信息区域 -->
+  <user-info />
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
+  </view>
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">NP MANAGEMENT</text>
+    <text class="sub-title-text">NON-CONFORMING PRODUCT LIST</text>
+  </view>
+  <!-- 记录列表（加scroll-view） -->
+  <scroll-view scroll-y="true" style="height: calc(100vh - 420rpx);">
+    <view class="list-section" style="padding-bottom: 140rpx;">
+      <!-- 空记录提示 -->
+      <view class="empty-list" wx:if="{{records.length === 0}}">
+        <text class="empty-text">No records found</text>
+      </view>
+      <!-- 记录列表内容 -->
+      <view class="record-list" wx:else>
+        <view class="record-item" wx:for="{{records}}" wx:key="id" bindtap="onViewRecord" data-id="{{item.id || item._id}}">
+          <view class="record-header">
+            <text class="record-title">{{item.project}}</text>
+            <text class="record-date">{{item.date}} {{item.time}}</text>
+          </view>
+          <view class="record-body">
+            <view class="record-detail">
+              <text class="detail-label">Reason:</text>
+              <text class="detail-value">{{item.reason}}</text>
+            </view>
+            <view class="record-detail">
+              <text class="detail-label">Treatment:</text>
+              <text class="detail-value">{{item.treatment}}</text>
+            </view>
+          </view>
+          <view class="record-footer">
+            <text class="record-status" style="color: {{item.status === 'Closed' ? '#27ae60' : '#e74c3c'}}">{{item.status || 'Open'}}</text>
+            <view class="record-icons">
+              <view class="icon-box" catchtap="onEditRecord" data-id="{{item.id || item._id}}">
+                <text class="icon-text">Edit</text>
+              </view>
+              <view class="icon-box" catchtap="onDeleteRecord" data-id="{{item.id || item._id}}">
+                <text class="icon-text">Delete</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn exit-btn" bindtap="onBack">BACK</button>
+    <button class="nav-btn add-btn" bindtap="onAddNew">NEW ENTRY</button>
+  </view>
+</view> 

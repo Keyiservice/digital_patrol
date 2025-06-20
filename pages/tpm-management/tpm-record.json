@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "TPM RECORD",
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header"
+  }
+}

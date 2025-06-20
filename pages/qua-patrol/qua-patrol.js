@@ -12,12 +12,14 @@ Page({
     items: [
       {
         id: 1,
-        description: '通用检查项: 请根据实际情况进行检查并选择结果。',
+        description: '', // 这里后续动态赋值
         result: '',
         photos: []
       }
     ],
-    previousPageData: null // 存储上一页传递的数据
+    previousPageData: null, // 存储上一页传递的数据
+    currentDate: '', // 当前日期
+    currentTime: ''  // 当前时间
   },
 
   /**
@@ -45,6 +47,7 @@ Page({
         previousPageData: {}
       });
     }
+    this.updateDateTime();
   },
   
   /**
@@ -54,6 +57,7 @@ Page({
     // 再次检查登录状态
     const app = getApp();
     app.checkLoginStatus();
+    this.updateDateTime();
   },
 
   /**
@@ -217,6 +221,21 @@ Page({
         // 传递数据给下一页
         res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
       }
+    });
+  },
+
+  /**
+   * 更新时间方法
+   */
+  updateDateTime: function() {
+    const now = new Date();
+    const pad = n => n < 10 ? '0' + n : n;
+    const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    this.setData({
+      currentDate: date,
+      currentTime: time,
+      'items[0].description': `日期：${date}  时间：${time}`
     });
   }
 })

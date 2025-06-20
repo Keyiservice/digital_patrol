@@ -53,15 +53,10 @@ Page({
       return;
     }
     
-    wx.showToast({
-      title: 'NP管理功能',
-      icon: 'success',
-      duration: 2000
+    // 导航到不合格品管理列表页面
+    wx.navigateTo({
+      url: '/pages/np-management/np-list'
     });
-    
-    // wx.navigateTo({
-    //   url: '/pages/np-management/np-management'
-    // });
   },
 
   // MAIN ONLINE PATROL 按钮点击事件
@@ -174,5 +169,9 @@ Page({
 
   onUnload() {
     // 页面卸载时执行
+  },
+
+  onGoTpmList() {
+    wx.navigateTo({ url: '/pages/tpm-management/tpm-list' });
   }
 });
