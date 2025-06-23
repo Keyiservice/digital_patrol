@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header"
+  },
+  "navigationBarTitleText": "质量验证"
+} 

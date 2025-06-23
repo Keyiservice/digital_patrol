@@ -1,0 +1,68 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">BREAKDOWN RECORD</text>
+    <text class="sub-title-text">生产报修</text>
+  </view>
+  
+  <!-- 表单区域 -->
+  <scroll-view scroll-y="true" enhanced="true" show-scrollbar="true" bounces="true" class="form-container">
+    <!-- 报修人员 -->
+    <view class="form-item">
+      <text class="form-label">报修人员:</text>
+      <input class="form-input disabled" disabled value="{{reporter}}" placeholder="自动获取登录人员" />
+    </view>
+    
+    <!-- 设备类型 -->
+    <view class="form-item">
+      <text class="form-label">设备类型:</text>
+      <picker class="form-picker" mode="selector" range="{{deviceTypeOptions}}" value="{{deviceTypeIndex}}" bindchange="onDeviceTypeChange">
+        <view class="picker-value">{{deviceTypeOptions[deviceTypeIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 项目名称 -->
+    <view class="form-item">
+      <text class="form-label">项目名称:</text>
+      <picker class="form-picker" mode="selector" range="{{projectOptions}}" value="{{projectIndex}}" bindchange="onProjectChange">
+        <view class="picker-value">{{projectOptions[projectIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 班次 -->
+    <view class="form-item">
+      <text class="form-label">班次:</text>
+      <picker class="form-picker" mode="selector" range="{{shiftOptions}}" value="{{shiftIndex}}" bindchange="onShiftChange">
+        <view class="picker-value">{{shiftOptions[shiftIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 报修日期 -->
+    <view class="form-item">
+      <text class="form-label">报修日期:</text>
+      <view class="form-input disabled">{{reportDate}}</view>
+    </view>
+    
+    <!-- 报修时间 -->
+    <view class="form-item">
+      <text class="form-label">报修时间:</text>
+      <view class="form-input disabled">{{reportTime}}</view>
+    </view>
+    
+    <!-- 故障现象描述 -->
+    <view class="form-item description-item">
+      <text class="form-label">故障现象描述:</text>
+      <textarea class="form-textarea" placeholder="请详细描述故障现象" value="{{faultDescription}}" bindinput="onFaultDescriptionInput"></textarea>
+    </view>
+    
+    <!-- 底部间距 -->
+    <view style="height: 120rpx;"></view>
+  </scroll-view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn cancel-btn" bindtap="onCancel">取消</button>
+    <button class="nav-btn save-btn" bindtap="onSave">提交报修</button>
+  </view>
+</view> 

@@ -86,15 +86,10 @@ Page({
       return;
     }
     
-    wx.showToast({
-      title: 'TPM功能',
-      icon: 'success',
-      duration: 2000
+    // 导航到故障管理列表页面
+    wx.navigateTo({
+      url: '/pages/breakdown-management/breakdown-list'
     });
-    
-    // wx.navigateTo({
-    //   url: '/pages/tpm/tpm'
-    // });
   },
   
   // 显示需要登录的提示

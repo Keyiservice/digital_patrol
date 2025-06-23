@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header"
+  },
+  "navigationBarTitleText": "故障记录列表"
+} 

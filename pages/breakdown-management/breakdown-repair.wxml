@@ -1,0 +1,126 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">BREAKDOWN RECORD</text>
+    <text class="sub-title-text">维修信息</text>
+  </view>
+
+  <scroll-view scroll-y="true" enhanced="true" show-scrollbar="true" bounces="true" class="form-container">
+    <!-- 故障信息展示 -->
+    <view class="info-section">
+      <view class="section-title">故障信息</view>
+      <view class="info-item">
+        <text class="info-label">报修人员:</text>
+        <text class="info-value">{{recordDetail.reporter || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">设备类型:</text>
+        <text class="info-value">{{recordDetail.deviceType || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">项目名称:</text>
+        <text class="info-value">{{recordDetail.project || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">报修时间:</text>
+        <text class="info-value">{{recordDetail.reportDate}} {{recordDetail.reportTime || '-'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">故障描述:</text>
+        <text class="info-value">{{recordDetail.faultDescription || '-'}}</text>
+      </view>
+    </view>
+
+    <!-- 维修信息表单 -->
+    <view class="form-section">
+      <view class="section-title">维修信息</view>
+      
+      <!-- 故障具体位置 -->
+      <view class="form-item">
+        <text class="form-label">故障位置:</text>
+        <input class="form-input" value="{{faultLocation}}" placeholder="请输入故障具体位置" bindinput="onFaultLocationInput" />
+      </view>
+      
+      <!-- 故障原因 -->
+      <view class="form-item description-item">
+        <text class="form-label">故障原因:</text>
+        <textarea class="form-textarea" placeholder="请详细描述故障原因" value="{{faultReason}}" bindinput="onFaultReasonInput"></textarea>
+      </view>
+      
+      <!-- 解决方案 -->
+      <view class="form-item description-item">
+        <text class="form-label">解决方案:</text>
+        <textarea class="form-textarea" placeholder="请详细描述解决方案" value="{{solution}}" bindinput="onSolutionInput"></textarea>
+      </view>
+      
+      <!-- 维修结果 -->
+      <view class="form-item">
+        <text class="form-label">维修结果:</text>
+        <picker class="form-picker" mode="selector" range="{{repairResultOptions}}" value="{{repairResultIndex}}" bindchange="onRepairResultChange">
+          <view class="picker-value">{{repairResultOptions[repairResultIndex]}}</view>
+        </picker>
+      </view>
+      
+      <!-- 维修结束时间 -->
+      <view class="form-item">
+        <text class="form-label">结束日期:</text>
+        <picker class="form-picker" mode="date" value="{{repairEndDate}}" bindchange="onRepairEndDateChange">
+          <view class="picker-value">{{repairEndDate}}</view>
+        </picker>
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">结束时间:</text>
+        <picker class="form-picker" mode="time" value="{{repairEndTime}}" bindchange="onRepairEndTimeChange">
+          <view class="picker-value">{{repairEndTime}}</view>
+        </picker>
+      </view>
+      
+      <!-- 是否影响防错 -->
+      <view class="form-item switch-item">
+        <text class="form-label">影响防错:</text>
+        <switch checked="{{affectErrorProof}}" bindchange="onAffectErrorProofChange" color="#0d3371" />
+      </view>
+      
+      <!-- 防错序列号及验证结果 -->
+      <view class="form-item" wx:if="{{affectErrorProof}}">
+        <text class="form-label">防错信息:</text>
+        <input class="form-input" value="{{errorProofInfo}}" placeholder="请输入防错序列号及验证结果" bindinput="onErrorProofInfoInput" />
+      </view>
+      
+      <!-- 是否使用备件 -->
+      <view class="form-item switch-item">
+        <text class="form-label">使用备件:</text>
+        <switch checked="{{useSpare}}" bindchange="onUseSpareChange" color="#0d3371" />
+      </view>
+      
+      <!-- 备件名称或料号 -->
+      <view class="form-item" wx:if="{{useSpare}}">
+        <text class="form-label">备件信息:</text>
+        <input class="form-input" value="{{spareParts}}" placeholder="请输入备件名称或料号" bindinput="onSparePartsInput" />
+      </view>
+      
+      <!-- 是否涉及安全 -->
+      <view class="form-item switch-item">
+        <text class="form-label">涉及安全:</text>
+        <switch checked="{{involveSafety}}" bindchange="onInvolveSafetyChange" color="#0d3371" />
+      </view>
+      
+      <!-- 维修人员 -->
+      <view class="form-item">
+        <text class="form-label">维修人员:</text>
+        <input class="form-input disabled" disabled value="{{repairer}}" placeholder="自动获取登录人员" />
+      </view>
+    </view>
+    
+    <!-- 底部间距 -->
+    <view style="height: 120rpx;"></view>
+  </scroll-view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn cancel-btn" bindtap="onBack">返回</button>
+    <button class="nav-btn save-btn" bindtap="onSave">提交</button>
+  </view>
+</view> 

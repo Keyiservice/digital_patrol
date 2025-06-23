@@ -1,0 +1,90 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">BREAKDOWN RECORD</text>
+    <text class="sub-title-text">记录列表</text>
+  </view>
+  
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+    <!-- 状态筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">状态:</text>
+      <picker class="filter-picker" mode="selector" range="{{statusOptions}}" value="{{statusIndex}}" bindchange="onStatusChange">
+        <view class="picker-value">
+          {{statusOptions[statusIndex]}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 日期筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">日期:</text>
+      <picker class="filter-picker" mode="date" value="{{dateRange}}" bindchange="onDateChange">
+        <view class="picker-value">
+          {{dateRange || '全部日期'}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 清除筛选按钮 -->
+    <view class="clear-filter" bindtap="clearFilter">
+      <text>清除筛选</text>
+    </view>
+  </view>
+  
+  <!-- 列表区域 -->
+  <scroll-view scroll-y="true" enhanced="true" show-scrollbar="true" bounces="true" class="list-container">
+    <view class="empty-tip" wx:if="{{filteredRecords.length === 0}}">
+      <text>没有符合条件的记录</text>
+    </view>
+    
+    <view class="record-list" wx:if="{{filteredRecords.length > 0}}">
+      <view class="record-item" wx:for="{{filteredRecords}}" wx:key="id" bindtap="onViewDetails" data-id="{{item._id || item.id}}" data-status="{{item.status}}">
+        <!-- 记录内容 -->
+        <view class="record-content">
+          <view class="record-header">
+            <view class="record-title">
+              <text>{{item.deviceType || '设备'}} - {{item.project || '项目'}}</text>
+            </view>
+            <view class="record-status status-{{item.status}}">
+              {{item.statusText}}
+            </view>
+          </view>
+          
+          <view class="record-detail">
+            <view class="detail-item">
+              <text class="detail-label">报修人:</text>
+              <text class="detail-value">{{item.reporter}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">报修日期:</text>
+              <text class="detail-value">{{item.reportDate}}</text>
+            </view>
+            <view class="detail-item description">
+              <text class="detail-label">故障描述:</text>
+              <text class="detail-value">{{item.faultDescription}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 删除按钮 -->
+        <view class="record-action" catchtap="onDeleteRecord" data-id="{{item._id || item.id}}">
+          <text class="delete-icon">×</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部间距 -->
+    <view style="height: 120rpx;"></view>
+  </scroll-view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn cancel-btn" bindtap="onBack">返回</button>
+    <button class="nav-btn save-btn" bindtap="onAddNew">新建报修</button>
+  </view>
+</view> 

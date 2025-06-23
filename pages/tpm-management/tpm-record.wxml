@@ -3,66 +3,79 @@
   <!-- 页面标题 -->
   <view class="page-title">
     <text class="title-text">TPM EVIDENCE</text>
-    <text class="sub-title-text">TPM RECORD</text>
+    <text class="sub-title-text">
+      <block wx:if="{{isViewMode}}">TPM DETAIL</block>
+      <block wx:elif="{{isEditMode}}">EDIT TPM RECORD</block>
+      <block wx:else>NEW TPM RECORD</block>
+    </text>
   </view>
-
-  <!-- 表单内容 -->
-  <scroll-view scroll-y="true" style="height: calc(100vh - 420rpx);">
-    <view class="form-section" style="padding-bottom: 300rpx;">
-      <!-- 项目/设备从属选择 -->
-      <view class="form-item">
-        <text class="form-label">项目/设备从属</text>
-        <picker mode="selector" range="{{projectOptions}}" value="{{projectIndex}}" bindchange="onProjectChange" disabled="{{isViewMode}}">
-          <view class="picker-content">{{projectOptions[projectIndex] || '请选择项目/设备'}}</view>
-        </picker>
-      </view>
-      <!-- 设备名称二级联动 -->
-      <view class="form-item">
-        <text class="form-label">设备名称</text>
-        <picker mode="selector" range="{{deviceOptions}}" value="{{deviceIndex}}" bindchange="onDeviceChange" disabled="{{isViewMode}}">
-          <view class="picker-content">{{deviceOptions[deviceIndex] || '请选择设备'}}</view>
-        </picker>
-      </view>
-      <!-- 日期 -->
-      <view class="form-item">
-        <text class="form-label">日期</text>
-        <view class="picker-box">
-          <picker mode="date" value="{{currentDate}}" bindchange="onDateChange" disabled="{{isViewMode}}">
-            <view class="picker-content">{{currentDate}}</view>
-          </picker>
-        </view>
-      </view>
-      <!-- 时间 -->
-      <view class="form-item">
-        <text class="form-label">时间</text>
-        <view class="picker-box">
-          <picker mode="time" value="{{currentTime}}" bindchange="onTimeChange" disabled="{{isViewMode}}">
-            <view class="picker-content">{{currentTime}}</view>
-          </picker>
-        </view>
-      </view>
-      <!-- 保养人 -->
-      <view class="form-item">
-        <text class="form-label">保养人</text>
-        <view class="picker-content">{{maintainer}}</view>
-      </view>
-      <!-- 多图上传 -->
-      <view class="form-item">
-        <text class="form-label">照片（最多50张）</text>
+  
+  <!-- 表单 -->
+  <scroll-view scroll-y="true" enhanced="true" show-scrollbar="true" bounces="true" class="form-container">
+    <!-- 项目选择 -->
+    <view class="form-item">
+      <text class="form-label">Project:</text>
+      <picker class="form-picker {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" mode="selector" range="{{projectOptions}}" value="{{projectIndex}}" bindchange="onProjectChange">
+        <view class="picker-value">{{projectOptions[projectIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 设备选择 -->
+    <view class="form-item">
+      <text class="form-label">Device:</text>
+      <picker class="form-picker {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" mode="selector" range="{{deviceOptions}}" value="{{deviceIndex}}" bindchange="onDeviceChange">
+        <view class="picker-value">{{deviceOptions[deviceIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 日期选择 -->
+    <view class="form-item">
+      <text class="form-label">Date:</text>
+      <picker class="form-picker {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" mode="date" value="{{currentDate}}" bindchange="onDateChange">
+        <view class="picker-value">{{currentDate || 'Select Date'}}</view>
+      </picker>
+    </view>
+    
+    <!-- 时间选择 -->
+    <view class="form-item">
+      <text class="form-label">Time:</text>
+      <picker class="form-picker {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" mode="time" value="{{currentTime}}" bindchange="onTimeChange">
+        <view class="picker-value">{{currentTime || 'Select Time'}}</view>
+      </picker>
+    </view>
+    
+    <!-- 保养人 -->
+    <view class="form-item">
+      <text class="form-label">Maintainer:</text>
+      <input class="form-input {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" type="text" value="{{maintainer}}" placeholder="Enter maintainer name" bindinput="onMaintainerChange" />
+    </view>
+    
+    <!-- 照片 -->
+    <view class="form-item photos-section">
+      <text class="form-label">Photos:</text>
+      <view class="photos-container">
         <view class="photo-list">
-          <block wx:for="{{photos}}" wx:key="index">
-            <image class="photo-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-index="{{index}}"></image>
-          </block>
-          <view wx:if="{{!isViewMode && photos.length < 50}}" class="photo-add" bindtap="onAddPhoto">
+          <view wx:for="{{photos}}" wx:key="index" class="photo-item">
+            <image class="photo-preview" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-index="{{index}}" binderror="onImageError"></image>
+            <view wx:if="{{!isViewMode}}" class="delete-btn" catchtap="onDeletePhoto" data-index="{{index}}">×</view>
+          </view>
+          <view wx:if="{{!isViewMode && photos.length < 9}}" class="add-photo-btn" bindtap="onAddPhoto">
             <text class="add-icon">+</text>
           </view>
         </view>
       </view>
     </view>
+    
+    <!-- 添加底部间距区域，确保内容不被按钮遮挡 -->
+    <view style="height: 120rpx;"></view>
   </scroll-view>
+  
   <!-- 底部按钮 -->
   <view class="bottom-section">
-    <button class="nav-btn exit-btn" bindtap="onExit">EXIT</button>
-    <button class="nav-btn save-btn" bindtap="onSave" disabled="{{isViewMode}}">SAVING</button>
+    <button class="nav-btn exit-btn" bindtap="onExit">
+      <block wx:if="{{isViewMode}}">BACK</block>
+      <block wx:else>EXIT</block>
+    </button>
+    <button class="nav-btn save-btn" bindtap="onSave" wx:if="{{!isViewMode}}">SAVE</button>
   </view>
 </view>

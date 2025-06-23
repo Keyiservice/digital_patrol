@@ -5,34 +5,69 @@
     <text class="title-text">TPM EVIDENCE</text>
     <text class="sub-title-text">TPM LIST</text>
   </view>
+  <!-- 检索区 -->
+  <view class="search-section">
+    <!-- 日期筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">日期:</text>
+      <picker mode="date" value="{{searchDate}}" bindchange="onDateChange" class="picker-container">
+        <view class="filter-picker">{{searchDate || '全部'}}</view>
+      </picker>
+    </view>
+    
+    <!-- 项目筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">项目:</text>
+      <picker mode="selector" range="{{projectOptions}}" value="{{projectIndex}}" bindchange="onProjectChange" class="picker-container">
+        <view class="filter-picker">{{projectOptions[projectIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 设备筛选 -->
+    <view class="filter-item">
+      <text class="filter-label">设备:</text>
+      <picker mode="selector" range="{{deviceOptions}}" value="{{deviceIndex}}" bindchange="onDeviceChange" class="picker-container">
+        <view class="filter-picker">{{deviceOptions[deviceIndex]}}</view>
+      </picker>
+    </view>
+    
+    <!-- 清空按钮 -->
+    <button class="clear-btn" bindtap="clearSearch">清空</button>
+  </view>
   <!-- 记录列表 -->
-  <scroll-view scroll-y="true" style="height: calc(100vh - 420rpx);">
-    <view class="list-section" style="padding-bottom: 140rpx;">
-      <view class="empty-list" wx:if="{{records.length === 0}}">
-        <text class="empty-text">No records found</text>
+  <scroll-view scroll-y="true" class="record-scroll-view">
+    <view class="list-section">
+      <view class="empty-list" wx:if="{{filteredRecords.length === 0}}">
+        <text class="empty-text">没有找到匹配的记录</text>
       </view>
       <view class="record-list" wx:else>
-        <view class="record-item" wx:for="{{records}}" wx:key="_id" bindtap="onViewRecord" data-id="{{item._id}}">
-          <view class="record-header">
+        <view class="record-item" wx:for="{{filteredRecords}}" wx:key="_id">
+          <view class="record-header" bindtap="onViewRecord" data-id="{{item._id || item.id}}">
             <text class="record-title">{{item.project}} - {{item.device}}</text>
             <text class="record-date">{{item.date}} {{item.time}}</text>
           </view>
-          <view class="record-body">
+          <view class="record-body" bindtap="onViewRecord" data-id="{{item._id || item.id}}">
             <view class="record-detail">
-              <text class="detail-label">Maintainer:</text>
+              <text class="detail-label">保养人:</text>
               <text class="detail-value">{{item.maintainer}}</text>
             </view>
             <view class="record-detail">
-              <text class="detail-label">Photos:</text>
+              <text class="detail-label">照片:</text>
               <view class="photo-list">
-                <image wx:for="{{item.photos}}" wx:key="index" class="photo-thumb" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-photos="{{item.photos}}" data-index="{{index}}"></image>
+                <image wx:for="{{item.photos}}" wx:key="index" class="photo-thumb" src="{{item}}" mode="aspectFill" catchtap="onPreviewPhoto" data-photos="{{item.photos}}" data-index="{{index}}" binderror="onImageError"></image>
               </view>
             </view>
           </view>
           <view class="record-footer">
             <view class="record-icons">
-              <view class="icon-box" catchtap="onDeleteRecord" data-id="{{item._id}}">
-                <text class="icon-text">Delete</text>
+              <view class="icon-box" catchtap="onViewRecord" data-id="{{item._id || item.id}}">
+                <text class="icon-text">查看</text>
+              </view>
+              <view class="icon-box" catchtap="onEditRecord" data-id="{{item._id || item.id}}">
+                <text class="icon-text">编辑</text>
+              </view>
+              <view class="icon-box" catchtap="onDeleteRecord" data-id="{{item._id || item.id}}">
+                <text class="icon-text">删除</text>
               </view>
             </view>
           </view>
