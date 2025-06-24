@@ -1,0 +1,14 @@
+{
+  "name": "getInspectionPlanByDevice",
+  "version": "1.0.0",
+  "description": "根据设备ID获取巡检计划",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+} 

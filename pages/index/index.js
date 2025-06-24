@@ -67,15 +67,10 @@ Page({
       return;
     }
     
-    wx.showToast({
-      title: '主线巡检功能',
-      icon: 'success',
-      duration: 2000
+    // 导航到主线巡检页面
+    wx.navigateTo({
+      url: '/pages/main-patrol/main-patrol'
     });
-    
-    // wx.navigateTo({
-    //   url: '/pages/main-patrol/main-patrol'
-    // });
   },
 
   // TPM 按钮点击事件

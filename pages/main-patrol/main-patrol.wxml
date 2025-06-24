@@ -1,0 +1,117 @@
+<!--main-patrol.wxml-->
+<custom-header />
+<view class="container">
+  
+  <!-- 初始扫码界面 -->
+  <view class="scan-section" wx:if="{{!scanCompleted}}">
+    <view class="scan-button" bindtap="scanQRCode">
+      <image class="scan-icon" src="/logo/special.png"></image>
+      <text class="scan-text">扫描设备二维码开始巡检</text>
+    </view>
+  </view>
+
+  <!-- 扫描成功后的巡检界面 -->
+  <block wx:if="{{scanCompleted}}">
+    <!-- 页面标题 -->
+    <view class="page-title">
+      <text class="title-text">MAIN ONLINE PATROL</text>
+      <text class="sub-title-text">EQUIPMENT INSPECTION</text>
+    </view>
+    
+    <!-- 日期和时间显示 -->
+    <view class="datetime-display">
+      <text>开始时间: {{inspectionStartTime}}</text>
+    </view>
+
+    <!-- 巡检区域选择 -->
+    <view class="section-select">
+      <picker bindchange="onAreaChange" value="{{areaIndex}}" range="{{inspectionAreas}}">
+        <view class="picker">
+          当前区域: {{inspectionAreas[areaIndex] || '请选择巡检区域'}}
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 可滚动的巡检内容区域 -->
+    <scroll-view class="inspection-scroll-area" scroll-y="true">
+      <view class="inspection-content" wx:if="{{currentArea}}">
+        <block wx:for="{{inspectionItems}}" wx:key="id">
+          <view class="inspection-item">
+            <!-- 检查项头部 -->
+            <view class="item-header">
+              <text class="item-title">{{item.name}}</text>
+            </view>
+            
+            <view class="item-body">
+              <!-- 数值输入类型 -->
+              <view class="input-row" wx:if="{{item.type === 'number'}}">
+                <text class="item-label">{{item.label}}:</text>
+                <input type="digit" class="input-field" placeholder="{{item.placeholder}}" 
+                      value="{{item.value}}" data-id="{{item.id}}" bindinput="onValueInput" />
+                <text class="item-unit">{{item.unit}}</text>
+              </view>
+              
+              <!-- 选择类型 -->
+              <view class="select-row" wx:elif="{{item.type === 'select'}}">
+                <text class="item-label">{{item.label}}:</text>
+                <picker class="item-select" bindchange="onOptionChange" data-id="{{item.id}}" value="{{item.selectedIndex}}" range="{{item.options}}">
+                  <view class="picker">
+                    {{item.options[item.selectedIndex] || '请选择'}}
+                  </view>
+                </picker>
+              </view>
+
+              <!-- 结果与照片 -->
+              <view class="result-photo-row">
+                <!-- 结果选择 -->
+                <view class="result-section">
+                  <text class="result-label">RESULT</text>
+                  <radio-group class="radio-group" bindchange="onResultChange" data-id="{{item.id}}">
+                    <label class="radio-label">
+                      <radio value="OK" checked="{{!item.isAbnormal}}" color="#0d3371"/> OK
+                    </label>
+                    <label class="radio-label">
+                      <radio value="NG" checked="{{item.isAbnormal}}" color="#0d3371"/> NG
+                    </label>
+                  </radio-group>
+                </view>
+
+                <!-- 拍照区域 -->
+                <view class="picture-section" wx:if="{{item.type === 'photo'}}">
+                  <text class="picture-label">PICTURE</text>
+                  <view class="photo-group-container">
+                    <view class="photo-button" bindtap="chooseImage" data-id="{{item.id}}">
+                      <text>点击拍摄</text>
+                    </view>
+                    <view wx:if="{{item.imageUrl}}" class="photo-preview-container">
+                      <image class="item-photo" src="{{item.imageUrl}}" mode="aspectFill" bindtap="previewImage" data-url="{{item.imageUrl}}"></image>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 异常情况输入 -->
+              <view class="abnormal-section" wx:if="{{item.isAbnormal}}">
+                <textarea placeholder="请描述异常情况 (必填)" value="{{item.abnormalDesc}}" data-id="{{item.id}}" bindinput="onAbnormalInput"></textarea>
+                <view class="abnormal-level">
+                  <text class="abnormal-level-label">异常等级:</text>
+                  <radio-group bindchange="onLevelChange" data-id="{{item.id}}">
+                    <label class="radio-label"><radio value="low" checked="{{item.abnormalLevel === 'low'}}"/>低</label>
+                    <label class="radio-label"><radio value="medium" checked="{{item.abnormalLevel === 'medium'}}"/>中</label>
+                    <label class="radio-label"><radio value="high" checked="{{item.abnormalLevel === 'high'}}"/>高</label>
+                  </radio-group>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </block>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section" wx:if="{{scanCompleted}}">
+    <button class="btn cancel" bindtap="onCancel">EXIT</button>
+    <button class="btn submit" bindtap="onSubmit">SAVING</button>
+  </view>
+</view> 

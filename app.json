@@ -21,7 +21,9 @@
     "pages/breakdown-management/breakdown-production",
     "pages/breakdown-management/breakdown-repair",
     "pages/breakdown-management/breakdown-quality",
-    "pages/breakdown-management/breakdown-list"
+    "pages/breakdown-management/breakdown-list",
+    "pages/main-patrol/main-patrol",
+    "pages/main-patrol-list/main-patrol-list"
   ],
   "window": {
     "navigationBarTextStyle": "black",

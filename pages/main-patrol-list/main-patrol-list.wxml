@@ -1,0 +1,31 @@
+<!--pages/main-patrol-list/main-patrol-list.wxml-->
+<custom-header />
+<view class="container">
+  <view class="page-title">
+    <text class="title-text">巡检记录列表</text>
+  </view>
+
+  <view class="list-container">
+    <block wx:if="{{records.length > 0}}">
+      <view class="record-item" wx:for="{{records}}" wx:key="_id" data-id="{{item._id}}">
+        <view class="item-header">
+          <text class="record-area">{{item.area}}</text>
+          <text class="record-status {{item.hasAbnormal ? 'abnormal' : ''}}">{{item.hasAbnormal ? '存在异常' : '全部正常'}}</text>
+        </view>
+        <view class="item-body">
+          <text class="info-text">巡检员: {{item.inspector}}</text>
+          <text class="info-text">时间: {{item.inspectionTime}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty-state">
+        <text>暂无巡检记录</text>
+      </view>
+    </block>
+  </view>
+
+  <view class="bottom-section">
+    <button class="btn" bindtap="goBack">返回</button>
+  </view>
+</view> 

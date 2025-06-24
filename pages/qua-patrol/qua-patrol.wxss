@@ -12,229 +12,220 @@ page {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* 内容区域和底部按钮分别位于两端 */
-  padding: 0rpx 20rpx; /* 左右两侧留出20rpx的内边距 */
   box-sizing: border-box;
   background-color: #f5f5f5; /* 与页面背景色保持一致 */
 }
 
-/* 头部logo区域 - 当前设置为隐藏状态 */
-.header {
-  width: 90%;
-  height: 0rpx; /* 设置为0以隐藏头部区域 */
-  background-color: #F5F5F5;
-  border-radius: 20rpx;
+/* 阶段一：选择界面样式 */
+.selection-wrapper {
+  flex: 1;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  margin-bottom: 0rpx;
+  padding: 40rpx;
 }
 
-/* Logo图片样式 */
-.logo {
-  width: 200rpx;
-  height: 60rpx;
+.selection-card {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-top: 40rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
 }
 
-/* 页面标题区域 */
+.picker-group {
+  margin-bottom: 40rpx;
+}
+
+.picker-group:last-child {
+  margin-bottom: 0;
+}
+
+.picker-label {
+  display: block;
+  font-size: 30rpx;
+  color: #0d3371;
+  margin-bottom: 15rpx;
+}
+
+.picker {
+  height: 80rpx;
+  line-height: 80rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  background-color: #f9f9f9;
+  font-size: 28rpx;
+}
+
+.start-btn {
+  width: 100%;
+  height: 90rpx;
+  background-color: #0d3371;
+  color: white;
+  font-size: 34rpx;
+  border-radius: 15rpx;
+  margin-top: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 页面标题 */
 .page-title {
   text-align: center;
-  margin-bottom: 20rpx;
+  padding: 20rpx 20rpx 0 20rpx;
 }
 
-/* 主标题文本样式 */
 .title-text {
   display: block;
-  font-size: 55rpx;
-  font-weight: bold;
-  color: #0d3371; /* 深蓝色标题 */
-  letter-spacing: 2rpx;
-  text-shadow: 2rpx 2rpx 4rpx rgba(0,0,0,0.1); /* 添加轻微阴影效果 */
-  margin-bottom: 5rpx;
-  font-family: Arial, sans-serif;
-}
-
-/* 副标题文本样式 */
-.sub-title-text {
-  display: block;
-  font-size: 38rpx;
+  font-size: 50rpx;
   font-weight: bold;
   color: #0d3371;
-  letter-spacing: 1rpx;
-  font-family: Arial, sans-serif;
+}
+
+.sub-title-text {
+  display: block;
+  font-size: 36rpx;
+  color: #666;
+  margin-top: 10rpx;
+}
+
+/* 日期时间显示 */
+.datetime-display {
+  padding: 0 20rpx;
   margin-bottom: 20rpx;
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
 }
 
-/* 表单区域样式 */
-.form-section {
-  flex: 1; /* 占据剩余空间 */
-  margin-bottom: 0rpx; /* 移除底部外边距 */
+/* 滚动区域 */
+.inspection-scroll-area {
+  flex: 1;
+  height: 0;
   width: 100%;
+  padding: 0 20rpx;
+  box-sizing: border-box;
 }
 
-/* 检查项目卡片样式 */
 .inspection-item {
   background-color: #fff;
   border-radius: 15rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1); /* 添加轻微阴影效果 */
-  margin-bottom: 10rpx; /* 项目之间的间距 */
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  margin-bottom: 20rpx;
   padding: 25rpx;
   box-sizing: border-box;
 }
 
-/* 检查内容框样式 */
-.inspection-content-box {
-  background-color: #fce4ec; /* 浅粉色背景 */
+.item-header {
+  background-color: #e3f2fd; /* 浅蓝色背景 */
   border-radius: 10rpx;
   padding: 20rpx;
   margin-bottom: 25rpx;
-  font-size: 28rpx;
-  line-height: 1.5;
-  color: #333;
-  display: flex;
-  align-items: flex-start;
 }
 
-/* 项目编号样式 */
-.item-number {
+.item-title {
+  font-size: 32rpx;
   font-weight: bold;
-  color: #0d3371;
-  margin-right: 10rpx;
-  flex-shrink: 0; /* 防止编号被压缩 */
-  font-size: 32rpx;
+  color: #333;
 }
 
-/* 项目描述文本样式 */
-.item-description {
-  flex-grow: 1; /* 占据剩余空间 */
-  font-size: 32rpx;
+.item-body {
+  padding: 0 10rpx;
 }
 
-/* 结果和照片行布局 */
+/* 结果和照片行 */
 .result-photo-row {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  width: 100%;
 }
 
-/* 结果区域和照片区域的共同样式 */
-.result-section,
-.picture-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* 结果区域特定样式 */
-.result-section {
+.result-section, .picture-section {
   flex: 1;
-  margin-right: 20rpx;
-  align-items: flex-start;
 }
 
-/* 结果标签和照片标签的共同样式 */
-.result-label,
-.picture-label {
+.result-label, .picture-label {
   font-size: 30rpx;
   font-weight: bold;
   color: #0d3371;
-  margin-bottom: 0rpx;
-  text-align: left;
-  width: 100%;
+  margin-bottom: 10rpx;
 }
 
-/* 单选按钮组样式 */
 .radio-group {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 15rpx; /* 按钮之间的间距 */
-  width: 100%;
-  margin-top: 10rpx;
+  gap: 30rpx;
 }
 
-/* 单选按钮标签样式 */
 .radio-label {
   display: flex;
   align-items: center;
   font-size: 28rpx;
-  color: #333;
 }
 
-/* 照片区域特定样式 */
-.picture-section {
-  flex: 1;
-  align-items: flex-start;
-}
-
-/* 照片组容器样式 */
 .photo-group-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 10rpx;
-  width: 100%;
-  margin-top: 10rpx;
 }
 
-/* 拍照按钮样式 */
 .photo-button {
-  width: 200rpx;
+  width: 180rpx;
   height: 60rpx;
-  background-color: #fae3d9; /* 浅橙色背景 */
+  background-color: #fae3d9;
   color: #0d3371;
-  border: 2rpx solid #e0c2b2;
   border-radius: 10rpx;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 28rpx;
-  font-weight: bold;
 }
 
-/* 拍照按钮文本样式 */
-.photo-text {
-  font-size: 28rpx;
-}
-
-/* 照片预览容器样式 */
 .photo-preview-container {
-  width: 66rpx;
-  height: 50rpx;
+  width: 60rpx;
+  height: 60rpx;
   border-radius: 10rpx;
-  border: 2rpx solid #ddd;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 1rpx solid #ddd;
 }
 
-/* 照片图片样式 */
 .item-photo {
   width: 100%;
   height: 100%;
 }
 
-/* 底部按钮区域样式 */
+.abnormal-section {
+  margin-top: 20rpx;
+  border-top: 1rpx solid #eee;
+  padding-top: 20rpx;
+}
+
+.abnormal-section textarea {
+  width: 100%;
+  height: 150rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+}
+
+/* 底部按钮 */
 .bottom-section {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 0 20rpx;
+  padding: 20rpx;
   box-sizing: border-box;
-  position: fixed; /* 固定在屏幕底部 */
+  position: fixed;
   bottom: 0;
   left: 0;
-  height: 100rpx;
   background-color: #f5f5f5;
   z-index: 100;
-  align-items: center;
 }
 
-/* 导航按钮样式 */
-.nav-btn {
-  width: 45%;
+.btn {
+  width: 48%;
   background-color: #0d3371;
   color: #F5F5F5;
   height: 80rpx;
@@ -243,33 +234,18 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
   border: none;
-  letter-spacing: 3rpx;
-  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  text-shadow: 1rpx 1rpx 2rpx rgba(0, 0, 0, 0.1);
 }
 
-/* 上一步按钮样式 */
-.previous-btn {
-  margin-right: auto;
-}
-
-/* 下一步按钮样式 */
-.next-btn {
-  margin-left: auto;
+.btn.cancel {
+  background-color: #f2f2f2;
+  color: #666;
 }
 
 /* 响应式适配 */
 @media screen and (max-width: 750rpx) {
   .container {
     padding: 0 10rpx 40rpx 10rpx; /* 响应式调整container左右内边距 */
-  }
-  
-  .header {
-    margin: 0 -30rpx 0rpx -30rpx;
   }
   
   .title-text {

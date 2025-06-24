@@ -1,4 +1,6 @@
 // pages/qua-patrol/qua-patrol.js
+const util = require('../../utils/util.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -19,7 +21,19 @@ Page({
     ],
     previousPageData: null, // 存储上一页传递的数据
     currentDate: '', // 当前日期
-    currentTime: ''  // 当前时间
+    currentTime: '',  // 当前时间
+    // 阶段控制
+    inspectionStarted: false,
+
+    // 阶段一：选择数据
+    projects: ['G68', 'P71A'],
+    projectIndex: null,
+    processes: ['BMM', 'FC', 'ASM'],
+    processIndex: null,
+    
+    // 阶段二：巡检数据
+    inspectionStartTime: '',
+    inspectionItems: [],
   },
 
   /**
@@ -65,7 +79,7 @@ Page({
    */
   onProjectChange: function(e) {
     this.setData({
-      projectSelected: e.detail.value
+      projectIndex: e.detail.value
     });
   },
 
@@ -74,7 +88,7 @@ Page({
    */
   onProcessChange: function(e) {
     this.setData({
-      processSelected: e.detail.value
+      processIndex: e.detail.value
     });
   },
 
@@ -237,5 +251,181 @@ Page({
       currentTime: time,
       'items[0].description': `日期：${date}  时间：${time}`
     });
+  },
+
+  startInspection: function() {
+    const { projectIndex, processIndex, projects, processes } = this.data;
+
+    if (projectIndex === null || processIndex === null) {
+      wx.showToast({ title: '请选择项目和过程', icon: 'none' });
+      return;
+    }
+
+    const selectedProject = projects[projectIndex];
+    const selectedProcess = processes[processIndex];
+
+    wx.showLoading({ title: '加载巡检项...' });
+    
+    wx.cloud.callFunction({
+      name: 'getQuaInspectionPlan',
+      data: {
+        project: selectedProject,
+        process: selectedProcess
+      },
+      success: res => {
+        if (res.result && res.result.success && res.result.data.length > 0) {
+          const items = res.result.data.map(item => ({...item, isAbnormal: false, abnormalDesc: '', imageUrl: ''}));
+          this.setData({
+            inspectionStarted: true,
+            inspectionStartTime: util.formatTime(new Date()),
+            inspectionItems: items
+          });
+        } else {
+          wx.showToast({ title: res.result.message || '未找到计划', icon: 'none' });
+        }
+      },
+      fail: err => {
+        wx.showToast({ title: '加载失败，请重试', icon: 'none' });
+        console.error(err);
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    });
+  },
+
+  onAbnormalInput: function(e) {
+    const { id } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    const itemIndex = this.data.inspectionItems.findIndex(item => item.id === id);
+    if (itemIndex > -1) {
+      this.setData({
+        [`inspectionItems[${itemIndex}].abnormalDesc`]: value
+      });
+    }
+  },
+
+  chooseImage: function(e) {
+    const { id } = e.currentTarget.dataset;
+    const itemIndex = this.data.inspectionItems.findIndex(item => item.id === id);
+
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['camera'],
+      success: res => {
+        const tempFilePath = res.tempFilePaths[0];
+        wx.showLoading({ title: '上传中...' });
+        const cloudPath = `qua-patrol-images/${Date.now()}-${Math.floor(Math.random() * 1000)}${tempFilePath.match(/\.\w+$/)[0]}`;
+        
+        wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: tempFilePath,
+          success: uploadRes => {
+            if (itemIndex > -1) {
+              this.setData({
+                [`inspectionItems[${itemIndex}].imageUrl`]: uploadRes.fileID
+              });
+            }
+          },
+          fail: console.error,
+          complete: () => {
+            wx.hideLoading();
+          }
+        });
+      }
+    });
+  },
+
+  onCancel: function() {
+    wx.showModal({
+      title: '确认退出',
+      content: '所有未保存的数据都将丢失，确定吗？',
+      success: res => {
+        if (res.confirm) {
+          this.setData({
+            inspectionStarted: false,
+            projectIndex: null,
+            processIndex: null,
+            inspectionItems: []
+          });
+        }
+      }
+    });
+  },
+
+  onSubmit: function() {
+    let abnormalDescMissing = false;
+    this.data.inspectionItems.forEach(item => {
+      if (item.isAbnormal && !item.abnormalDesc.trim()) {
+        abnormalDescMissing = true;
+      }
+    });
+
+    if (abnormalDescMissing) {
+      wx.showToast({ title: '请为NG项填写异常描述', icon: 'none' });
+      return;
+    }
+
+    const submitData = {
+      project: this.data.projects[this.data.projectIndex],
+      process: this.data.processes[this.data.processIndex],
+      inspectionTime: this.data.inspectionStartTime,
+      inspector: wx.getStorageSync('userInfo')?.accountName || '未知用户',
+      items: this.data.inspectionItems
+    };
+
+    wx.showLoading({ title: '正在保存...' });
+
+    wx.cloud.callFunction({
+      name: 'saveQuaPatrolRecord',
+      data: {
+        record: submitData
+      },
+      success: res => {
+        if (res.result && res.result.success) {
+          wx.showModal({
+            title: '保存成功',
+            content: '质量巡检记录已保存。',
+            showCancel: false,
+            success: () => {
+              this.setData({
+                inspectionStarted: false,
+                projectIndex: null,
+                processIndex: null,
+                inspectionItems: []
+              });
+            }
+          });
+        } else {
+          wx.showToast({ title: res.result.message || '保存失败', icon: 'none' });
+        }
+      },
+      fail: err => {
+        wx.showToast({ title: '保存失败，请重试', icon: 'none' });
+        console.error(err);
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    });
+  },
+
+  // 模拟数据函数
+  getMockInspectionItems(project, process) {
+    // 实际应从数据库获取，这里只做演示
+    const baseItems = [
+      { id: 1, name: '外观是否有划痕、凹陷', isAbnormal: false, abnormalDesc: '', imageUrl: ''},
+      { id: 2, name: '标签是否粘贴正确、清晰', isAbnormal: false, abnormalDesc: '', imageUrl: ''},
+      { id: 3, name: '产品结合处是否对齐、有毛刺', isAbnormal: false, abnormalDesc: '', imageUrl: ''}
+    ];
+    // 可以根据 project 和 process 返回不同的检查项
+    if (project === 'P71A') {
+      baseItems.push({ id: 4, name: 'P71A专属检查项：特殊卡扣是否到位', isAbnormal: false, abnormalDesc: '', imageUrl: ''});
+    }
+    if (process === 'ASM') {
+      baseItems.push({ id: 5, name: 'ASM过程专属：螺丝扭矩是否达标', isAbnormal: false, abnormalDesc: '', imageUrl: ''});
+    }
+    return baseItems;
   }
 })

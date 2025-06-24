@@ -107,8 +107,8 @@
 }
 
 /* 按钮按下时的样式 - 提供用户反馈 */
-.menu-btn:active {
-  background-color: #0b2a5e; /* 按下时变为更深的蓝色 */
+.menu-btn-hover {
+  background-color: #0b2a5e !important; /* 按下时变为更深的蓝色 */
   transform: translateY(2rpx); /* 向下移动2rpx，模拟按压效果 */
 }
 
@@ -164,7 +164,7 @@
 }
 
 /* 认证按钮按下时的样式 - 提供用户反馈 */
-.auth-btn:active {
+.auth-btn-hover {
   transform: translateY(2rpx); /* 向下移动2rpx，模拟按压效果 */
   opacity: 0.8;               /* 降低透明度到80% */
 }

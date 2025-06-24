@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header"
+  },
+  "navigationBarTitleText": "巡检记录",
+  "enablePullDownRefresh": true
+} 

@@ -1,88 +1,92 @@
 <!--qua-patrol.wxml-->
 <custom-header />
 <view class="container">
-  <!-- 用户信息区域 -->
-  <user-info />
-  
-  <!-- 头部logo区域 -->
-  <view class="header">
-    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
-  </view>
-  
-  <!-- 页面标题 -->
-  <view class="page-title">
-    <text class="title-text">QUA ONLINE PATROL</text>
-    <text class="sub-title-text">QUALITATIVE ONLINE PATROL</text>
-    <view class="datetime-box">
-      <text class="datetime-text">{{currentDate}} {{currentTime}}</text>
+
+  <!-- 阶段一：选择界面 -->
+  <view class="selection-wrapper" wx:if="{{!inspectionStarted}}">
+    <view class="page-title">
+      <text class="title-text">QUA ONLINE PATROL</text>
+      <text class="sub-title-text">巡检前准备</text>
     </view>
-  </view>
-  
-  <!-- 选择表单区域 -->
-  <view class="form-section beautiful-form">
-    <!-- 日期时间内容 -->
-    <view class="datetime-content beautiful-card">
-      <text class="datetime-content-text">{{items[0].description}}</text>
-    </view>
-    <!-- 项目选择 -->
-    <view class="selection-item beautiful-card">
-      <text class="selection-title">项目选择:</text>
-      <view class="selection-options">
-        <radio-group class="radio-group" bindchange="onProjectChange">
-          <label class="radio-label">
-            <radio value="G68" checked="{{projectSelected === 'G68'}}" color="#0d3371" />
-            <text>G68</text>
-          </label>
-          <label class="radio-label">
-            <radio value="P71A" checked="{{projectSelected === 'P71A'}}" color="#0d3371" />
-            <text>P71A</text>
-          </label>
-        </radio-group>
+    
+    <view class="selection-card">
+      <view class="picker-group">
+        <text class="picker-label">项目选择:</text>
+        <picker bindchange="onProjectChange" value="{{projectIndex}}" range="{{projects}}">
+          <view class="picker">
+            {{projects[projectIndex] || '请选择项目'}}
+          </view>
+        </picker>
+      </view>
+
+      <view class="picker-group">
+        <text class="picker-label">过程选择:</text>
+        <picker bindchange="onProcessChange" value="{{processIndex}}" range="{{processes}}">
+          <view class="picker">
+            {{processes[processIndex] || '请选择过程'}}
+          </view>
+        </picker>
       </view>
     </view>
 
-    <!-- 流程选择 -->
-    <view class="selection-item beautiful-card">
-      <text class="selection-title">流程选择:</text>
-      <view class="selection-options">
-        <radio-group class="radio-group" bindchange="onProcessChange">
-          <label class="radio-label">
-            <radio value="BMM" checked="{{processSelected === 'BMM'}}" color="#0d3371" />
-            <text>BMM</text>
-          </label>
-          <label class="radio-label">
-            <radio value="FC" checked="{{processSelected === 'FC'}}" color="#0d3371" />
-            <text>FC</text>
-          </label>
-          <label class="radio-label">
-            <radio value="ASM" checked="{{processSelected === 'ASM'}}" color="#0d3371" />
-            <text>ASM</text>
-          </label>
-        </radio-group>
-      </view>
+    <button class="start-btn" bindtap="startInspection">开始巡检</button>
+  </view>
+
+  <!-- 阶段二：巡检界面 -->
+  <block wx:if="{{inspectionStarted}}">
+    <view class="page-title">
+      <text class="title-text">{{projects[projectIndex]}} - {{processes[processIndex]}}</text>
+      <text class="sub-title-text">在线质量巡检</text>
     </view>
 
-    <!-- 班次选择 -->
-    <view class="selection-item beautiful-card">
-      <text class="selection-title">班次选择:</text>
-      <view class="selection-options">
-        <radio-group class="radio-group" bindchange="onShiftChange">
-          <label class="radio-label">
-            <radio value="day" checked="{{shiftSelected === 'day'}}" color="#0d3371" />
-            <text>白班</text>
-          </label>
-          <label class="radio-label">
-            <radio value="night" checked="{{shiftSelected === 'night'}}" color="#0d3371" />
-            <text>夜班</text>
-          </label>
-        </radio-group>
-      </view>
+    <view class="datetime-display">
+      <text>开始时间: {{inspectionStartTime}}</text>
     </view>
-  </view>
-  
-  <!-- 底部按钮 -->
-  <view class="bottom-section">
-    <button class="nav-btn previous-btn" bindtap="onPrevious">PREVIOUS</button>
-    <button class="nav-btn next-btn" bindtap="onNext">NEXT</button>
-  </view>
+
+    <scroll-view class="inspection-scroll-area" scroll-y="true">
+      <view class="inspection-content">
+        <block wx:for="{{inspectionItems}}" wx:key="id">
+          <view class="inspection-item">
+            <view class="item-header">
+              <text class="item-title">{{item.name}}</text>
+            </view>
+            <view class="item-body">
+              <view class="result-photo-row">
+                <view class="result-section">
+                  <text class="result-label">RESULT</text>
+                  <radio-group class="radio-group" bindchange="onResultChange" data-id="{{item.id}}">
+                    <label class="radio-label">
+                      <radio value="OK" checked="{{!item.isAbnormal}}" color="#0d3371"/> OK
+                    </label>
+                    <label class="radio-label">
+                      <radio value="NG" checked="{{item.isAbnormal}}" color="#0d3371"/> NG
+                    </label>
+                  </radio-group>
+                </view>
+                <view class="picture-section">
+                  <text class="picture-label">PICTURE</text>
+                  <view class="photo-group-container">
+                    <view class="photo-button" bindtap="chooseImage" data-id="{{item.id}}">
+                      <text>点击拍摄</text>
+                    </view>
+                    <view wx:if="{{item.imageUrl}}" class="photo-preview-container">
+                      <image class="item-photo" src="{{item.imageUrl}}" mode="aspectFill" bindtap="previewImage" data-url="{{item.imageUrl}}"></image>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              <view class="abnormal-section" wx:if="{{item.isAbnormal}}">
+                <textarea placeholder="请描述异常情况 (必填)" value="{{item.abnormalDesc}}" data-id="{{item.id}}" bindinput="onAbnormalInput"></textarea>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+
+    <view class="bottom-section">
+      <button class="btn cancel" bindtap="onCancel">EXIT</button>
+      <button class="btn submit" bindtap="onSubmit">SAVING</button>
+    </view>
+  </block>
 </view>
