@@ -27,9 +27,26 @@
           </view>
         </picker>
       </view>
+      
+      <view class="picker-group">
+        <text class="picker-label">班次选择:</text>
+        <radio-group class="shift-radio-group" bindchange="onShiftChange">
+          <label class="shift-radio-label">
+            <radio value="白班" color="#0d3371" />白班
+          </label>
+          <label class="shift-radio-label">
+            <radio value="夜班" color="#0d3371" />夜班
+          </label>
+        </radio-group>
+      </view>
     </view>
 
-    <button class="start-btn" bindtap="startInspection">开始巡检</button>
+    <button class="list-btn" bindtap="goToList">查看巡检列表</button>
+
+    <view class="bottom-buttons">
+      <button class="back-btn" bindtap="onPrevious">返回主页</button>
+      <button class="start-btn" bindtap="onNext">开始巡检</button>
+    </view>
   </view>
 
   <!-- 阶段二：巡检界面 -->

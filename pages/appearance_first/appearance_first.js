@@ -6,37 +6,118 @@ Page({
   data: {
     isLogin: false,
     userName: '',
-    items: [
-      {
-        id: 1,
-        description: '条码外观检验: 条形码无缺失、无漏贴、褶皱，粘贴在指定位置框里，扫描区域清晰、无模糊',
-        result: '',
-        photos: []
-      },
-      {
-        id: 2,
-        description: '油箱外观检验: 表面无损伤、变形、脏污、枯料；污渍；ICV、Nipple、铺泵焊接面无油渍、表面平整；安装排气管的clip区域无破损、变形、多料',
-        result: '',
-        photos: []
-      }
-    ],
-    previousPageData: null // 存储上一页传递的数据
+    items: [],
+    previousPageData: null, // 存储上一页传递的数据
+    loading: false, // 加载状态
+    tNumber: '',  // T-Number
+    cookieNumber: '' // Cookie Number
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 不检查登录状态
-    
     // 获取上一页传递的参数
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on('acceptDataFromPreviousPage', (data) => {
-      console.log('接收到上一页数据:', data);
-      this.setData({
-        previousPageData: data.data
+    try {
+      const eventChannel = this.getOpenerEventChannel();
+      eventChannel.on('acceptDataFromPreviousPage', (data) => {
+        console.log('接收到上一页数据:', data);
+        
+        const prevData = data.data || {};
+        this.setData({
+          previousPageData: prevData,
+          tNumber: prevData.tNumber || '',
+          cookieNumber: prevData.cookieNumber || ''
+        });
+        
+        // 加载巡检项目
+        this.loadInspectionItems(prevData.projectSelected, prevData.processSelected);
       });
-    });
+    } catch (error) {
+      console.error('获取上一页数据失败:', error);
+      this.setData({
+        previousPageData: {},
+        tNumber: '',
+        cookieNumber: ''
+      });
+    }
+  },
+  
+  /**
+   * 加载巡检项目
+   */
+  loadInspectionItems: function(project, process) {
+    if (!project || !process) {
+      wx.showToast({
+        title: '缺少项目或流程参数',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    this.setData({ loading: true });
+    
+    wx.showLoading({ title: '加载检查项...' });
+    let loadingShown = true;
+    
+    try {
+      wx.cloud.callFunction({
+        name: 'getQuaInspectionPlan',
+        data: {
+          project: project,
+          process: process
+        },
+        success: res => {
+          if (res.result && res.result.success && res.result.data.length > 0) {
+            // 检查项目过多时，分为多个页面
+            const allItems = res.result.data.map(item => ({
+              id: item.id,
+              description: item.name,
+              result: '',
+              photos: []
+            }));
+            
+            // 取前2项显示在第一页
+            const firstPageItems = allItems.slice(0, 2);
+            
+            this.setData({
+              items: firstPageItems,
+              allItems: allItems
+            });
+          } else {
+            if (loadingShown) {
+              wx.hideLoading();
+              loadingShown = false;
+            }
+            wx.showToast({ 
+              title: res.result ? (res.result.message || '未找到检查项') : '加载检查项失败', 
+              icon: 'none' 
+            });
+          }
+        },
+        fail: err => {
+          console.error('获取巡检计划失败:', err);
+          if (loadingShown) {
+            wx.hideLoading();
+            loadingShown = false;
+          }
+          wx.showToast({ title: '加载失败，请重试', icon: 'none' });
+        },
+        complete: () => {
+          this.setData({ loading: false });
+          if (loadingShown) {
+            wx.hideLoading();
+          }
+        }
+      });
+    } catch (error) {
+      console.error('云函数调用异常:', error);
+      this.setData({ loading: false });
+      if (loadingShown) {
+        wx.hideLoading();
+      }
+      wx.showToast({ title: '系统错误，请重试', icon: 'none' });
+    }
   },
   
   /**
@@ -130,7 +211,8 @@ Page({
     // 保存数据并跳转到下一页
     const data = {
       ...this.data.previousPageData, // 包含上一页的数据
-      appearanceFirstItems: this.data.items
+      appearanceFirstItems: this.data.items,
+      allItems: this.data.allItems // 传递所有检查项
     };
     
     wx.navigateTo({

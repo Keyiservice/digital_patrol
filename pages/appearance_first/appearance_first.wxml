@@ -15,6 +15,18 @@
     <text class="sub-title-text">TANK SHELL APPEARANCE</text>
   </view>
   
+  <!-- T-Number和Cookie Number显示 -->
+  <view class="info-section">
+    <view class="info-row">
+      <text class="info-label">T-NUMBER:</text>
+      <text class="info-value">{{tNumber}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">COOKIE NUMBER:</text>
+      <text class="info-value">{{cookieNumber}}</text>
+    </view>
+  </view>
+  
   <!-- 表单区域 -->
   <view class="form-section">
     <block wx:for="{{items}}" wx:for-item="item" wx:for-index="itemIndex" wx:key="id">
@@ -57,6 +69,13 @@
         </view>
       </view>
     </block>
+    
+    <view class="loading-container" wx:if="{{loading}}">
+      <text>加载检查项...</text>
+    </view>
+    <view class="empty-container" wx:if="{{!loading && items.length === 0}}">
+      <text>没有找到检查项</text>
+    </view>
   </view>
   
   <!-- 底部按钮 -->

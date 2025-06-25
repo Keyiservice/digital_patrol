@@ -4,80 +4,135 @@ Page({
    * 页面的初始数据
    */
   data: {
-    items: [
-      { id: 1, description: 'ASSEMBLY DEFECT', result: '', photos: [] },
-      { id: 2, description: 'MISSING PARTS', result: '', photos: [] },
-      { id: 3, description: 'WRONG PARTS', result: '', photos: [] }
-    ],
+    items: [],
     previousPageData: null, // 存储上一页传递的数据
     processType: '', // FC 或 ASM
     currentStep: 1,    // 当前是第几步
     currentDate: '', // 当前日期
-    currentTime: ''  // 当前时间
+    currentTime: '',  // 当前时间
+    loading: false, // 加载状态
+    tNumber: '',  // T-Number
+    cookieNumber: '' // Cookie Number
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let previousPageData = {};
     try {
       const eventChannel = this.getOpenerEventChannel && this.getOpenerEventChannel();
       if (eventChannel && typeof eventChannel.on === 'function') {
         eventChannel.on('acceptDataFromPreviousPage', (data) => {
-          let processType = 'ASM';
-          let currentStep = 1;
-          
-          // 判断是FC流程还是ASM流程
-          if (data.data && data.data.fcPageOne) {
-            processType = 'FC';
-            currentStep = 2; // 如果从FC第一页来，这里是FC第二页
-          } else if (data.data && data.data.fcPageTwo) {
-            processType = 'FC';
-            currentStep = 3; // FC第三页
-          } else if (data.data && data.data.fcPageThree) {
-            processType = 'FC';
-            currentStep = 4; // FC第四页
-          } else if (data.data && data.data.asmPageOne) {
-            processType = 'ASM';
-            currentStep = 2; // ASM第二页
-          } else if (data.data && data.data.asmPageTwo) {
-            processType = 'ASM';
-            currentStep = 3; // ASM第三页
-          } else if (data.data && data.data.asmPageThree) {
-            processType = 'ASM';
-            currentStep = 4; // ASM第四页
-          }
-          
+          const prevData = data.data || {};
           // 更新数据
-          previousPageData = data.data || {};
           this.setData({
-            previousPageData,
-            processType: processType,
-            currentStep: currentStep
+            previousPageData: prevData,
+            tNumber: prevData.tNumber || '',
+            cookieNumber: prevData.cookieNumber || '',
+            processType: 'ASM',
+            currentStep: 1
           });
           
           // 设置标题
-          let pageTitle = '';
-          if (processType === 'FC') {
-            pageTitle = `FC CHECK - PAGE ${currentStep}`;
-          } else {
-            pageTitle = `ASM CHECK - PAGE ${currentStep}`;
-          }
-          
           wx.setNavigationBarTitle({
-            title: pageTitle
+            title: 'ASM CHECK'
           });
+          
+          // 加载巡检项目
+          this.loadInspectionItems(prevData.projectSelected, prevData.processSelected);
         });
       } else {
+        console.warn('无法获取上一页传递的数据通道');
         this.setData({
-          previousPageData
+          previousPageData: {},
+          tNumber: '',
+          cookieNumber: '',
+          processType: 'ASM',
+          currentStep: 1
         });
       }
     } catch (e) {
+      console.error('获取上一页数据失败:', e);
       this.setData({
-        previousPageData
+        previousPageData: {},
+        tNumber: '',
+        cookieNumber: '',
+        processType: 'ASM',
+        currentStep: 1
       });
+    }
+  },
+  
+  /**
+   * 加载巡检项目
+   */
+  loadInspectionItems: function(project, process) {
+    if (!project || !process) {
+      wx.showToast({
+        title: '缺少项目或流程参数',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    this.setData({ loading: true });
+    
+    wx.showLoading({ title: '加载检查项...' });
+    let loadingShown = true;
+    
+    try {
+      wx.cloud.callFunction({
+        name: 'getQuaInspectionPlan',
+        data: {
+          project: project,
+          process: process
+        },
+        success: res => {
+          if (res.result && res.result.success && res.result.data.length > 0) {
+            // 将巡检项转换为页面需要的格式
+            const asmItems = res.result.data.map(item => ({
+              id: item.id,
+              description: item.name,
+              result: '',
+              photos: []
+            }));
+            
+            this.setData({
+              items: asmItems
+            });
+          } else {
+            if (loadingShown) {
+              wx.hideLoading();
+              loadingShown = false;
+            }
+            wx.showToast({ 
+              title: res.result ? (res.result.message || '未找到检查项') : '加载检查项失败', 
+              icon: 'none' 
+            });
+          }
+        },
+        fail: err => {
+          console.error('获取巡检计划失败:', err);
+          if (loadingShown) {
+            wx.hideLoading();
+            loadingShown = false;
+          }
+          wx.showToast({ title: '加载失败，请重试', icon: 'none' });
+        },
+        complete: () => {
+          this.setData({ loading: false });
+          if (loadingShown) {
+            wx.hideLoading();
+          }
+        }
+      });
+    } catch (error) {
+      console.error('云函数调用异常:', error);
+      this.setData({ loading: false });
+      if (loadingShown) {
+        wx.hideLoading();
+      }
+      wx.showToast({ title: '系统错误，请重试', icon: 'none' });
     }
   },
 
@@ -161,7 +216,7 @@ Page({
       asmItems: this.data.items
     };
 
-    // 这里可以根据流程跳转到下一页面，暂时返回首页
+    // 直接跳转到总结页面
     wx.navigateTo({
       url: '/pages/summary/summary',
       success: function(res) {
@@ -169,4 +224,4 @@ Page({
       }
     });
   }
-}) 
+}); 

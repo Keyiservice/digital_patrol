@@ -98,18 +98,27 @@ Page({
       return;
     }
     
-    // 保存数据并跳转到下一页
+    // 保存数据
     const data = {
       ...this.data.previousPageData, // 包含上一页的数据
       tNumber: this.data.tNumber,
       cookieNumber: this.data.cookieNumber
     };
     
+    // 直接跳转到检查页面
     wx.navigateTo({
-      url: '/pages/appearance_first/appearance_first',
+      url: '/pages/qua-inspection/qua-inspection',
       success: function(res) {
-        // 传递数据给下一页
+        // 传递数据给检查页面
         res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
+      },
+      fail: function(err) {
+        console.error('跳转到检查页面失败:', err);
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none',
+          duration: 2000
+        });
       }
     });
   }

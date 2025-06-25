@@ -3,9 +3,10 @@ Page({
     records: [],
     filteredRecords: [],
     // 筛选条件
-    statusOptions: ['全部状态', '待维修', '待质检', '已完成'],
-    statusIndex: 0,
-    dateRange: ''
+    departmentOptions: ['全部', '生产', '质量', '设备'],
+    departmentIndex: 0,
+    startDate: '',
+    endDate: ''
   },
 
   onLoad() {
@@ -13,145 +14,67 @@ Page({
   },
 
   onShow() {
-    this.fetchRecords();
+    // onShow可以不强制刷新
   },
 
-  fetchRecords() {
+  fetchRecords(filter = null) {
     wx.showLoading({ title: '加载中...' });
     wx.cloud.callFunction({
       name: 'getBreakdownRecords',
+      data: { filter },
       success: res => {
         wx.hideLoading();
-        
-        // 获取云端数据
-        let cloudRecords = [];
-        if (res && res.result && res.result.data) {
-          cloudRecords = res.result.data;
-        }
-        
-        // 获取本地数据
-        const localRecords = wx.getStorageSync('breakdownRecords') || [];
-        
-        // 合并云端和本地数据
-        const allRecords = [...cloudRecords];
-        
-        // 添加未同步到云端的本地记录
-        localRecords.forEach(localItem => {
-          const isInCloud = cloudRecords.some(cloudItem => {
-            return (localItem.id && cloudItem._id === localItem.id) || 
-                  (localItem.createTime && cloudItem.createTime === localItem.createTime);
+        if (res.result && res.result.success) {
+          const records = res.result.data.map(record => {
+            switch(record.status) {
+              case 'pending': record.statusText = '待维修'; break;
+              case 'repaired': record.statusText = '待质检'; break;
+              case 'completed': record.statusText = '已完成'; break;
+              default: record.statusText = '未知'; break;
+            }
+            return record;
           });
-          
-          if (!isInCloud) {
-            allRecords.push(localItem);
-          }
-        });
-        
-        // 处理状态显示
-        allRecords.forEach(record => {
-          switch(record.status) {
-            case 'pending':
-              record.statusText = '待维修';
-              break;
-            case 'repaired':
-              record.statusText = '待质检';
-              break;
-            case 'completed':
-              record.statusText = '已完成';
-              break;
-            default:
-              record.statusText = '未知状态';
-              break;
-          }
-        });
-        
-        // 按创建时间降序排序
-        const sorted = allRecords.sort((a, b) => {
-          const timeA = typeof a.createTime === 'string' ? new Date(a.createTime).getTime() : a.createTime;
-          const timeB = typeof b.createTime === 'string' ? new Date(b.createTime).getTime() : b.createTime;
-          return timeB - timeA;
-        });
-        
-        this.setData({ records: sorted }, this.filterRecords);
+          this.setData({ records: records, filteredRecords: records });
+        } else {
+          wx.showToast({ title: '加载失败', icon: 'none' });
+        }
       },
       fail: err => {
-        console.error('获取记录失败:', err);
         wx.hideLoading();
-        this.getRecordsFromStorage();
-        wx.showToast({ title: '展示本地数据', icon: 'none' });
+        wx.showToast({ title: '请求失败', icon: 'none' });
       }
     });
   },
 
-  getRecordsFromStorage() {
-    const localRecords = wx.getStorageSync('breakdownRecords') || [];
-    
-    localRecords.forEach(record => {
-      switch(record.status) {
-        case 'pending':
-          record.statusText = '待维修';
-          break;
-        case 'repaired':
-          record.statusText = '待质检';
-          break;
-        case 'completed':
-          record.statusText = '已完成';
-          break;
-        default:
-          record.statusText = '未知状态';
-          break;
-      }
-    });
-    
-    if (localRecords.length > 0) {
-      const sorted = localRecords.sort((a, b) => {
-        const timeA = typeof a.createTime === 'string' ? new Date(a.createTime).getTime() : a.createTime;
-        const timeB = typeof b.createTime === 'string' ? new Date(b.createTime).getTime() : b.createTime;
-        return timeB - timeA;
-      });
-      this.setData({ records: sorted }, this.filterRecords);
-    } else {
-      this.setData({ records: [] }, this.filterRecords);
-    }
-  },
-
-  onStatusChange(e) {
-    const statusIndex = e.detail.value;
-    this.setData({ statusIndex }, this.filterRecords);
+  onDepartmentChange(e) {
+    this.setData({ departmentIndex: e.detail.value });
   },
 
   onDateChange(e) {
-    const dateRange = e.detail.value;
-    this.setData({ dateRange }, this.filterRecords);
+    const { field } = e.currentTarget.dataset;
+    this.setData({ [field]: e.detail.value });
   },
 
-  clearFilter() {
-    this.setData({
-      statusIndex: 0,
-      dateRange: ''
-    }, this.filterRecords);
+  onFilter() {
+    const department = this.data.departmentOptions[this.data.departmentIndex];
+    const filter = {
+      department: department === '全部' ? null : department,
+      startDate: this.data.startDate,
+      endDate: this.data.endDate
+    };
+    Object.keys(filter).forEach(key => {
+      if (!filter[key]) delete filter[key];
+    });
+    this.fetchRecords(filter);
   },
-  
-  filterRecords() {
-    const { records, statusIndex, dateRange } = this.data;
-    
-    let filtered = [...records];
-    
-    // 按状态筛选
-    if (statusIndex > 0) {
-      const statusText = this.data.statusOptions[statusIndex];
-      filtered = filtered.filter(r => r.statusText === statusText);
-    }
-    
-    // 按日期筛选
-    if (dateRange) {
-      filtered = filtered.filter(r => {
-        const recordDate = r.reportDate || r.inspectionDate;
-        return recordDate === dateRange;
-      });
-    }
-    
-    this.setData({ filteredRecords: filtered });
+
+  onReset() {
+    this.setData({
+      departmentIndex: 0,
+      startDate: '',
+      endDate: ''
+    });
+    this.fetchRecords();
   },
 
   onViewDetails(e) {

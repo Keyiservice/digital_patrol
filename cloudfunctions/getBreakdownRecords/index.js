@@ -4,45 +4,36 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
 
 const db = cloud.database()
+const _ = db.command
 const collection = db.collection('breakdown_records')
-const MAX_LIMIT = 100 // 每次最多获取100条记录
 
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
-    // 获取记录总数
-    const countResult = await collection.count()
-    const total = countResult.total
-    
-    // 计算需要分几次取
-    const batchTimes = Math.ceil(total / MAX_LIMIT)
-    
-    // 承载所有读操作的promise
-    const tasks = []
-    
-    for (let i = 0; i < batchTimes; i++) {
-      const promise = collection
-        .skip(i * MAX_LIMIT)
-        .limit(MAX_LIMIT)
-        .orderBy('createTime', 'desc')
-        .get()
-      
-      tasks.push(promise)
+    const { filter } = event;
+    let query = collection;
+
+    if (filter && Object.keys(filter).length > 0) {
+      const whereClause = {};
+      if (filter.department) whereClause.department = filter.department;
+      if (filter.startDate && filter.endDate) {
+        whereClause.createTime = _.gte(new Date(filter.startDate).getTime()).and(_.lte(new Date(filter.endDate).getTime() + 24 * 60 * 60 * 1000 - 1));
+      } else if (filter.startDate) {
+        whereClause.createTime = _.gte(new Date(filter.startDate).getTime());
+      } else if (filter.endDate) {
+        whereClause.createTime = _.lte(new Date(filter.endDate).getTime() + 24 * 60 * 60 * 1000 - 1);
+      }
+      query = query.where(whereClause).orderBy('createTime', 'desc');
+    } else {
+      query = query.orderBy('createTime', 'desc').limit(10);
     }
     
-    // 等待所有数据取完
-    const results = (await Promise.all(tasks)).reduce((acc, cur) => {
-      return {
-        data: acc.data.concat(cur.data),
-        errMsg: acc.errMsg
-      }
-    }, { data: [], errMsg: '' })
-    
+    const res = await query.get();
+      
     return {
       success: true,
-      data: results.data,
-      total
-    }
+      data: res.data
+    };
   } catch (error) {
     console.error('获取故障记录失败:', error)
     return {

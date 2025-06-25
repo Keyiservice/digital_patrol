@@ -17,67 +17,72 @@ Page({
     deviceOptions: ['全部设备'],
     deviceIndex: 0,
     selectedProject: 'ALL',
-    selectedDevice: '全部设备'
+    selectedDevice: '全部设备',
+    startDate: '',
+    endDate: ''
   },
   onLoad() {
     this.fetchRecords();
   },
   onShow() {
-    this.fetchRecords();
+    // onShow可以不强制刷新，或只刷新默认列表，避免频繁调用
+    // this.fetchRecords(); 
   },
   onDateChange(e) {
-    this.setData({ searchDate: e.detail.value }, this.filterRecords);
+    const { field } = e.currentTarget.dataset;
+    this.setData({ [field]: e.detail.value });
   },
   onProjectChange(e) {
     const projectIndex = e.detail.value;
     const selectedProject = this.data.projectOptions[projectIndex];
     const deviceOptions = this.data.deviceMap[selectedProject] || ['全部设备'];
-    
     this.setData({
       projectIndex,
       selectedProject,
       deviceOptions,
       deviceIndex: 0,
       selectedDevice: '全部设备'
-    }, this.filterRecords);
+    });
   },
   onDeviceChange(e) {
     const deviceIndex = e.detail.value;
     const selectedDevice = this.data.deviceOptions[deviceIndex];
-    
     this.setData({
       deviceIndex,
       selectedDevice
-    }, this.filterRecords);
+    });
   },
-  filterRecords() {
-    const { records, searchDate, selectedProject, selectedDevice } = this.data;
-    
-    // 筛选记录
-    let filtered = [...records];
-    
-    // 按日期筛选
-    if (searchDate) {
-      filtered = filtered.filter(r => r.date === searchDate);
-    }
-    
-    // 按项目筛选
-    if (selectedProject !== 'ALL') {
-      filtered = filtered.filter(r => r.project === selectedProject);
-    }
-    
-    // 按设备筛选
-    if (selectedDevice !== '全部设备') {
-      filtered = filtered.filter(r => r.device === selectedDevice);
-    }
-    
-    this.setData({ filteredRecords: filtered });
+  onFilter() {
+    const filter = {
+      tpm_type: this.data.selectedProject === 'ALL' ? null : this.data.selectedProject,
+      device_id: this.data.selectedDevice === '全部设备' ? null : this.data.selectedDevice,
+      startDate: this.data.startDate,
+      endDate: this.data.endDate
+    };
+    // 清理无效的filter项
+    Object.keys(filter).forEach(key => {
+      if (!filter[key]) delete filter[key];
+    });
+    this.fetchRecords(filter);
   },
-  fetchRecords() {
+  onReset() {
+    this.setData({
+      projectIndex: 0,
+      selectedProject: 'ALL',
+      deviceOptions: ['全部设备'],
+      deviceIndex: 0,
+      selectedDevice: '全部设备',
+      startDate: '',
+      endDate: ''
+    });
+    this.fetchRecords(); // 不带参数，获取默认10条
+  },
+  fetchRecords(filter = null) {
     console.log('[TPM列表] 开始获取记录');
     wx.showLoading({ title: 'Loading...' });
     wx.cloud.callFunction({
       name: 'getTpmRecords',
+      data: { filter },
       success: res => {
         console.log('[TPM列表] getTpmRecords调用成功, 结果:', res);
         wx.hideLoading();
@@ -136,7 +141,7 @@ Page({
         });
         
         console.log('[TPM列表] 最终展示数据条数:', sorted.length);
-        this.setData({ records: sorted }, this.filterRecords);
+        this.setData({ records: sorted, filteredRecords: sorted });
       },
       fail: err => {
         console.error('[TPM列表] getTpmRecords调用失败:', err);
@@ -159,10 +164,10 @@ Page({
         return timeB - timeA;
       });
       console.log('[TPM列表] 本地数据排序完成');
-      this.setData({ records: sorted }, this.filterRecords);
+      this.setData({ records: sorted, filteredRecords: sorted });
     } else {
       console.log('[TPM列表] 本地无数据');
-      this.setData({ records: [] }, this.filterRecords);
+      this.setData({ records: [], filteredRecords: [] });
     }
   },
   clearSearch() {
@@ -172,8 +177,10 @@ Page({
       selectedProject: 'ALL',
       deviceOptions: ['全部设备'],
       deviceIndex: 0,
-      selectedDevice: '全部设备'
-    }, this.filterRecords);
+      selectedDevice: '全部设备',
+      startDate: '',
+      endDate: ''
+    });
   },
   onViewRecord(e) {
     const id = e.currentTarget.dataset.id;

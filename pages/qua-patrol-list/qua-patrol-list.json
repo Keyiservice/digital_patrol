@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "质量巡检记录",
+  "usingComponents": {
+    "custom-header": "/components/custom-header/custom-header"
+  },
+  "enablePullDownRefresh": true
+} 

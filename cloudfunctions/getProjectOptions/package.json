@@ -1,7 +1,7 @@
 {
-  "name": "getQuaInspectionPlan",
+  "name": "getProjectOptions",
   "version": "1.0.0",
-  "description": "根据项目和过程获取质量巡检计划",
+  "description": "获取项目选项列表",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "wx-server-sdk": "~2.6.3",
-    "csv-parse": "^5.3.0"
+    "wx-server-sdk": "~2.6.3"
   }
 } 

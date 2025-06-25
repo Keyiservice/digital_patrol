@@ -1,7 +1,7 @@
 {
-  "name": "getQuaInspectionPlan",
+  "name": "initQuaInspectionPlans",
   "version": "1.0.0",
-  "description": "根据项目和过程获取质量巡检计划",
+  "description": "初始化质量巡检计划数据",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

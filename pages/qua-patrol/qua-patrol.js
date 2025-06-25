@@ -26,7 +26,7 @@ Page({
     inspectionStarted: false,
 
     // 阶段一：选择数据
-    projects: ['G68', 'P71A'],
+    projects: [], // 初始化为空数组
     projectIndex: null,
     processes: ['BMM', 'FC', 'ASM'],
     processIndex: null,
@@ -46,6 +46,9 @@ Page({
       return;
     }
     
+    // **新增**：加载动态项目列表
+    this.loadProjectOptions();
+
     // 获取上一页传递的参数
     try {
       const eventChannel = this.getOpenerEventChannel();
@@ -65,6 +68,47 @@ Page({
   },
   
   /**
+   * **新增**：加载项目选项的方法
+   */
+  loadProjectOptions: function() {
+    wx.showLoading({ title: '加载项目...' });
+    try {
+      wx.cloud.callFunction({
+        name: 'getProjectOptions',
+        success: res => {
+          if (res.result && res.result.success) {
+            this.setData({
+              projects: res.result.data
+            });
+          } else {
+            wx.showToast({
+              title: res.result.message || '项目加载失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: err => {
+          wx.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+          console.error("获取项目列表失败: ", err);
+        },
+        complete: () => {
+          wx.hideLoading();
+        }
+      });
+    } catch (e) {
+      console.error("调用云函数时发生错误: ", e);
+      wx.hideLoading(); // 在同步错误时也确保关闭loading
+      wx.showToast({
+        title: '系统错误',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
@@ -79,7 +123,8 @@ Page({
    */
   onProjectChange: function(e) {
     this.setData({
-      projectIndex: e.detail.value
+      projectIndex: e.detail.value,
+      projectSelected: this.data.projects[e.detail.value]
     });
   },
 
@@ -88,7 +133,8 @@ Page({
    */
   onProcessChange: function(e) {
     this.setData({
-      processIndex: e.detail.value
+      processIndex: e.detail.value,
+      processSelected: this.data.processes[e.detail.value]
     });
   },
 
@@ -151,7 +197,7 @@ Page({
    * 验证表单是否填写完整
    */
   validateForm: function() {
-    if (!this.data.projectSelected) {
+    if (this.data.projectIndex === null) {
       wx.showToast({
         title: '请选择项目',
         icon: 'none',
@@ -160,7 +206,7 @@ Page({
       return false;
     }
     
-    if (!this.data.processSelected) {
+    if (this.data.processIndex === null) {
       wx.showToast({
         title: '请选择流程',
         icon: 'none',
@@ -190,6 +236,19 @@ Page({
     });
   },
 
+  goToList: function() {
+    wx.navigateTo({
+      url: '/pages/qua-patrol-list/qua-patrol-list',
+      fail: err => {
+        wx.showToast({
+          title: '页面跳转失败',
+          icon: 'none'
+        });
+        console.error("跳转失败: ", err);
+      }
+    });
+  },
+
   /**
    * 处理下一页按钮点击
    */
@@ -202,38 +261,27 @@ Page({
     // 保存选择数据
     const data = {
       ...this.data.previousPageData, // 包含上一页的数据
-      projectSelected: this.data.projectSelected,
-      processSelected: this.data.processSelected,
+      projectSelected: this.data.projects[this.data.projectIndex],
+      processSelected: this.data.processes[this.data.processIndex],
       shiftSelected: this.data.shiftSelected
     };
     
-    // 根据选择的流程决定跳转路径
-    let nextPage = '';
+    console.log('跳转到cookie_number页面，传递数据:', data);
     
-    switch (this.data.processSelected) {
-      case 'BMM':
-        nextPage = '/pages/appearance_first/appearance_first';
-        break;
-      case 'FC':
-        nextPage = '/pages/fc/fc';
-        break;
-      case 'ASM':
-        nextPage = '/pages/asm/asm';
-        break;
-      default:
+    // 先跳转到cookie_number页面
+    wx.navigateTo({
+      url: '/pages/cookie_number/cookie_number',
+      success: function(res) {
+        // 传递数据给cookie_number页面
+        res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
+      },
+      fail: function(err) {
+        console.error('跳转到cookie_number页面失败:', err);
         wx.showToast({
-          title: '请选择有效的流程',
+          title: '页面跳转失败',
           icon: 'none',
           duration: 2000
         });
-        return;
-    }
-    
-    wx.navigateTo({
-      url: nextPage,
-      success: function(res) {
-        // 传递数据给下一页
-        res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
       }
     });
   },
@@ -254,6 +302,9 @@ Page({
   },
 
   startInspection: function() {
+    // 这个函数不再直接使用，改用onNext函数跳转到cookie_number页面
+    // 保留这个函数作为后备
+
     const { projectIndex, processIndex, projects, processes } = this.data;
 
     if (projectIndex === null || processIndex === null) {
@@ -261,37 +312,70 @@ Page({
       return;
     }
 
-    const selectedProject = projects[projectIndex];
-    const selectedProcess = processes[processIndex];
+    const selectedProject = this.data.projectSelected || projects[projectIndex];
+    const selectedProcess = this.data.processSelected || processes[processIndex];
 
+    // 在调用云函数前显示加载提示
     wx.showLoading({ title: '加载巡检项...' });
+    let loadingShown = true; // 用于跟踪loading状态
     
-    wx.cloud.callFunction({
-      name: 'getQuaInspectionPlan',
-      data: {
-        project: selectedProject,
-        process: selectedProcess
-      },
-      success: res => {
-        if (res.result && res.result.success && res.result.data.length > 0) {
-          const items = res.result.data.map(item => ({...item, isAbnormal: false, abnormalDesc: '', imageUrl: ''}));
-          this.setData({
-            inspectionStarted: true,
-            inspectionStartTime: util.formatTime(new Date()),
-            inspectionItems: items
-          });
-        } else {
-          wx.showToast({ title: res.result.message || '未找到计划', icon: 'none' });
+    try {
+      wx.cloud.callFunction({
+        name: 'getQuaInspectionPlan',
+        data: {
+          project: selectedProject,
+          process: selectedProcess
+        },
+        success: res => {
+          if (res.result && res.result.success && res.result.data.length > 0) {
+            // 处理返回的巡检项数据
+            const items = res.result.data.map(item => ({
+              id: item.id,
+              name: item.name,
+              isAbnormal: false,
+              abnormalDesc: '',
+              imageUrl: ''
+            }));
+            
+            this.setData({
+              inspectionStarted: true,
+              inspectionStartTime: util.formatTime(new Date()),
+              inspectionItems: items
+            });
+          } else {
+            // 显示错误消息
+            wx.hideLoading(); // 先隐藏loading
+            loadingShown = false;
+            wx.showToast({ 
+              title: res.result ? (res.result.message || '未找到计划') : '未能获取巡检项', 
+              icon: 'none' 
+            });
+          }
+        },
+        fail: err => {
+          console.error('获取巡检计划失败:', err);
+          // 发生错误时确保隐藏loading
+          if (loadingShown) {
+            wx.hideLoading();
+            loadingShown = false;
+          }
+          wx.showToast({ title: '加载失败，请重试', icon: 'none' });
+        },
+        complete: () => {
+          // 仅当loading仍然显示时才隐藏它
+          if (loadingShown) {
+            wx.hideLoading();
+          }
         }
-      },
-      fail: err => {
-        wx.showToast({ title: '加载失败，请重试', icon: 'none' });
-        console.error(err);
-      },
-      complete: () => {
+      });
+    } catch (error) {
+      console.error('云函数调用异常:', error);
+      // 确保在异常情况下也能隐藏loading
+      if (loadingShown) {
         wx.hideLoading();
       }
-    });
+      wx.showToast({ title: '系统错误，请重试', icon: 'none' });
+    }
   },
 
   onAbnormalInput: function(e) {
@@ -315,24 +399,48 @@ Page({
       sourceType: ['camera'],
       success: res => {
         const tempFilePath = res.tempFilePaths[0];
-        wx.showLoading({ title: '上传中...' });
-        const cloudPath = `qua-patrol-images/${Date.now()}-${Math.floor(Math.random() * 1000)}${tempFilePath.match(/\.\w+$/)[0]}`;
         
-        wx.cloud.uploadFile({
-          cloudPath: cloudPath,
-          filePath: tempFilePath,
-          success: uploadRes => {
-            if (itemIndex > -1) {
-              this.setData({
-                [`inspectionItems[${itemIndex}].imageUrl`]: uploadRes.fileID
-              });
+        // 在上传前显示loading
+        wx.showLoading({ title: '上传中...' });
+        let loadingShown = true; // 跟踪loading状态
+        
+        try {
+          const cloudPath = `qua-patrol-images/${Date.now()}-${Math.floor(Math.random() * 1000)}${tempFilePath.match(/\.\w+$/)[0]}`;
+          
+          wx.cloud.uploadFile({
+            cloudPath: cloudPath,
+            filePath: tempFilePath,
+            success: uploadRes => {
+              if (itemIndex > -1) {
+                this.setData({
+                  [`inspectionItems[${itemIndex}].imageUrl`]: uploadRes.fileID
+                });
+              }
+            },
+            fail: err => {
+              console.error('文件上传失败:', err);
+              // 失败时确保隐藏loading
+              if (loadingShown) {
+                wx.hideLoading();
+                loadingShown = false;
+              }
+              wx.showToast({ title: '上传失败，请重试', icon: 'none' });
+            },
+            complete: () => {
+              // 仅当loading仍然显示时才隐藏它
+              if (loadingShown) {
+                wx.hideLoading();
+              }
             }
-          },
-          fail: console.error,
-          complete: () => {
+          });
+        } catch (error) {
+          console.error('文件上传异常:', error);
+          // 确保在异常情况下也能隐藏loading
+          if (loadingShown) {
             wx.hideLoading();
           }
-        });
+          wx.showToast({ title: '上传出错，请重试', icon: 'none' });
+        }
       }
     });
   },
@@ -372,60 +480,78 @@ Page({
       process: this.data.processes[this.data.processIndex],
       inspectionTime: this.data.inspectionStartTime,
       inspector: wx.getStorageSync('userInfo')?.accountName || '未知用户',
-      items: this.data.inspectionItems
+      items: this.data.inspectionItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        isAbnormal: item.isAbnormal,
+        abnormalDesc: item.abnormalDesc,
+        imageUrl: item.imageUrl
+      }))
     };
 
+    // 在提交前显示loading
     wx.showLoading({ title: '正在保存...' });
-
-    wx.cloud.callFunction({
-      name: 'saveQuaPatrolRecord',
-      data: {
-        record: submitData
-      },
-      success: res => {
-        if (res.result && res.result.success) {
-          wx.showModal({
-            title: '保存成功',
-            content: '质量巡检记录已保存。',
-            showCancel: false,
-            success: () => {
-              this.setData({
-                inspectionStarted: false,
-                projectIndex: null,
-                processIndex: null,
-                inspectionItems: []
-              });
+    let loadingShown = true; // 跟踪loading状态
+    
+    try {
+      wx.cloud.callFunction({
+        name: 'saveQuaPatrolRecord',
+        data: {
+          record: submitData
+        },
+        success: res => {
+          if (res.result && res.result.success) {
+            // 成功时隐藏loading
+            if (loadingShown) {
+              wx.hideLoading();
+              loadingShown = false;
             }
-          });
-        } else {
-          wx.showToast({ title: res.result.message || '保存失败', icon: 'none' });
+            
+            wx.showModal({
+              title: '保存成功',
+              content: '质量巡检记录已保存。',
+              showCancel: false,
+              success: () => {
+                this.setData({
+                  inspectionStarted: false,
+                  projectIndex: null,
+                  processIndex: null,
+                  inspectionItems: []
+                });
+              }
+            });
+          } else {
+            // 失败时隐藏loading并显示错误
+            if (loadingShown) {
+              wx.hideLoading();
+              loadingShown = false;
+            }
+            wx.showToast({ title: res.result?.message || '保存失败', icon: 'none' });
+          }
+        },
+        fail: err => {
+          console.error('保存巡检记录失败:', err);
+          // 失败时确保隐藏loading
+          if (loadingShown) {
+            wx.hideLoading();
+            loadingShown = false;
+          }
+          wx.showToast({ title: '保存失败，请重试', icon: 'none' });
+        },
+        complete: () => {
+          // 仅当loading仍然显示时才隐藏它
+          if (loadingShown) {
+            wx.hideLoading();
+          }
         }
-      },
-      fail: err => {
-        wx.showToast({ title: '保存失败，请重试', icon: 'none' });
-        console.error(err);
-      },
-      complete: () => {
+      });
+    } catch (error) {
+      console.error('提交数据异常:', error);
+      // 确保在异常情况下也能隐藏loading
+      if (loadingShown) {
         wx.hideLoading();
       }
-    });
-  },
-
-  // 模拟数据函数
-  getMockInspectionItems(project, process) {
-    // 实际应从数据库获取，这里只做演示
-    const baseItems = [
-      { id: 1, name: '外观是否有划痕、凹陷', isAbnormal: false, abnormalDesc: '', imageUrl: ''},
-      { id: 2, name: '标签是否粘贴正确、清晰', isAbnormal: false, abnormalDesc: '', imageUrl: ''},
-      { id: 3, name: '产品结合处是否对齐、有毛刺', isAbnormal: false, abnormalDesc: '', imageUrl: ''}
-    ];
-    // 可以根据 project 和 process 返回不同的检查项
-    if (project === 'P71A') {
-      baseItems.push({ id: 4, name: 'P71A专属检查项：特殊卡扣是否到位', isAbnormal: false, abnormalDesc: '', imageUrl: ''});
+      wx.showToast({ title: '系统错误，请重试', icon: 'none' });
     }
-    if (process === 'ASM') {
-      baseItems.push({ id: 5, name: 'ASM过程专属：螺丝扭矩是否达标', isAbnormal: false, abnormalDesc: '', imageUrl: ''});
-    }
-    return baseItems;
   }
 })

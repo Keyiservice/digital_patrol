@@ -65,6 +65,37 @@ page {
   margin-bottom: 20rpx;
 }
 
+/* T-Number和Cookie Number信息区域 */
+.info-section {
+  background-color: #e8f4f8; /* 浅蓝色背景 */
+  border-radius: 15rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 10rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #0d3371;
+  width: 200rpx;
+  font-size: 28rpx;
+}
+
+.info-value {
+  color: #333;
+  flex: 1;
+  font-size: 28rpx;
+}
+
 /* 表单区域样式 */
 .form-section {
   flex: 1; /* 占据剩余空间 */

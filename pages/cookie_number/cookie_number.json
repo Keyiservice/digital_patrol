@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "custom-header": "/components/custom-header/custom-header"
+    "custom-header": "/components/custom-header/custom-header",
+    "user-info": "/components/user-info/user-info"
   },
   "navigationStyle": "custom"
 }

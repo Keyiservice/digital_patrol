@@ -1,0 +1,69 @@
+<!--pages/qua-patrol-list/qua-patrol-list.wxml-->
+<wxs src="./list.wxs" module="tools" />
+<custom-header />
+<view class="container">
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+    <view class="filter-row">
+      <input class="filter-input" placeholder="工序" value="{{filterProcess}}" bindinput="onFilterInputChange" data-field="filterProcess" />
+      <input class="filter-input" placeholder="项目" value="{{filterProject}}" bindinput="onFilterInputChange" data-field="filterProject" />
+    </view>
+    <view class="filter-row">
+      <input class="filter-input" placeholder="T-Number" value="{{filterTNumber}}" bindinput="onFilterInputChange" data-field="filterTNumber" />
+      <input class="filter-input" placeholder="巡检员" value="{{filterInspector}}" bindinput="onFilterInputChange" data-field="filterInspector" />
+    </view>
+    <view class="filter-row">
+      <picker mode="date" value="{{startDate}}" bindchange="onDateChange" data-field="startDate">
+        <view class="picker">
+          开始日期: {{startDate || '请选择'}}
+        </view>
+      </picker>
+      <picker mode="date" value="{{endDate}}" bindchange="onDateChange" data-field="endDate">
+        <view class="picker">
+          结束日期: {{endDate || '请选择'}}
+        </view>
+      </picker>
+    </view>
+    <view class="filter-buttons">
+      <button class="btn filter-btn" bindtap="onFilter">筛选</button>
+      <button class="btn reset-btn" bindtap="onReset">重置</button>
+    </view>
+  </view>
+
+  <scroll-view scroll-y="true" class="record-scroll-view" refresher-enabled="true" bindrefresherrefresh="onPullDownRefresh" refresher-triggered="{{isRefreshing}}">
+    <block wx:if="{{filteredRecords.length > 0}}">
+      <view class="record-card" wx:for="{{filteredRecords}}" wx:key="_id" bindtap="viewRecord" data-id="{{item._id}}">
+        <view class="card-header">
+          <text class="process-text">{{item.process}} - {{item.project}}</text>
+          <text class="status-text">{{tools.getStatus(item.items)}}</text>
+        </view>
+        <view class="card-body">
+          <view class="info-row">
+            <text class="label">巡检员:</text>
+            <text class="value">{{item.inspector}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">T-Number:</text>
+            <text class="value">{{item.tNumber}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">Cookie No:</text>
+            <text class="value">{{item.cookieNumber}}</text>
+          </view>
+        </view>
+        <view class="card-footer">
+          <text class="date-text">{{item.inspectionTime}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty-container">
+        <text class="empty-text">{{loading ? '正在加载...' : '暂无巡检记录'}}</text>
+      </view>
+    </block>
+  </scroll-view>
+
+  <view class="bottom-section">
+    <button class="nav-btn back-btn" bindtap="onBack">返回</button>
+  </view>
+</view> 

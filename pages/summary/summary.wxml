@@ -15,6 +15,18 @@
     <text class="sub-title-text">PATROL SUMMARY</text>
   </view>
   
+  <!-- T-Number和Cookie Number显示 -->
+  <view class="info-section">
+    <view class="info-row">
+      <text class="info-label">T-NUMBER:</text>
+      <text class="info-value">{{tNumber}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">COOKIE NUMBER:</text>
+      <text class="info-value">{{cookieNumber}}</text>
+    </view>
+  </view>
+  
   <!-- 表单区域 -->
   <view class="form-section">
     <block wx:for="{{items}}" wx:for-item="item" wx:for-index="itemIndex" wx:key="id">

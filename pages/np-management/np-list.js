@@ -3,7 +3,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    records: [] // 存储记录列表
+    records: [], // 存储记录列表
+    // 添加筛选字段
+    filterProject: '',
+    filterReason: '',
+    startDate: '',
+    endDate: ''
   },
 
   /**
@@ -25,7 +30,7 @@ Page({
   /**
    * 获取记录列表
    */
-  fetchRecords: function () {
+  fetchRecords: function (filter = null) {
     wx.showLoading({
       title: 'Loading...',
       mask: true
@@ -35,6 +40,7 @@ Page({
     try {
       wx.cloud.callFunction({
         name: 'getNpRecords',
+        data: { filter },
         success: res => {
           wx.hideLoading();
           
@@ -260,5 +266,42 @@ Page({
     wx.navigateBack({
       delta: 1
     });
+  },
+
+  // 新增：处理输入框变化
+  onFilterInputChange: function(e) {
+    const { field } = e.currentTarget.dataset;
+    this.setData({ [field]: e.detail.value });
+  },
+  
+  // 新增：处理日期变化
+  onDateChange: function(e) {
+    const { field } = e.currentTarget.dataset;
+    this.setData({ [field]: e.detail.value });
+  },
+
+  // 新增：筛选按钮点击
+  onFilter: function() {
+    const filter = {
+      project: this.data.filterProject,
+      reason: this.data.filterReason,
+      startDate: this.data.startDate,
+      endDate: this.data.endDate
+    };
+    Object.keys(filter).forEach(key => {
+      if (!filter[key]) delete filter[key];
+    });
+    this.fetchRecords(filter);
+  },
+
+  // 新增：重置按钮点击
+  onReset: function() {
+    this.setData({
+      filterProject: '',
+      filterReason: '',
+      startDate: '',
+      endDate: ''
+    });
+    this.fetchRecords();
   }
 }); 

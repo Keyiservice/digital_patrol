@@ -13,7 +13,9 @@ Page({
         photos: []
       }
     ],
-    previousPageData: null // 存储上一页传递的数据
+    previousPageData: null, // 存储上一页传递的数据
+    tNumber: '',  // T-Number
+    cookieNumber: '' // Cookie Number
   },
 
   /**
@@ -27,13 +29,20 @@ Page({
     }
     
     // 获取上一页传递的参数
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on('acceptDataFromPreviousPage', (data) => {
-      console.log('接收到上一页数据:', data);
-      this.setData({
-        previousPageData: data.data
+    try {
+      const eventChannel = this.getOpenerEventChannel();
+      eventChannel.on('acceptDataFromPreviousPage', (data) => {
+        console.log('接收到上一页数据:', data);
+        const prevData = data.data || {};
+        this.setData({
+          previousPageData: prevData,
+          tNumber: prevData.tNumber || '',
+          cookieNumber: prevData.cookieNumber || ''
+        });
       });
-    });
+    } catch (error) {
+      console.error('获取上一页数据失败:', error);
+    }
   },
   
   /**
@@ -134,6 +143,10 @@ Page({
     
     // 这里可以添加将所有巡检数据提交到数据库的逻辑
     console.log('所有巡检数据:', data);
+    
+    // 显示提交数据，包含T-Number和Cookie Number
+    console.log('T-Number:', this.data.tNumber);
+    console.log('Cookie Number:', this.data.cookieNumber);
 
     wx.showToast({
       title: '巡检完成，数据已提交！',

@@ -4,39 +4,121 @@ Page({
    * 页面的初始数据
    */
   data: {
-    items: [
-      { id: 1, description: 'SOLDER DEFECT', result: '', photos: [] },
-      { id: 2, description: 'MISSING COMPONENT', result: '', photos: [] },
-      { id: 3, description: 'WRONG COMPONENT', result: '', photos: [] }
-    ],
+    items: [],
     previousPageData: null, // 存储上一页传递的数据
     currentDate: '', // 当前日期
-    currentTime: ''  // 当前时间
+    currentTime: '',  // 当前时间
+    loading: false, // 加载状态
+    tNumber: '',  // T-Number
+    cookieNumber: '' // Cookie Number
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let previousPageData = {};
     try {
       const eventChannel = this.getOpenerEventChannel && this.getOpenerEventChannel();
       if (eventChannel && typeof eventChannel.on === 'function') {
         eventChannel.on('acceptDataFromPreviousPage', (data) => {
-          previousPageData = data.data || {};
+          const prevData = data.data || {};
           this.setData({
-            previousPageData
+            previousPageData: prevData,
+            tNumber: prevData.tNumber || '',
+            cookieNumber: prevData.cookieNumber || ''
           });
+          
+          // 加载巡检项目
+          this.loadInspectionItems(prevData.projectSelected, prevData.processSelected);
         });
       } else {
+        console.warn('无法获取上一页传递的数据通道');
         this.setData({
-          previousPageData
+          previousPageData: {},
+          tNumber: '',
+          cookieNumber: ''
         });
       }
     } catch (e) {
+      console.error('获取上一页数据失败:', e);
       this.setData({
-        previousPageData
+        previousPageData: {},
+        tNumber: '',
+        cookieNumber: ''
       });
+    }
+  },
+  
+  /**
+   * 加载巡检项目
+   */
+  loadInspectionItems: function(project, process) {
+    if (!project || !process) {
+      wx.showToast({
+        title: '缺少项目或流程参数',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    this.setData({ loading: true });
+    
+    wx.showLoading({ title: '加载检查项...' });
+    let loadingShown = true;
+    
+    try {
+      wx.cloud.callFunction({
+        name: 'getQuaInspectionPlan',
+        data: {
+          project: project,
+          process: process
+        },
+        success: res => {
+          if (res.result && res.result.success && res.result.data.length > 0) {
+            // 将巡检项转换为页面需要的格式
+            const fcItems = res.result.data.map(item => ({
+              id: item.id,
+              description: item.name,
+              result: '',
+              photos: []
+            }));
+            
+            this.setData({
+              items: fcItems
+            });
+          } else {
+            if (loadingShown) {
+              wx.hideLoading();
+              loadingShown = false;
+            }
+            wx.showToast({ 
+              title: res.result ? (res.result.message || '未找到检查项') : '加载检查项失败', 
+              icon: 'none' 
+            });
+          }
+        },
+        fail: err => {
+          console.error('获取巡检计划失败:', err);
+          if (loadingShown) {
+            wx.hideLoading();
+            loadingShown = false;
+          }
+          wx.showToast({ title: '加载失败，请重试', icon: 'none' });
+        },
+        complete: () => {
+          this.setData({ loading: false });
+          if (loadingShown) {
+            wx.hideLoading();
+          }
+        }
+      });
+    } catch (error) {
+      console.error('云函数调用异常:', error);
+      this.setData({ loading: false });
+      if (loadingShown) {
+        wx.hideLoading();
+      }
+      wx.showToast({ title: '系统错误，请重试', icon: 'none' });
     }
   },
 
@@ -119,7 +201,7 @@ Page({
     };
 
     wx.navigateTo({
-      url: '/pages/asm/asm',
+      url: '/pages/summary/summary',
       success: function(res) {
         res.eventChannel.emit('acceptDataFromPreviousPage', { data });
       }
