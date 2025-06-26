@@ -6,7 +6,9 @@ Page({
       plant: '',
       password: '',
       confirmPassword: ''
-    }
+    },
+    departmentOptions: ['Production', 'Engineering', 'Quality', 'Logistic', 'GM', 'HR', 'Safety', 'Finance'],
+    departmentIndex: -1, // -1 or null to show placeholder
   },
 
   onLoad() {
@@ -27,6 +29,13 @@ Page({
     });
   },
 
+  // 部门选择
+  onDepartmentChange(e) {
+    this.setData({
+      departmentIndex: e.detail.value
+    });
+  },
+
   // 密码输入
   onPasswordInput(e) {
     this.setData({
@@ -44,60 +53,45 @@ Page({
   // 表单验证
   validateForm() {
     const { name, plant, password, confirmPassword } = this.data.formData;
+    const { departmentIndex } = this.data;
 
     if (!name) {
-      wx.showToast({
-        title: '请输入姓名',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请输入姓名', icon: 'none' });
       return false;
     }
 
     if (name.length < 2) {
-      wx.showToast({
-        title: '姓名至少2个字符',
-        icon: 'none'
-      });
+      wx.showToast({ title: '姓名至少2个字符', icon: 'none' });
       return false;
     }
 
     if (!plant) {
-      wx.showToast({
-        title: '请输入工厂信息',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请输入工厂信息', icon: 'none' });
+      return false;
+    }
+
+    if (departmentIndex === -1) {
+      wx.showToast({ title: '请选择部门', icon: 'none' });
       return false;
     }
 
     if (!password) {
-      wx.showToast({
-        title: '请输入密码',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请输入密码', icon: 'none' });
       return false;
     }
 
     if (password.length < 6) {
-      wx.showToast({
-        title: '密码至少6位',
-        icon: 'none'
-      });
+      wx.showToast({ title: '密码至少6位', icon: 'none' });
       return false;
     }
 
     if (!confirmPassword) {
-      wx.showToast({
-        title: '请确认密码',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请确认密码', icon: 'none' });
       return false;
     }
 
     if (password !== confirmPassword) {
-      wx.showToast({
-        title: '两次密码不一致',
-        icon: 'none'
-      });
+      wx.showToast({ title: '两次密码不一致', icon: 'none' });
       return false;
     }
 
@@ -109,35 +103,35 @@ Page({
     if (!this.validateForm()) {
       return;
     }
-    const { name, plant, password } = this.data.formData;
+    
     wx.showLoading({ title: '注册中...' });
-    // 先检查用户名是否已存在
-    wx.cloud.database().collection('users').where({ name }).get({
-      success: res => {
-        if (res.data && res.data.length > 0) {
-          wx.hideLoading();
-          wx.showToast({ title: '该用户已注册', icon: 'none' });
+
+    const { name, plant, password } = this.data.formData;
+    const department = this.data.departmentOptions[this.data.departmentIndex];
+
+    wx.cloud.callFunction({
+      name: 'signUp',
+      data: {
+        username: name,
+        password: password,
+        plant: plant,
+        department: department
+      },
+      success: (res) => {
+        wx.hideLoading();
+        if (res.result.success) {
+          wx.showToast({ title: '注册成功', icon: 'success', duration: 2000 });
+          setTimeout(() => {
+            wx.redirectTo({ url: '/pages/login/login' });
+          }, 2000);
         } else {
-          // 写入新用户
-          wx.cloud.database().collection('users').add({
-            data: { name, plant, password },
-            success: () => {
-              wx.hideLoading();
-              wx.showToast({ title: '注册成功', icon: 'success', duration: 2000 });
-              setTimeout(() => {
-                wx.redirectTo({ url: '/pages/login/login' });
-              }, 2000);
-            },
-            fail: () => {
-              wx.hideLoading();
-              wx.showToast({ title: '注册失败', icon: 'none' });
-            }
-          });
+          wx.showToast({ title: res.result.message || '注册失败', icon: 'none' });
         }
       },
-      fail: () => {
+      fail: (err) => {
         wx.hideLoading();
-        wx.showToast({ title: '网络错误', icon: 'none' });
+        wx.showToast({ title: '调用服务失败', icon: 'none' });
+        console.error('注册失败:', err);
       }
     });
   },

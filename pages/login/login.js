@@ -71,35 +71,51 @@ Page({
       console.log('表单验证失败');
       return;
     }
+    
     wx.showLoading({ title: '登录中...' });
+
     const { accountName, password } = this.data.formData;
-    wx.cloud.database().collection('users').where({ name: accountName }).get({
+
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {
+        username: accountName,
+        password: password
+      },
       success: res => {
         wx.hideLoading();
-        if (res.data && res.data.length > 0) {
-          const user = res.data[0];
-          if (user.password === password) {
-            wx.setStorageSync('isLogin', true);
-            wx.setStorageSync('userInfo', { accountName, loginTime: new Date().getTime() });
-            wx.showToast({
-              title: '登录成功',
-              icon: 'success',
-              duration: 1000,
-              mask: true,
-              complete: () => {
-                wx.reLaunch({ url: '/pages/index/index' });
-              }
-            });
-          } else {
-            wx.showToast({ title: '密码错误', icon: 'none' });
-          }
+        if (res.result && res.result.success) {
+          // 登录成功
+          wx.setStorageSync('isLogin', true);
+          wx.setStorageSync('userInfo', { 
+            accountName: res.result.user.username, 
+            ...res.result.user,
+            loginTime: new Date().getTime() 
+          });
+          wx.showToast({
+            title: '登录成功',
+            icon: 'success',
+            duration: 1000,
+            mask: true,
+            complete: () => {
+              wx.reLaunch({ url: '/pages/index/index' });
+            }
+          });
         } else {
-          wx.showToast({ title: '用户不存在', icon: 'none' });
+          // 登录失败
+          wx.showToast({
+            title: res.result.message || '登录失败',
+            icon: 'none'
+          });
         }
       },
-      fail: () => {
+      fail: err => {
         wx.hideLoading();
-        wx.showToast({ title: '网络错误', icon: 'none' });
+        wx.showToast({
+          title: '网络或服务错误',
+          icon: 'none'
+        });
+        console.error('登录调用失败:', err);
       }
     });
   },

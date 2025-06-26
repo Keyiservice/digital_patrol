@@ -40,59 +40,76 @@ page {
   margin-bottom: 20rpx;
 }
 
-.filter-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15rpx 20rpx;
-  background-color: #fff;
-  border-radius: 15rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+.filter-area {
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #eee;
   margin-bottom: 20rpx;
 }
 
-.filter-item {
+.filter-row {
   display: flex;
   align-items: center;
-  margin: 10rpx 0;
+  margin-bottom: 15rpx;
 }
 
-.filter-label {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #0d3371;
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.button-row {
+  margin-top: 15rpx;
+  justify-content: space-around;
+}
+
+.filter-item-wrapper {
+  flex: 1;
   margin-right: 15rpx;
 }
 
-.filter-picker {
-  min-width: 200rpx;
-  background-color: #f9f9f9;
+.filter-item-wrapper:last-child {
+  margin-right: 0;
+}
+
+.filter-picker, .picker-display {
+  width: 100%;
+  height: 70rpx;
+  border: 1px solid #ddd;
   border-radius: 8rpx;
-  padding: 10rpx 20rpx;
-  border: 1rpx solid #e0e0e0;
-}
-
-.picker-value {
+  padding: 0 15rpx;
   font-size: 28rpx;
-  color: #333;
+  background-color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
-.picker-arrow {
-  color: #999;
-  font-size: 24rpx;
-  margin-left: 10rpx;
+.picker-display {
+  color: #888;
 }
 
-.clear-filter {
+.picker-display:not(:empty) {
+  color: #333;
+}
+
+.filter-button, .reset-button {
+  flex: 1;
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 30rpx;
+}
+
+.filter-button {
+  background-color: #0d3371;
+  color: white;
+  margin-right: 10rpx;
+}
+
+.reset-button {
   background-color: #f0f0f0;
-  padding: 10rpx 20rpx;
-  border-radius: 30rpx;
-  font-size: 24rpx;
-  color: #666;
+  color: #333;
+  margin-left: 10rpx;
 }
 
 .list-container {
@@ -111,7 +128,9 @@ page {
 }
 
 .record-list {
-  padding: 10rpx 0;
+  padding: 0 20rpx;
+  background-color: #fff;
+  padding-bottom: 160rpx;
 }
 
 .record-item {
@@ -261,4 +280,8 @@ page {
   background-color: #0d3371;
   color: #FFFFFF;
   box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+}
+
+.add-new-button {
+  /* ... */
 } 

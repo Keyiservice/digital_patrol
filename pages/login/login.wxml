@@ -33,6 +33,7 @@
       <input 
         class="form-input" 
         type="password" 
+        password
         placeholder="请输入密码"
         value="{{formData.password}}"
         bindinput="onPasswordInput"

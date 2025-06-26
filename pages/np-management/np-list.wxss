@@ -15,6 +15,7 @@ page {
   padding: 0rpx 20rpx;
   box-sizing: border-box;
   background-color: #f5f5f5;
+  padding-bottom: 180rpx; /* 为底部按钮留出空间 */
 }
 
 /* 头部logo区域 */
@@ -38,7 +39,7 @@ page {
 /* 页面标题区域 */
 .page-title {
   text-align: center;
-  margin-bottom: 20rpx;
+  margin: 20rpx 0;
 }
 
 /* 主标题文本样式 */
@@ -57,11 +58,10 @@ page {
 .sub-title-text {
   display: block;
   font-size: 38rpx;
-  font-weight: bold;
   color: #0d3371;
   letter-spacing: 1rpx;
   font-family: Arial, sans-serif;
-  margin-bottom: 20rpx;
+  margin-top: 10rpx;
 }
 
 /* 列表区域样式 */
@@ -248,4 +248,146 @@ page {
   background-color: #0d3371;
   color: #FFFFFF;
   box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+}
+
+/* 筛选区域 */
+.filter-area {
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+}
+
+.button-row {
+  margin-top: 15rpx;
+  justify-content: space-around; /* 让按钮平均分布 */
+}
+
+.filter-item-wrapper {
+  flex: 1;
+  margin-right: 15rpx;
+}
+.filter-item-wrapper:last-child {
+  margin-right: 0;
+}
+
+.filter-input,
+.filter-picker {
+  width: 100%; /* 占满父容器 */
+  height: 70rpx;
+  border: 1px solid #ddd;
+  border-radius: 8rpx;
+  padding: 0 15rpx;
+  font-size: 28rpx;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box; /* 确保 padding 不会撑大宽度 */
+}
+.picker-display {
+    color: #888;
+}
+.picker-display:not(:empty) {
+    color: #333;
+}
+
+.filter-button, .reset-button {
+  flex: 1; /* 让按钮平分空间 */
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 30rpx;
+}
+
+.filter-button {
+  background-color: #0d3371;
+  color: white;
+  margin-right: 10rpx;
+}
+
+.reset-button {
+  background-color: #f0f0f0;
+  color: #333;
+  margin-left: 10rpx;
+}
+
+/* 记录列表 */
+.records-scroll {
+  width: 100%;
+  height: calc(100vh - 300rpx); /* 减去顶部和底部区域高度 */
+}
+
+.record-card {
+  background-color: #fff;
+  border-radius: 10rpx;
+  margin: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+.project-text {
+  font-weight: bold;
+  font-size: 32rpx;
+}
+
+.date-text {
+  font-size: 26rpx;
+  color: #888;
+}
+
+.card-body .reason-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.card-footer {
+  margin-top: 20rpx;
+  text-align: right;
+  font-size: 26rpx;
+  color: #aaa;
+}
+
+.no-records {
+  text-align: center;
+  color: #999;
+  padding-top: 100rpx;
+}
+
+/* 底部操作按钮 */
+.actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 20rpx;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ddd;
+}
+
+.action-button {
+  width: 45%;
+}
+
+.actions .add-btn {
+  background-color: #0d3371; /* 主题色 */
+  color: white;
+}
+
+.actions .back-btn {
+  background-color: #f0f0f0;
+  color: #333;
 } 

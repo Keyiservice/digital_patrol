@@ -2,6 +2,9 @@ const util = require('../../utils/util.js');
 
 Page({
   data: {
+    // 新增 mode 字段
+    mode: 'add', // 'add' or 'view'
+    recordId: null,
     // 设备类型选项
     deviceTypeOptions: ['UTILITY', 'BMM', 'FC', 'ASM'],
     deviceTypeIndex: 0,
@@ -22,19 +25,60 @@ Page({
     isSaving: false
   },
 
-  onLoad() {
-    // 初始化日期和时间
-    const now = new Date();
-    const reportDate = util.formatDate(now);
-    const reportTime = util.formatTime(now).substring(11, 16);
-    
-    // 获取登录用户信息
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    
-    this.setData({
-      reportDate,
-      reportTime,
-      reporter: userInfo.accountName || ''
+  onLoad(options) {
+    if (options.id) {
+      // 如果有 id，说明是查看模式
+      this.setData({
+        mode: options.mode || 'view',
+        recordId: options.id
+      });
+      this.loadRecord(options.id);
+      wx.setNavigationBarTitle({ title: '查看生产报修' });
+    } else {
+      // 否则是新增模式
+      this.setData({ mode: 'add' });
+      // 初始化日期和时间
+      const now = new Date();
+      const reportDate = util.formatDate(now);
+      const reportTime = util.formatTime(now).substring(11, 16);
+      // 获取登录用户信息
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      this.setData({
+        reportDate,
+        reportTime,
+        reporter: userInfo.accountName || ''
+      });
+      wx.setNavigationBarTitle({ title: '新建生产报修' });
+    }
+  },
+
+  // 新增加载记录函数
+  loadRecord(id) {
+    wx.showLoading({ title: '加载中...' });
+    wx.cloud.callFunction({
+      name: 'getBreakdownRecord',
+      data: { id: id },
+      success: res => {
+        wx.hideLoading();
+        if (res.result && res.result.success) {
+          const record = res.result.data;
+          this.setData({
+            deviceTypeIndex: this.data.deviceTypeOptions.indexOf(record.deviceType),
+            projectIndex: this.data.projectOptions.indexOf(record.project),
+            shiftIndex: this.data.shiftOptions.indexOf(record.shift),
+            reportDate: record.reportDate,
+            reportTime: record.reportTime,
+            faultDescription: record.faultDescription,
+            reporter: record.reporter
+          });
+        } else {
+          wx.showToast({ title: '记录加载失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '请求失败', icon: 'none' });
+      }
     });
   },
 
@@ -188,14 +232,10 @@ Page({
   
   // 取消报修
   onCancel() {
-    wx.showModal({
-      title: '确认取消',
-      content: '确定要取消此次报修吗？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.navigateBack({ delta: 1 });
-        }
-      }
-    });
+    wx.navigateBack({ delta: 1 });
+  },
+
+  onBack() {
+    wx.navigateBack({ delta: 1 });
   }
 }); 

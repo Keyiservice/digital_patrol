@@ -7,67 +7,44 @@ const npCollection = db.collection('np_records')
 
 // 云函数入口函数
 exports.main = async (event, context) => {
+  const wxContext = cloud.getWXContext()
+  const openId = wxContext.OPENID
+  const { id, record } = event
+
+  // 确保 record 对象存在且不为空
+  if (!record || typeof record !== 'object' || Object.keys(record).length === 0) {
+    return { success: false, message: '无效的记录数据' }
+  }
+
   try {
-    const wxContext = cloud.getWXContext()
-    const openId = wxContext.OPENID
-    
-    // 检查是否是编辑模式
-    if (event.id) {
-      // 更新记录
-      return await npCollection.doc(event.id).update({
-        data: {
-          project: event.project,
-          date: event.date,
-          time: event.time,
-          reason: event.reason,
-          treatment: event.treatment,
-          barcodePhotoUrl: event.barcodePhotoUrl,
-          defectLocationPhotoUrl: event.defectLocationPhotoUrl,
-          updatedTime: Date.now(),
-          updatedBy: openId
-        }
-      }).then(res => {
-        return {
-          success: true,
-          message: '记录更新成功',
-          data: {
-            id: event.id
-          }
-        }
-      })
+    if (id) {
+      // 更新模式：合并记录和更新信息
+      const updateData = {
+        ...record,
+        updatedTime: db.serverDate(),
+        updatedBy: openId
+      }
+      await npCollection.doc(id).update({ data: updateData })
+      return { success: true, message: '记录更新成功', id: id }
+
     } else {
-      // 创建新记录
-      return await npCollection.add({
-        data: {
-          project: event.project,
-          date: event.date,
-          time: event.time,
-          reason: event.reason,
-          treatment: event.treatment,
-          barcodePhotoUrl: event.barcodePhotoUrl,
-          defectLocationPhotoUrl: event.defectLocationPhotoUrl,
-          status: 'Open', // 默认状态为Open
-          createTime: event.createTime || Date.now(),
-          createdBy: openId,
-          updatedTime: Date.now(),
-          updatedBy: openId
-        }
-      }).then(res => {
-        return {
-          success: true,
-          message: '记录添加成功',
-          data: {
-            id: res._id
-          }
-        }
-      })
+      // 创建模式：合并记录和创建信息
+      const addData = {
+        ...record,
+        status: 'Open',
+        createdBy: openId,
+        createTime: db.serverDate(),
+        updatedTime: db.serverDate(),
+        updatedBy: openId
+      }
+      const res = await npCollection.add({ data: addData })
+      return { success: true, message: '记录添加成功', id: res._id }
     }
   } catch (e) {
-    console.error(e)
+    console.error('数据库操作失败:', e)
     return {
       success: false,
-      message: '操作失败: ' + e.message,
-      error: e
+      message: '数据库操作失败: ' + e.message
     }
   }
 } 

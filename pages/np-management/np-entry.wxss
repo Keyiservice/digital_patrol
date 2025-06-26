@@ -96,11 +96,18 @@ page {
 /* Picker样式 */
 .picker-box {
   width: 100%;
-  border: 2rpx solid #e0e0e0;
+  border: 2rpx solid #0d3371;
   border-radius: 10rpx;
   background-color: #f9f9f9;
   padding: 20rpx;
   box-sizing: border-box;
+  position: relative;
+}
+
+/* 添加Picker的点击效果样式 */
+.picker-hover {
+  background-color: #e6e6e6;
+  opacity: 0.8;
 }
 
 .picker-content {
@@ -108,6 +115,53 @@ page {
   font-size: 30rpx;
   color: #333;
   letter-spacing: 1rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 添加picker箭头样式 */
+.picker-arrow {
+  color: #0d3371;
+  font-size: 24rpx;
+  margin-left: 10rpx;
+}
+
+.input-with-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-field {
+  flex: 1;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 10rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  margin-right: 20rpx;
+  color: #333;
+}
+
+.scan-btn {
+  width: 120rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background-color: #0d3371;
+  color: white;
+  border: none;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  padding: 0;
+  flex-shrink: 0; /* 防止按钮被压缩 */
+}
+
+.scan-btn:active {
+  background-color: #0b2a5e;
 }
 
 /* 拍照容器样式 */

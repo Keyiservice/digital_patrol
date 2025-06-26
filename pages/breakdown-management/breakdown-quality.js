@@ -2,131 +2,90 @@ const util = require('../../utils/util.js');
 
 Page({
   data: {
-    // 记录ID
-    recordId: '',
-    // 故障记录详情
-    recordDetail: {},
-    // 检查内容
-    inspectionContent: '',
-    // 检查结果
-    inspectionResult: '',
-    // 首件条码
+    // ---- 状态控制 ----
+    mode: 'edit', // 'edit' 或 'view'
+    recordId: null,
+    isSaving: false,
+
+    // ---- 数据模型 ----
+    recordDetail: {}, // 存储完整记录，用于显示历史信息
+    
+    // 质检表单字段
+    inspectionContent: '', // **恢复"检查内容"字段**
+    qualityCheckResult: 'OK',
+    qualityCheckNotes: '', // 备注字段，以备将来使用
     firstPieceBarcode: '',
-    // 照片
     photos: [],
-    // 检验人员
-    inspector: '',
-    // 检查日期
-    inspectionDate: '',
-    // 检查时间
-    inspectionTime: '',
-    // 是否正在加载
-    isLoading: true,
-    // 是否正在保存
-    isSaving: false
+    qualityChecker: '',
+    checkDate: '',
+    checkTime: ''
   },
 
   onLoad(options) {
-    if (options && options.id) {
-      this.setData({
-        recordId: options.id
-      });
-      this.fetchRecordDetail(options.id);
-    } else {
-      wx.showToast({
-        title: '缺少记录ID',
-        icon: 'error'
-      });
-      setTimeout(() => {
-        wx.navigateBack({ delta: 1 });
-      }, 1500);
+    if (!options.id) {
+      wx.showToast({ title: '无效的记录ID', icon: 'none' });
+      wx.navigateBack();
+      return;
     }
-    
-    // 设置当前日期和时间
-    const now = new Date();
+
+    const mode = options.mode || 'edit';
     this.setData({
-      inspectionDate: util.formatDate(now),
-      inspectionTime: util.formatTime(now).substring(11, 16),
-      inspector: wx.getStorageSync('userInfo')?.accountName || ''
+      recordId: options.id,
+      mode: mode,
     });
-  },
-  
-  // 获取故障记录详情
-  async fetchRecordDetail(id) {
-    try {
-      this.setData({ isLoading: true });
-      
-      if (id.startsWith('local_')) {
-        this.getLocalRecord(id);
-        return;
-      }
-      
-      const res = await wx.cloud.callFunction({
-        name: 'getBreakdownRecord',
-        data: { id }
-      });
-      
-      if (res && res.result && res.result.data) {
-        // 处理云端返回数据
-        const record = res.result.data;
-        
-        // 验证记录是否已完成维修
-        if (record.status !== 'repaired') {
-          wx.showToast({
-            title: '此记录未完成维修',
-            icon: 'none'
-          });
-        }
-        
-        this.setData({
-          recordDetail: record,
-          isLoading: false
-        });
-      } else {
-        wx.showToast({
-          title: '记录不存在',
-          icon: 'error'
-        });
-        setTimeout(() => {
-          wx.navigateBack({ delta: 1 });
-        }, 1500);
-      }
-    } catch (err) {
-      console.error('获取故障记录失败:', err);
-      wx.showToast({
-        title: '加载失败',
-        icon: 'error'
-      });
-      this.getLocalRecord(id);
-    }
-  },
-  
-  // 获取本地记录
-  getLocalRecord(id) {
-    const localRecords = wx.getStorageSync('breakdownRecords') || [];
-    const record = localRecords.find(r => r.id === id);
-    
-    if (record) {
-      if (record.status !== 'repaired') {
-        wx.showToast({
-          title: '此记录未完成维修',
-          icon: 'none'
-        });
-      }
-      
+    wx.setNavigationBarTitle({
+      title: mode === 'view' ? '查看质检信息' : '质量验证'
+    });
+
+    this.loadRecord(options.id);
+
+    if (mode === 'edit') {
+      const now = new Date();
+      const userInfo = wx.getStorageSync('userInfo') || {};
       this.setData({
-        recordDetail: record,
-        isLoading: false
+        qualityChecker: userInfo.accountName || '未知用户',
+        checkDate: util.formatDate(now),
+        checkTime: util.formatTime(now).substring(11, 16)
       });
-    } else {
-      wx.showToast({
-        title: '本地记录不存在',
-        icon: 'error'
-      });
-      setTimeout(() => {
-        wx.navigateBack({ delta: 1 });
-      }, 1500);
     }
+  },
+  
+  loadRecord(id) {
+    wx.showLoading({ title: '加载中...' });
+    wx.cloud.callFunction({
+      name: 'getBreakdownRecord',
+      data: { id: id },
+      success: res => {
+        wx.hideLoading();
+        if (res.result && res.result.success) {
+          const record = res.result.data;
+          
+          // 统一的数据填充逻辑
+          this.setData({
+            // 历史信息
+            recordDetail: record,
+            inspectionContent: record.inspectionContent || '', // **恢复加载"检查内容"**
+
+            // 质检表单信息 (无论 edit/view 模式，都从记录中读取)
+            qualityCheckResult: record.qualityCheckResult || 'OK', // 如果没有，默认为OK
+            firstPieceBarcode: record.firstPieceBarcode || '',
+            photos: record.inspectionPhotos || [], // **关键：从 record.inspectionPhotos 加载图片**
+            qualityCheckNotes: record.qualityCheckNotes || '', // 加载备注
+
+            // 自动填充的字段，也从记录中读取，保证查看时显示的是当时的时间
+            qualityChecker: record.qualityChecker || this.data.qualityChecker,
+            checkDate: record.checkDate || this.data.checkDate,
+            checkTime: record.checkTime || this.data.checkTime
+          });
+        } else {
+          wx.showToast({ title: '记录加载失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '请求失败', icon: 'none' });
+      }
+    });
   },
   
   // 检查内容输入
@@ -243,7 +202,7 @@ Page({
   async onSave() {
     if (this.data.isSaving) return;
     
-    // 表单验证
+    // **恢复对"检查内容"的验证**
     if (!this.data.inspectionContent) {
       wx.showToast({
         title: '请输入检查内容',
@@ -252,17 +211,10 @@ Page({
       return;
     }
     
-    if (!this.data.inspectionResult) {
-      wx.showToast({
-        title: '请输入检查结果',
-        icon: 'none'
-      });
-      return;
-    }
-    
+    // 表单验证
     if (!this.data.firstPieceBarcode) {
       wx.showToast({
-        title: '请输入首件条码',
+        title: '请输入或扫描首件条码',
         icon: 'none'
       });
       return;
@@ -315,16 +267,17 @@ Page({
       
       const fileIDs = await Promise.all(uploadTasks);
       
-      // 准备更新数据
+      // 准备更新数据 (使用正确的字段)
       const updateData = {
         id: this.data.recordId,
-        inspectionContent: this.data.inspectionContent,
-        inspectionResult: this.data.inspectionResult,
+        inspectionContent: this.data.inspectionContent, // **恢复保存"检查内容"**
+        qualityCheckResult: this.data.qualityCheckResult,
+        qualityCheckNotes: this.data.qualityCheckNotes,
         firstPieceBarcode: this.data.firstPieceBarcode,
         inspectionPhotos: fileIDs,
-        inspector: this.data.inspector,
-        inspectionDate: this.data.inspectionDate,
-        inspectionTime: this.data.inspectionTime,
+        qualityChecker: this.data.qualityChecker,
+        checkDate: this.data.checkDate,
+        checkTime: this.data.checkTime,
         status: 'completed', // 完成状态
         updateTime: new Date().toISOString()
       };
@@ -357,13 +310,14 @@ Page({
       // 失败时保存到本地
       this.saveToLocal({
         id: this.data.recordId,
-        inspectionContent: this.data.inspectionContent,
-        inspectionResult: this.data.inspectionResult,
+        inspectionContent: this.data.inspectionContent, // **恢复保存"检查内容"**
+        qualityCheckResult: this.data.qualityCheckResult,
+        qualityCheckNotes: this.data.qualityCheckNotes,
         firstPieceBarcode: this.data.firstPieceBarcode,
         inspectionPhotos: this.data.photos, // 保存本地图片路径
-        inspector: this.data.inspector,
-        inspectionDate: this.data.inspectionDate,
-        inspectionTime: this.data.inspectionTime,
+        qualityChecker: this.data.qualityChecker,
+        checkDate: this.data.checkDate,
+        checkTime: this.data.checkTime,
         status: 'completed',
         updateTime: new Date().toISOString()
       });
@@ -408,5 +362,29 @@ Page({
   // 返回
   onBack() {
     wx.navigateBack({ delta: 1 });
+  },
+
+  // 新增：处理检查结果 OK/NG 变化
+  onResultChange(e) {
+    this.setData({
+      qualityCheckResult: e.detail.value
+    });
+  },
+
+  // 新增：处理扫描条码事件
+  onScanBarcode() {
+    wx.scanCode({
+      onlyFromCamera: false, // 允许从相册选择
+      scanType: ['barCode', 'qrCode'], // 支持一维码和二维码
+      success: res => {
+        this.setData({
+          firstPieceBarcode: res.result
+        });
+        wx.showToast({ title: '扫描成功', icon: 'success' });
+      },
+      fail: () => {
+        wx.showToast({ title: '扫描失败', icon: 'none' });
+      }
+    });
   }
 }); 

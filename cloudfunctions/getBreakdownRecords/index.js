@@ -12,23 +12,32 @@ exports.main = async (event, context) => {
   try {
     const { filter } = event;
     let query = collection;
+    let whereClause = {};
 
-    if (filter && Object.keys(filter).length > 0) {
-      const whereClause = {};
-      if (filter.department) whereClause.department = filter.department;
-      if (filter.startDate && filter.endDate) {
-        whereClause.createTime = _.gte(new Date(filter.startDate).getTime()).and(_.lte(new Date(filter.endDate).getTime() + 24 * 60 * 60 * 1000 - 1));
-      } else if (filter.startDate) {
-        whereClause.createTime = _.gte(new Date(filter.startDate).getTime());
-      } else if (filter.endDate) {
-        whereClause.createTime = _.lte(new Date(filter.endDate).getTime() + 24 * 60 * 60 * 1000 - 1);
+    // 处理筛选条件
+    if (filter) {
+      // 状态筛选
+      if (filter.status) {
+        whereClause.status = filter.status;
       }
-      query = query.where(whereClause).orderBy('createTime', 'desc');
-    } else {
-      query = query.orderBy('createTime', 'desc').limit(10);
+      // 日期范围筛选
+      if (filter.startDate && filter.endDate) {
+        whereClause.createTime = _.gte(filter.startDate).and(_.lte(filter.endDate));
+      } else if (filter.startDate) {
+        whereClause.createTime = _.gte(filter.startDate);
+      } else if (filter.endDate) {
+        whereClause.createTime = _.lte(filter.endDate);
+      }
     }
+
+    let finalQuery = query.where(whereClause).orderBy('createTime', 'desc');
     
-    const res = await query.get();
+    // 如果没有筛选条件，默认只返回最新的10条
+    if (!filter || Object.keys(filter).length === 0) {
+        finalQuery = finalQuery.limit(10);
+    }
+
+    const res = await finalQuery.get();
       
     return {
       success: true,
@@ -38,8 +47,8 @@ exports.main = async (event, context) => {
     console.error('获取故障记录失败:', error)
     return {
       success: false,
-      error,
-      message: '获取故障记录失败'
+      message: '获取故障记录失败',
+      error: error
     }
   }
 } 

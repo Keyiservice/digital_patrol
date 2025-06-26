@@ -1,27 +1,18 @@
 .custom-header-container {
   display: flex;
-  align-items: flex-end; /* LOGO 垂直居中 */
-  justify-content: center; /* 水平居中LOGO */
-  padding: 0; /* 移除垂直内边距，实现纯粹居中 */
+  align-items: center; /* 改为center实现垂直居中 */
+  justify-content: center;
+  padding: 30rpx 0 10rpx; /* 增加顶部内边距，将logo下移 */
   width: 100%;
-  height: 250rpx; /* 再次增加头部高度，确保内容向下移动 */
-  background-color: #0d3371; /* 深蓝色背景，参照INDEX.jpeg */
+  height: 200rpx; /* 增加高度以保持logo大小不变 */
+  background-color: #0d3371;
   box-sizing: border-box;
 }
 
 .logo-image {
-  width: 100%; /* 增加宽度百分比以放大LOGO */
-  height: auto; /* 保持宽高比 */
-  max-height: 250rpx; /* 调整最大高度以适应新的头部高度 */
-  /* max-width: 100%; */ /* 可选：限制LOGO最大宽度，防止过宽 */
+  width: 100%; /* 从 80% 恢复到 100% */
+  height: 100%; /* logo高度占满容器 */
+  object-fit: contain; /* 保持图片比例并完整显示 */
 }
 
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between; /* 让内容上下分散 */
-  padding: 200rpx 0;
-  box-sizing: border-box;
-} 
+/* 移除下面这个错误的 .container 定义 */ 

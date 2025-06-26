@@ -4,39 +4,41 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
 
 const db = cloud.database()
-const collection = db.collection('breakdown_records')
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  try {
-    const { id } = event
-    
-    if (!id) {
-      return {
-        success: false,
-        message: '缺少记录ID'
-      }
+  const { id } = event
+
+  if (!id) {
+    return {
+      success: false,
+      message: '缺少记录ID',
+      data: null
     }
+  }
+
+  try {
+    const recordRes = await db.collection('breakdown_records').doc(id).get()
     
-    const result = await collection.doc(id).get()
-    
-    if (result && result.data) {
+    if (recordRes.data) {
       return {
         success: true,
-        data: result.data
+        message: '查询成功',
+        data: recordRes.data
       }
     } else {
       return {
         success: false,
-        message: '记录不存在'
+        message: '未找到记录',
+        data: null
       }
     }
   } catch (error) {
-    console.error('获取故障记录详情失败:', error)
+    console.error('查询记录失败:', error)
     return {
       success: false,
-      error,
-      message: '获取故障记录详情失败'
+      message: '数据库查询失败',
+      error: error
     }
   }
 } 

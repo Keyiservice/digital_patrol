@@ -20,7 +20,7 @@ exports.main = async (event, context) => {
     if (filter && Object.keys(filter).length > 0) {
       const whereClause = {};
       if (filter.project) whereClause.project = filter.project;
-      if (filter.reason) whereClause.reason = filter.reason;
+      if (filter.treatment) whereClause.treatment = filter.treatment;
       if (filter.startDate && filter.endDate) {
         whereClause.createTime = _.gte(new Date(filter.startDate).getTime()).and(_.lte(new Date(filter.endDate).getTime() + 24 * 60 * 60 * 1000 -1));
       } else if (filter.startDate) {

@@ -4,9 +4,9 @@ Page({
    */
   data: {
     records: [], // 存储记录列表
-    // 添加筛选字段
+    // 更新筛选字段
     filterProject: '',
-    filterReason: '',
+    filterTreatment: '', // reason -> treatment
     startDate: '',
     endDate: ''
   },
@@ -284,7 +284,7 @@ Page({
   onFilter: function() {
     const filter = {
       project: this.data.filterProject,
-      reason: this.data.filterReason,
+      treatment: this.data.filterTreatment, // reason -> treatment
       startDate: this.data.startDate,
       endDate: this.data.endDate
     };
@@ -298,7 +298,7 @@ Page({
   onReset: function() {
     this.setData({
       filterProject: '',
-      filterReason: '',
+      filterTreatment: '', // reason -> treatment
       startDate: '',
       endDate: ''
     });

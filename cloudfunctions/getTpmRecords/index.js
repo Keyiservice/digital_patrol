@@ -3,42 +3,52 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const _ = db.command
-const tpmCollection = db.collection('tpm_records')
 
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
     const { filter } = event;
-    let query = tpmCollection;
+    let query = db.collection('tpm_records');
+    let whereClause = {};
+
+    // 修复排序问题，只对存在 createTime 的记录进行排序
+    const orderedQuery = query.where({
+      createTime: _.exists(true)
+    }).orderBy('createTime', 'desc');
 
     if (filter && Object.keys(filter).length > 0) {
-      const whereClause = {};
-      if (filter.tpm_type) whereClause.tpm_type = filter.tpm_type;
-      if (filter.device_id) whereClause.device_id = filter.device_id;
+      if (filter.project) whereClause.project = filter.project;
+      if (filter.device) whereClause.device = filter.device;
+      
+      // 按 date 字段进行精确日期或日期范围查询
       if (filter.startDate && filter.endDate) {
-        whereClause.timestamp = _.gte(new Date(filter.startDate)).and(_.lte(new Date(filter.endDate + 'T23:59:59.999Z')));
+        whereClause.date = _.gte(filter.startDate).and(_.lte(filter.endDate));
       } else if (filter.startDate) {
-        whereClause.timestamp = _.gte(new Date(filter.startDate));
-      } else if (filter.endDate) {
-        whereClause.timestamp = _.lte(new Date(filter.endDate + 'T23:59:59.999Z'));
+        whereClause.date = filter.startDate;
       }
-      query = query.where(whereClause).orderBy('timestamp', 'desc');
-    } else {
-      query = query.orderBy('timestamp', 'desc').limit(10);
-    }
+      
+      const filteredQuery = query.where(whereClause);
+      const { data } = await filteredQuery.get();
+      return { success: true, data: data };
 
-    const res = await query.get();
-    
-    return {
-      success: true,
-      data: res.data
-    };
+    } else {
+      // 默认加载
+      const { data } = await orderedQuery.limit(10).get();
+      // 获取总数
+      const totalRes = await query.count();
+      
+      return {
+        success: true,
+        data: data,
+        total: totalRes.total
+      };
+    }
   } catch (e) {
-    console.error(e)
+    console.error(e);
     return {
       success: false,
-      message: '获取TPM记录失败: ' + e.message,
+      message: '获取记录失败: ' + e.message,
       error: e
-    }
+    };
   }
 } 

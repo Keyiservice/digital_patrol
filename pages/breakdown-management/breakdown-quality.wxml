@@ -3,7 +3,7 @@
   <!-- 页面标题 -->
   <view class="page-title">
     <text class="title-text">BREAKDOWN RECORD</text>
-    <text class="sub-title-text">质量验证</text>
+    <text class="sub-title-text">Quality Validation</text>
   </view>
 
   <scroll-view scroll-y="true" enhanced="true" show-scrollbar="true" bounces="true" class="form-container">
@@ -47,15 +47,23 @@
       </view>
       
       <!-- 检查结果 -->
-      <view class="form-item description-item">
+      <view class="form-item">
         <text class="form-label">检查结果:</text>
-        <textarea class="form-textarea" placeholder="请输入检查结果" value="{{inspectionResult}}" bindinput="onInspectionResultInput"></textarea>
+        <radio-group class="radio-group" bindchange="onResultChange">
+          <label class="radio">
+            <radio value="OK" checked="{{qualityCheckResult === 'OK'}}" color="#0d3371"/>OK
+          </label>
+          <label class="radio">
+            <radio value="NG" checked="{{qualityCheckResult === 'NG'}}" color="#0d3371"/>NG
+          </label>
+        </radio-group>
       </view>
       
       <!-- 首件条码 -->
-      <view class="form-item">
+      <view class="form-item barcode-item">
         <text class="form-label">首件条码:</text>
-        <input class="form-input" value="{{firstPieceBarcode}}" placeholder="请输入首件条码" bindinput="onFirstPieceBarcodeInput" />
+        <input class="form-input" value="{{firstPieceBarcode}}" placeholder="点击扫描或手动输入" bindinput="onFirstPieceBarcodeInput" />
+        <view class="scan-button" bindtap="onScanBarcode">扫描</view>
       </view>
       
       <!-- 照片 -->
@@ -77,19 +85,19 @@
       <!-- 检验人员 -->
       <view class="form-item">
         <text class="form-label">检验人员:</text>
-        <input class="form-input disabled" disabled value="{{inspector}}" placeholder="自动获取登录人员" />
+        <input class="form-input disabled" disabled value="{{qualityChecker}}" />
       </view>
       
       <!-- 检验日期 -->
       <view class="form-item">
         <text class="form-label">检验日期:</text>
-        <view class="form-input disabled">{{inspectionDate}}</view>
+        <view class="form-input disabled">{{checkDate}}</view>
       </view>
       
       <!-- 检验时间 -->
       <view class="form-item">
         <text class="form-label">检验时间:</text>
-        <view class="form-input disabled">{{inspectionTime}}</view>
+        <view class="form-input disabled">{{checkTime}}</view>
       </view>
     </view>
     
@@ -97,9 +105,16 @@
     <view style="height: 120rpx;"></view>
   </scroll-view>
   
-  <!-- 底部按钮 -->
-  <view class="bottom-section">
-    <button class="nav-btn cancel-btn" bindtap="onBack">返回</button>
-    <button class="nav-btn save-btn" bindtap="onSave">提交验证</button>
+  <!-- 按钮区域 (与 repair 页面统一) -->
+  <view class="button-area">
+    <block wx:if="{{mode === 'edit'}}">
+      <view class="button-row-edit">
+        <button class="cancel-button" bindtap="onBack">Back</button>
+        <button class="save-button" bindtap="onSave" loading="{{isSaving}}">Saving</button>
+      </view>
+    </block>
+    <block wx:if="{{mode === 'view'}}">
+      <button class="back-button" bindtap="onBack">Back</button>
+    </block>
   </view>
 </view> 

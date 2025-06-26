@@ -2,62 +2,112 @@ const util = require('../../utils/util.js');
 
 Page({
   data: {
-    // 记录ID
-    recordId: '',
-    // 故障信息
-    recordDetail: {},
-    // 故障位置
+    // ---- 状态控制 ----
+    mode: 'edit', // 'edit' (填写模式) 或 'view' (查看模式)
+    recordId: null,
+    isSaving: false,
+
+    // ---- 数据模型 ----
+    // 存储从数据库加载的完整记录，用于显示顶部的"原始报修信息"
+    recordDetail: {}, 
+    
+    // 维修信息表单的各个字段
     faultLocation: '',
-    // 故障原因
     faultReason: '',
-    // 解决方案
     solution: '',
-    // 维修结果选项
     repairResultOptions: ['未修复', '临时修复', '修复'],
-    repairResultIndex: 2, // 默认选择"修复"
-    // 维修结束时间
+    repairResultIndex: 2, // 默认'修复'
     repairEndDate: '',
     repairEndTime: '',
-    // 是否影响防错
     affectErrorProof: false,
-    // 防错序列号及验证结果
     errorProofInfo: '',
-    // 是否使用备件
     useSpare: false,
-    // 备件名称或料号
     spareParts: '',
-    // 是否涉及安全
     involveSafety: false,
-    // 维修人员
     repairer: '',
-    // 保存状态
-    isSaving: false,
-    // 是否正在加载
-    isLoading: true
+    repairDate: '',
+    repairTime: '',
+    faultCategory: '',
+    repairedBy: ''
   },
 
   onLoad(options) {
-    if (options && options.id) {
-      this.setData({
-        recordId: options.id
-      });
-      this.fetchRecordDetail(options.id);
-    } else {
-      wx.showToast({
-        title: '缺少记录ID',
-        icon: 'error'
-      });
-      setTimeout(() => {
-        wx.navigateBack({ delta: 1 });
-      }, 1500);
+    // 1. 安全检查：必须有 ID
+    if (!options.id) {
+      wx.showToast({ title: '无效的记录ID', icon: 'none' });
+      wx.navigateBack();
+      return;
     }
-    
-    // 设置当前日期和时间
-    const now = new Date();
+
+    // 2. 模式判断：从上级页面接收 mode 参数，如果不存在，则默认为 'edit' 模式
+    const mode = options.mode || 'edit'; 
+
+    // 3. 设置页面状态和导航栏标题
     this.setData({
-      repairEndDate: util.formatDate(now),
-      repairEndTime: util.formatTime(now).substring(11, 16),
-      repairer: wx.getStorageSync('userInfo')?.accountName || ''
+      recordId: options.id,
+      mode: mode,
+    });
+    wx.setNavigationBarTitle({
+      title: mode === 'view' ? '查看维修信息' : '填写维修信息'
+    });
+
+    // 4. 从数据库加载记录的详细信息
+    this.loadRecord(options.id);
+
+    // 5. 如果是 'edit' 模式，则预填维修人员和当前时间
+    if (mode === 'edit') {
+      const now = new Date();
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      this.setData({
+        repairer: userInfo.accountName || '',
+        repairEndDate: util.formatDate(now),
+        repairEndTime: util.formatTime(now).substring(11, 16)
+      });
+    }
+  },
+  
+  // 统一的数据加载函数
+  loadRecord(id) {
+    wx.showLoading({ title: '加载中...' });
+    wx.cloud.callFunction({
+      name: 'getBreakdownRecord',
+      data: { id: id },
+      success: res => {
+        wx.hideLoading();
+        if (res.result && res.result.success) {
+          const record = res.result.data;
+          
+          // **核心：将数据库返回的数据完整地填充到页面的 data 中**
+          this.setData({
+            // 填充顶部"原始报修信息"
+            recordDetail: record,
+
+            // 填充"维修信息"表单的每一个字段，如果数据库中没有，则使用默认值
+            faultLocation: record.faultLocation || '',
+            faultReason: record.faultReason || '',
+            solution: record.solution || '',
+            repairResultIndex: this.data.repairResultOptions.indexOf(record.repairResult) !== -1 ? this.data.repairResultOptions.indexOf(record.repairResult) : 2,
+            repairEndDate: record.repairEndDate || this.data.repairEndDate,
+            repairEndTime: record.repairEndTime || this.data.repairEndTime,
+            affectErrorProof: record.affectErrorProof || false,
+            errorProofInfo: record.errorProofInfo || '',
+            useSpare: record.useSpare || false,
+            spareParts: record.spareParts || '',
+            involveSafety: record.involveSafety || false,
+            repairer: record.repairer || this.data.repairer, // 查看时用记录中的人，填写时用当前登录的人
+            repairDate: record.repairDate || util.formatDate(new Date()),
+            repairTime: record.repairTime || util.formatTime(new Date()).substring(11, 16),
+            faultCategory: record.faultCategory || '',
+            repairedBy: record.repairedBy || ''
+          });
+        } else {
+          wx.showToast({ title: '记录加载失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '请求失败', icon: 'none' });
+      }
     });
   },
   
@@ -124,81 +174,27 @@ Page({
   },
   
   // 故障位置输入
-  onFaultLocationInput(e) {
-    this.setData({
-      faultLocation: e.detail.value
-    });
-  },
-  
+  onFaultLocationInput(e) { this.setData({ faultLocation: e.detail.value }); },
   // 故障原因输入
-  onFaultReasonInput(e) {
-    this.setData({
-      faultReason: e.detail.value
-    });
-  },
-  
+  onFaultReasonInput(e) { this.setData({ faultReason: e.detail.value }); },
   // 解决方案输入
-  onSolutionInput(e) {
-    this.setData({
-      solution: e.detail.value
-    });
-  },
-  
+  onSolutionInput(e) { this.setData({ solution: e.detail.value }); },
   // 维修结果选择
-  onRepairResultChange(e) {
-    this.setData({
-      repairResultIndex: e.detail.value
-    });
-  },
-  
+  onRepairResultChange(e) { this.setData({ repairResultIndex: e.detail.value }); },
   // 维修结束日期变更
-  onRepairEndDateChange(e) {
-    this.setData({
-      repairEndDate: e.detail.value
-    });
-  },
-  
+  onRepairEndDateChange(e) { this.setData({ repairEndDate: e.detail.value }); },
   // 维修结束时间变更
-  onRepairEndTimeChange(e) {
-    this.setData({
-      repairEndTime: e.detail.value
-    });
-  },
-  
+  onRepairEndTimeChange(e) { this.setData({ repairEndTime: e.detail.value }); },
   // 是否影响防错切换
-  onAffectErrorProofChange(e) {
-    this.setData({
-      affectErrorProof: e.detail.value
-    });
-  },
-  
+  onAffectErrorProofChange(e) { this.setData({ affectErrorProof: e.detail.value }); },
   // 防错序列号及验证结果输入
-  onErrorProofInfoInput(e) {
-    this.setData({
-      errorProofInfo: e.detail.value
-    });
-  },
-  
+  onErrorProofInfoInput(e) { this.setData({ errorProofInfo: e.detail.value }); },
   // 是否使用备件切换
-  onUseSpareChange(e) {
-    this.setData({
-      useSpare: e.detail.value
-    });
-  },
-  
+  onUseSpareChange(e) { this.setData({ useSpare: e.detail.value }); },
   // 备件名称或料号输入
-  onSparePartsInput(e) {
-    this.setData({
-      spareParts: e.detail.value
-    });
-  },
-  
+  onSparePartsInput(e) { this.setData({ spareParts: e.detail.value }); },
   // 是否涉及安全切换
-  onInvolveSafetyChange(e) {
-    this.setData({
-      involveSafety: e.detail.value
-    });
-  },
+  onInvolveSafetyChange(e) { this.setData({ involveSafety: e.detail.value }); },
   
   // 保存维修信息
   async onSave() {
@@ -335,6 +331,10 @@ Page({
   
   // 返回
   onBack() {
+    wx.navigateBack({ delta: 1 });
+  },
+
+  onCancel() {
     wx.navigateBack({ delta: 1 });
   }
 }); 

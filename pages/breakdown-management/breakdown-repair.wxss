@@ -5,14 +5,10 @@ page {
 }
 
 .container {
-  min-height: 100vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 0rpx 20rpx;
-  box-sizing: border-box;
-  background-color: #f5f5f5;
+  height: 100vh;
+  background-color: #f8f8f8;
 }
 
 .page-title {
@@ -42,8 +38,9 @@ page {
 }
 
 .form-container {
-  height: calc(100vh - 320rpx);
-  padding: 0 30rpx 150rpx 30rpx;
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 200rpx; /* 为固定的按钮区留出空间 */
 }
 
 .info-section {
@@ -169,45 +166,53 @@ page {
   border: 1rpx solid #e0e0e0;
 }
 
-.bottom-section {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0 20rpx;
-  box-sizing: border-box;
+.button-area {
   position: fixed;
   bottom: 0;
   left: 0;
-  height: 100rpx;
-  background-color: #f5f5f5;
+  width: 100%;
+  padding: 20rpx 40rpx;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  box-sizing: border-box;
   z-index: 100;
-  align-items: center;
 }
 
-.nav-btn {
-  width: 45%;
-  height: 80rpx;
-  font-size: 32rpx;
-  border-radius: 15rpx;
+/* 新增：用于编辑模式下按钮横向排列 */
+.button-row-edit {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  border: none;
-  letter-spacing: 3rpx;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  text-shadow: 1rpx 1rpx 2rpx rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
 }
 
-.cancel-btn {
-  background-color: #777;
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.2);
+.save-button, .cancel-button, .back-button {
+  height: 90rpx;
+  line-height: 90rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  text-align: center;
+  margin: 0; /* 清除默认的 margin */
 }
 
-.save-btn {
+/* 编辑模式下的按钮，占据一半宽度 */
+.button-row-edit .save-button,
+.button-row-edit .cancel-button {
+  flex: 1;
+}
+
+.save-button {
   background-color: #0d3371;
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+  color: white;
+  margin-left: 10rpx; /* 按钮间距 */
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #333;
+  margin-right: 10rpx; /* 按钮间距 */
+}
+
+.back-button {
+  background-color: #0d3371;
+  color: white;
+  width: 100%;
 } 

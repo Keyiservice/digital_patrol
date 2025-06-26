@@ -3,36 +3,31 @@
   <!-- 页面标题 -->
   <view class="page-title">
     <text class="title-text">BREAKDOWN RECORD</text>
-    <text class="sub-title-text">记录列表</text>
+    <text class="sub-title-text">Breakdown List</text>
   </view>
   
   <!-- 筛选区域 -->
-  <view class="filter-section">
-    <!-- 状态筛选 -->
-    <view class="filter-item">
-      <text class="filter-label">状态:</text>
-      <picker class="filter-picker" mode="selector" range="{{statusOptions}}" value="{{statusIndex}}" bindchange="onStatusChange">
-        <view class="picker-value">
-          {{statusOptions[statusIndex]}}
-          <text class="picker-arrow">▼</text>
-        </view>
-      </picker>
+  <view class="filter-area">
+    <view class="filter-row">
+      <view class="filter-item-wrapper">
+        <picker class="filter-picker" mode="selector" range="{{statusOptions}}" value="{{statusIndex}}" bindchange="onStatusChange">
+          <view class="picker-display">{{statusOptions[statusIndex] || 'Status'}}</view>
+        </picker>
+      </view>
+      <view class="filter-item-wrapper">
+        <picker class="filter-picker" mode="date" value="{{startDate}}" bindchange="onDateChange" data-field="startDate">
+          <view class="picker-display">{{startDate || 'Start Date'}}</view>
+        </picker>
+      </view>
+      <view class="filter-item-wrapper">
+        <picker class="filter-picker" mode="date" value="{{endDate}}" bindchange="onDateChange" data-field="endDate">
+          <view class="picker-display">{{endDate || 'End Date'}}</view>
+        </picker>
+      </view>
     </view>
-    
-    <!-- 日期筛选 -->
-    <view class="filter-item">
-      <text class="filter-label">日期:</text>
-      <picker class="filter-picker" mode="date" value="{{dateRange}}" bindchange="onDateChange">
-        <view class="picker-value">
-          {{dateRange || '全部日期'}}
-          <text class="picker-arrow">▼</text>
-        </view>
-      </picker>
-    </view>
-    
-    <!-- 清除筛选按钮 -->
-    <view class="clear-filter" bindtap="clearFilter">
-      <text>清除筛选</text>
+    <view class="filter-row button-row">
+      <button class="filter-button" bindtap="onFilter">Filter</button>
+      <button class="reset-button" bindtap="onReset">Reset</button>
     </view>
   </view>
   
@@ -84,7 +79,7 @@
   
   <!-- 底部按钮 -->
   <view class="bottom-section">
-    <button class="nav-btn cancel-btn" bindtap="onBack">返回</button>
-    <button class="nav-btn save-btn" bindtap="onAddNew">新建报修</button>
+    <button class="nav-btn cancel-btn" bindtap="onBack">Back</button>
+    <button class="nav-btn save-btn" bindtap="onAddNew">New Record</button>
   </view>
 </view> 

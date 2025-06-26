@@ -3,8 +3,8 @@ Page({
     records: [],
     filteredRecords: [],
     // 筛选条件
-    departmentOptions: ['全部', '生产', '质量', '设备'],
-    departmentIndex: 0,
+    statusOptions: ['全部状态', '待维修', '待质检', '已完成'],
+    statusIndex: 0,
     startDate: '',
     endDate: ''
   },
@@ -46,8 +46,8 @@ Page({
     });
   },
 
-  onDepartmentChange(e) {
-    this.setData({ departmentIndex: e.detail.value });
+  onStatusChange(e) {
+    this.setData({ statusIndex: e.detail.value });
   },
 
   onDateChange(e) {
@@ -56,21 +56,26 @@ Page({
   },
 
   onFilter() {
-    const department = this.data.departmentOptions[this.data.departmentIndex];
+    const statusOption = this.data.statusOptions[this.data.statusIndex];
+    let status = '';
+    if (statusOption === '待维修') status = 'pending';
+    if (statusOption === '待质检') status = 'repaired';
+    if (statusOption === '已完成') status = 'completed';
+
     const filter = {
-      department: department === '全部' ? null : department,
+      status: status,
       startDate: this.data.startDate,
       endDate: this.data.endDate
     };
     Object.keys(filter).forEach(key => {
-      if (!filter[key]) delete filter[key];
+      if (!filter[key] || filter[key] === '全部状态') delete filter[key];
     });
-    this.fetchRecords(filter);
+    this.fetchRecords(Object.keys(filter).length > 0 ? filter : null);
   },
 
   onReset() {
     this.setData({
-      departmentIndex: 0,
+      statusIndex: 0,
       startDate: '',
       endDate: ''
     });

@@ -1,79 +1,88 @@
 <!--register.wxml-->
-<custom-header />
-<view class="container">
-  <!-- 头部logo区域 -->
-  <view class="header">
-    <!-- <image class="logo" src="/images/logo.png" mode="aspectFit"></image> -->
-  </view>
-  
-  <!-- 页面标题 -->
-  <view class="title-section">
-    <text class="title">SIGN UP!</text>
-  </view>
-  
-  <!-- 表单区域 -->
-  <view class="form-section">
-    <!-- YOUR NAME 姓名 -->
-    <view class="form-item">
-      <text class="form-label">YOUR NAME</text>
-      <input 
-        class="form-input" 
-        type="text" 
-        placeholder="请输入您的姓名"
-        value="{{formData.name}}"
-        bindinput="onNameInput"
-        maxlength="20"
-      />
+<view class="page-wrapper">
+  <custom-header />
+  <!-- 可滚动的内容区域 -->
+  <scroll-view class="scroll-content" scroll-y="true">
+    <view class="main-content">
+      <view class="title-section">
+        <text class="title">SIGN UP!</text>
+      </view>
+      <view class="form-section">
+        <!-- YOUR NAME 姓名 -->
+        <view class="form-item">
+          <text class="form-label">YOUR NAME</text>
+          <input 
+            class="form-input" 
+            type="text" 
+            placeholder="请输入您的姓名"
+            value="{{formData.name}}"
+            bindinput="onNameInput"
+            maxlength="20"
+          />
+        </view>
+        
+        <!-- YOUR PLANT 工厂 -->
+        <view class="form-item">
+          <text class="form-label">YOUR PLANT</text>
+          <input 
+            class="form-input" 
+            type="text" 
+            placeholder="请输入您的工厂"
+            value="{{formData.plant}}"
+            bindinput="onPlantInput"
+            maxlength="30"
+          />
+        </view>
+        
+        <!-- YOUR DEPARTMENT 部门 -->
+        <view class="form-item">
+          <text class="form-label">YOUR DEPARTMENT</text>
+          <picker class="form-input picker" mode="selector" range="{{departmentOptions}}" bindchange="onDepartmentChange">
+            <view class="picker-display">
+              {{departmentOptions[departmentIndex] || '请选择您的部门'}}
+            </view>
+          </picker>
+        </view>
+        
+        <!-- PASSWORD 密码 -->
+        <view class="form-item">
+          <text class="form-label">PASSWORD</text>
+          <input 
+            class="form-input" 
+            type="password" 
+            password
+            placeholder="请输入密码"
+            value="{{formData.password}}"
+            bindinput="onPasswordInput"
+            maxlength="20"
+          />
+        </view>
+        
+        <!-- PASSWORD AGAIN 确认密码 -->
+        <view class="form-item">
+          <text class="form-label">PASSWORD AGAIN</text>
+          <input 
+            class="form-input" 
+            type="password" 
+            password
+            placeholder="请再次输入密码"
+            value="{{formData.confirmPassword}}"
+            bindinput="onConfirmPasswordInput"
+            maxlength="20"
+          />
+        </view>
+      </view>
     </view>
-    
-    <!-- YOUR PLANT 工厂 -->
-    <view class="form-item">
-      <text class="form-label">YOUR PLANT</text>
-      <input 
-        class="form-input" 
-        type="text" 
-        placeholder="请输入您的工厂"
-        value="{{formData.plant}}"
-        bindinput="onPlantInput"
-        maxlength="30"
-      />
+  </scroll-view>
+
+  <!-- 固定在底部的页脚 -->
+  <view class="footer-section">
+    <view class="button-section">
+      <button class="signup-btn" bindtap="onSubmit">SIGN UP</button>
     </view>
-    
-    <!-- PASSWORD 密码 -->
-    <view class="form-item">
-      <text class="form-label">PASSWORD</text>
-      <input 
-        class="form-input" 
-        type="password" 
-        placeholder="请输入密码"
-        value="{{formData.password}}"
-        bindinput="onPasswordInput"
-        maxlength="20"
-      />
+    <view class="bottom-section">
+      <text class="link-text">ALREADY HAVE A ACCOUNT</text>
+      <text class="link-btn" bindtap="goToLogin">SIGN IN</text>
     </view>
-    
-    <!-- PASSWORD AGAIN 确认密码 -->
-    <view class="form-item">
-      <text class="form-label">PASSWORD AGAIN</text>
-      <input 
-        class="form-input" 
-        type="password" 
-        placeholder="请再次输入密码"
-        value="{{formData.confirmPassword}}"
-        bindinput="onConfirmPasswordInput"
-        maxlength="20"
-      />
-    </view>
-  </view>
-  
-  <!-- 注册按钮 -->
-  <view class="button-section">
-    <button class="signup-btn" bindtap="onSubmit">SIGN UP</button>
-  </view>
-  
-  <!-- 底部登录链接 -->
-  <view class="bottom-section">
-    <text class="link-text">ALREADY HAVE A ACCOUNT</text>
-    <text class="link-btn" bindtap="goToLogin">SIGN IN</text>
   </view>
 </view>

@@ -55,6 +55,25 @@ Page({
     });
   },
 
+  onScanTNumber() {
+    wx.scanCode({
+      scanType: ['barCode'],
+      success: (res) => {
+        console.log('扫码成功', res);
+        this.setData({
+          tNumber: res.result
+        });
+      },
+      fail: (err) => {
+        console.log('扫码失败', err);
+        wx.showToast({
+          title: '扫码失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
   /**
    * 验证表单是否填写完整
    */
@@ -84,9 +103,7 @@ Page({
    * 处理上一页按钮点击
    */
   onPrevious: function() {
-    wx.navigateBack({
-      delta: 1
-    });
+    wx.navigateBack();
   },
 
   /**

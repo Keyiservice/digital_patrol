@@ -113,6 +113,11 @@ page {
   align-items: center;
 }
 
+.form-input.disabled {
+  background-color: #f5f5f5;
+  color: #888;
+}
+
 .form-textarea {
   width: 100%;
   height: 180rpx;
@@ -124,45 +129,50 @@ page {
   border: 1rpx solid #e0e0e0;
 }
 
-.bottom-section {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0 20rpx;
-  box-sizing: border-box;
+/* 按钮区域 (与 repair/quality 页面统一) */
+.button-area {
   position: fixed;
   bottom: 0;
   left: 0;
-  height: 100rpx;
-  background-color: #f5f5f5;
+  width: 100%;
+  padding: 20rpx 40rpx;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  box-sizing: border-box;
   z-index: 100;
-  align-items: center;
 }
-
-.nav-btn {
-  width: 45%;
-  height: 80rpx;
-  font-size: 32rpx;
-  border-radius: 15rpx;
+.button-row-edit {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  border: none;
-  letter-spacing: 3rpx;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  text-shadow: 1rpx 1rpx 2rpx rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
 }
-
-.cancel-btn {
-  background-color: #777;
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.2);
+.save-button, .cancel-button, .back-button {
+  height: 90rpx;
+  line-height: 90rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  text-align: center;
+  margin: 0;
 }
-
-.save-btn {
+.button-row-edit .save-button,
+.button-row-edit .cancel-button {
+  flex: 1;
+}
+.save-button {
   background-color: #0d3371;
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
+  color: white;
+  margin-left: 10rpx;
+}
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #333;
+  margin-right: 10rpx;
+}
+.back-button {
+  background-color: #0d3371;
+  color: white;
+  width: 100%;
+}
+
+.picker-display {
+  width: 100%;
 } 
