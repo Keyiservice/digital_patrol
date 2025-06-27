@@ -18,25 +18,15 @@
     "pages/breakdown-management/breakdown-quality",
     "pages/breakdown-management/breakdown-list",
     "pages/main-patrol/main-patrol",
-    "pages/main-patrol-list/main-patrol-list"
+    "pages/main-patrol-list/main-patrol-list",
+    "pages/main-patrol-detail/main-patrol-detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
   "style": "v2",
-  "renderer": "skyline",
-  "rendererOptions": {
-    "skyline": {
-      "defaultDisplayBlock": true,
-      "defaultContentBox": true,
-      "tagNameStyleIsolation": "legacy",
-      "disableABTest": true,
-      "sdkVersionBegin": "3.0.0",
-      "sdkVersionEnd": "15.255.255"
-    }
-  },
-  "componentFramework": "glass-easel",
+  "renderer": "webview",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents",
   "usingComponents": {

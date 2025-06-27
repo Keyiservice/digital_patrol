@@ -42,5 +42,111 @@
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "cloudfunctionRoot": "cloudfunctions/",
   "srcMiniprogramRoot": "miniprogram/",
-  "cloud": true
+  "cloud": true,
+  "cloudfunctions": [
+    {
+      "name": "getDeviceList",
+      "path": "cloudfunctions/getDeviceList"
+    },
+    {
+      "name": "checkMainInspectionPlans",
+      "path": "cloudfunctions/checkMainInspectionPlans"
+    },
+    {
+      "name": "getMainInspectionPlan",
+      "path": "cloudfunctions/getMainInspectionPlan"
+    },
+    {
+      "name": "initReasonOptions",
+      "path": "cloudfunctions/initReasonOptions"
+    },
+    {
+      "name": "getReasonOptions",
+      "path": "cloudfunctions/getReasonOptions"
+    },
+    {
+      "name": "login",
+      "path": "cloudfunctions/login"
+    },
+    {
+      "name": "signUp",
+      "path": "cloudfunctions/signUp"
+    },
+    {
+      "name": "getProjectOptions",
+      "path": "cloudfunctions/getProjectOptions"
+    },
+    {
+      "name": "getQuaPatrolRecords",
+      "path": "cloudfunctions/getQuaPatrolRecords"
+    },
+    {
+      "name": "initQuaInspectionPlans",
+      "path": "cloudfunctions/initQuaInspectionPlans"
+    },
+    {
+      "name": "saveQuaPatrolRecord",
+      "path": "cloudfunctions/saveQuaPatrolRecord"
+    },
+    {
+      "name": "getQuaInspectionPlan",
+      "path": "cloudfunctions/getQuaInspectionPlan"
+    },
+    {
+      "name": "getInspectionPlanByDevice",
+      "path": "cloudfunctions/getInspectionPlanByDevice"
+    },
+    {
+      "name": "getMainPatrolRecords",
+      "path": "cloudfunctions/getMainPatrolRecords"
+    },
+    {
+      "name": "saveMainPatrolRecord",
+      "path": "cloudfunctions/saveMainPatrolRecord"
+    },
+    {
+      "name": "deleteBreakdownRecord",
+      "path": "cloudfunctions/deleteBreakdownRecord"
+    },
+    {
+      "name": "updateBreakdownRecord",
+      "path": "cloudfunctions/updateBreakdownRecord"
+    },
+    {
+      "name": "getBreakdownRecord",
+      "path": "cloudfunctions/getBreakdownRecord"
+    },
+    {
+      "name": "getBreakdownRecords",
+      "path": "cloudfunctions/getBreakdownRecords"
+    },
+    {
+      "name": "saveBreakdownRecord",
+      "path": "cloudfunctions/saveBreakdownRecord"
+    },
+    {
+      "name": "getTpmRecords",
+      "path": "cloudfunctions/getTpmRecords"
+    },
+    {
+      "name": "deleteTpmRecord",
+      "path": "cloudfunctions/deleteTpmRecord"
+    },
+    {
+      "name": "saveTpmRecord",
+      "path": "cloudfunctions/saveTpmRecord"
+    },
+    {
+      "name": "deleteNpRecord",
+      "path": "cloudfunctions/deleteNpRecord"
+    },
+    {
+      "name": "getNpRecords",
+      "path": "cloudfunctions/getNpRecords"
+    },
+    {
+      "name": "saveNpRecord",
+      "path": "cloudfunctions/saveNpRecord"
+    }
+  ]
 }

@@ -1,20 +1,71 @@
 <!--pages/main-patrol-list/main-patrol-list.wxml-->
 <custom-header />
 <view class="container">
+  <!-- 用户信息区域 -->
+  <user-info />
+
+  <!-- 页面标题 -->
   <view class="page-title">
-    <text class="title-text">巡检记录列表</text>
+    <text class="title-text">MAIN PATROL</text>
+    <text class="sub-title-text">EQUIPMENT INSPECTION LIST</text>
   </view>
 
+  <!-- 筛选区域 -->
+  <view class="filter-area">
+    <view class="filter-row">
+      <view class="filter-item">
+        <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+          <view class="picker-display">
+            <text class="picker-label">开始日期:</text>
+            <text class="picker-value">{{startDate || '请选择'}}</text>
+          </view>
+        </picker>
+      </view>
+      <view class="filter-item">
+        <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+          <view class="picker-display">
+            <text class="picker-label">结束日期:</text>
+            <text class="picker-value">{{endDate || '请选择'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+    
+    <view class="filter-row">
+      <view class="filter-item wide">
+        <picker bindchange="onDeviceChange" value="{{deviceIndex}}" range="{{deviceOptions}}" range-key="name">
+          <view class="picker-display">
+            <text class="picker-label">设备:</text>
+            <text class="picker-value">{{deviceOptions[deviceIndex].name || '请选择设备'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+    
+    <view class="filter-row button-row">
+      <view class="filter-item button-wrapper">
+        <button class="filter-button" bindtap="onFilter">FILTER</button>
+      </view>
+      <view class="filter-item button-wrapper">
+        <button class="reset-button" bindtap="onReset">RESET</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
   <view class="list-container">
     <block wx:if="{{records.length > 0}}">
-      <view class="record-item" wx:for="{{records}}" wx:key="_id" data-id="{{item._id}}">
-        <view class="item-header">
-          <text class="record-area">{{item.area}}</text>
-          <text class="record-status {{item.hasAbnormal ? 'abnormal' : ''}}">{{item.hasAbnormal ? '存在异常' : '全部正常'}}</text>
+      <view class="record-card" wx:for="{{records}}" wx:key="_id" bindtap="onViewRecord" data-id="{{item._id}}">
+        <view class="card-header">
+          <text class="project-text">{{item.deviceName || '无设备名称'}}</text>
         </view>
-        <view class="item-body">
-          <text class="info-text">巡检员: {{item.inspector}}</text>
-          <text class="info-text">时间: {{item.inspectionTime}}</text>
+        <view class="card-body">
+          <text class="date-text">{{item.inspectionTime}}</text>
+          <text class="reason-text">设备ID: {{item.deviceId || '未记录'}}</text>
+          <text class="reason-text">状态: {{item.hasAbnormal ? '存在异常' : '全部正常'}}</text>
+        </view>
+        <view class="card-footer">
+          <text class="operator-text">巡检员: {{item.inspector}}</text>
         </view>
       </view>
     </block>
@@ -25,7 +76,9 @@
     </block>
   </view>
 
+  <!-- 操作按钮 -->
   <view class="bottom-section">
-    <button class="btn" bindtap="goBack">返回</button>
+    <button class="btn back-btn" bindtap="goBack">BACK</button>
+    <button class="btn add-btn" bindtap="onAddNew">ADD RECORD</button>
   </view>
 </view> 

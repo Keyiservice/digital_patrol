@@ -5,8 +5,10 @@ Page({
   data: {
     records: [], // 存储记录列表
     // 更新筛选字段
-    filterProject: '',
-    filterTreatment: '', // reason -> treatment
+    projectOptions: ['ALL', 'D2XX', 'G68', 'P71A', 'P171', 'E371'], // 项目选项
+    projectIndex: 0,
+    treatmentOptions: ['ALL', 'Rework', 'Scrap', 'On-Hold', 'Use as it'], // 处理方式选项
+    treatmentIndex: 0,
     startDate: '',
     endDate: ''
   },
@@ -17,6 +19,8 @@ Page({
   onLoad: function (options) {
     // 获取不合格品记录列表
     this.fetchRecords();
+    // 获取项目选项
+    this.loadProjectOptions();
   },
 
   /**
@@ -25,6 +29,37 @@ Page({
   onShow: function () {
     // 每次页面显示时刷新列表，确保有新增或修改的记录时能够显示
     this.fetchRecords();
+  },
+
+  /**
+   * 获取项目选项
+   */
+  loadProjectOptions: function() {
+    wx.showLoading({ title: '加载项目选项...' });
+    try {
+      wx.cloud.callFunction({
+        name: 'getProjectOptions',
+        success: res => {
+          wx.hideLoading();
+          if (res.result && res.result.success) {
+            // 添加"ALL"选项作为第一个选项
+            const options = ['ALL', ...res.result.data];
+            this.setData({
+              projectOptions: options
+            });
+          } else {
+            console.error('获取项目选项失败:', res);
+          }
+        },
+        fail: err => {
+          wx.hideLoading();
+          console.error('调用获取项目选项云函数失败:', err);
+        }
+      });
+    } catch (e) {
+      wx.hideLoading();
+      console.error('加载项目选项出错:', e);
+    }
   },
 
   /**
@@ -267,38 +302,56 @@ Page({
       delta: 1
     });
   },
-
-  // 新增：处理输入框变化
-  onFilterInputChange: function(e) {
-    const { field } = e.currentTarget.dataset;
-    this.setData({ [field]: e.detail.value });
+  
+  // 处理项目选择变化
+  onProjectChange: function(e) {
+    this.setData({ 
+      projectIndex: e.detail.value 
+    });
   },
   
-  // 新增：处理日期变化
+  // 处理处理方式选择变化
+  onTreatmentChange: function(e) {
+    this.setData({ 
+      treatmentIndex: e.detail.value 
+    });
+  },
+  
+  // 处理日期变化
   onDateChange: function(e) {
     const { field } = e.currentTarget.dataset;
     this.setData({ [field]: e.detail.value });
   },
 
-  // 新增：筛选按钮点击
+  // 筛选按钮点击
   onFilter: function() {
-    const filter = {
-      project: this.data.filterProject,
-      treatment: this.data.filterTreatment, // reason -> treatment
-      startDate: this.data.startDate,
-      endDate: this.data.endDate
-    };
-    Object.keys(filter).forEach(key => {
-      if (!filter[key]) delete filter[key];
-    });
+    const filter = {};
+    
+    // 只有当不是选择"ALL"时，才添加筛选条件
+    if (this.data.projectIndex > 0) {
+      filter.project = this.data.projectOptions[this.data.projectIndex];
+    }
+    
+    if (this.data.treatmentIndex > 0) {
+      filter.treatment = this.data.treatmentOptions[this.data.treatmentIndex];
+    }
+    
+    if (this.data.startDate) {
+      filter.startDate = this.data.startDate;
+    }
+    
+    if (this.data.endDate) {
+      filter.endDate = this.data.endDate;
+    }
+    
     this.fetchRecords(filter);
   },
 
-  // 新增：重置按钮点击
+  // 重置按钮点击
   onReset: function() {
     this.setData({
-      filterProject: '',
-      filterTreatment: '', // reason -> treatment
+      projectIndex: 0,
+      treatmentIndex: 0,
       startDate: '',
       endDate: ''
     });

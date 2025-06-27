@@ -14,10 +14,14 @@
   <view class="filter-area">
     <view class="filter-row">
       <view class="filter-item-wrapper">
-        <input class="filter-input" placeholder="Project" value="{{filterProject}}" data-field="filterProject" bindinput="onFilterInputChange" />
+        <picker class="filter-picker" bindchange="onProjectChange" value="{{projectIndex}}" range="{{projectOptions}}">
+          <view class="picker-display">{{projectOptions[projectIndex] || 'Project'}}</view>
+        </picker>
       </view>
       <view class="filter-item-wrapper">
-        <input class="filter-input" placeholder="Treatment" value="{{filterTreatment}}" data-field="filterTreatment" bindinput="onFilterInputChange" />
+        <picker class="filter-picker" bindchange="onTreatmentChange" value="{{treatmentIndex}}" range="{{treatmentOptions}}">
+          <view class="picker-display">{{treatmentOptions[treatmentIndex] || 'Treatment'}}</view>
+        </picker>
       </view>
       <view class="filter-item-wrapper">
         <picker class="filter-picker" mode="date" value="{{startDate}}" bindchange="onDateChange" data-field="startDate">
@@ -26,8 +30,12 @@
       </view>
     </view>
     <view class="filter-row button-row">
-      <button class="filter-button" bindtap="onFilter">Filter</button>
-      <button class="reset-button" bindtap="onReset">Reset</button>
+      <view class="filter-item-wrapper button-wrapper">
+        <button class="filter-button" bindtap="onFilter">Filter</button>
+      </view>
+      <view class="filter-item-wrapper button-wrapper">
+        <button class="reset-button" bindtap="onReset">Reset</button>
+      </view>
     </view>
   </view>
 

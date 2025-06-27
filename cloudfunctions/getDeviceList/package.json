@@ -1,7 +1,7 @@
 {
-  "name": "initReasonOptions",
+  "name": "getDeviceList",
   "version": "1.0.0",
-  "description": "初始化不合格原因选项",
+  "description": "获取设备列表",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

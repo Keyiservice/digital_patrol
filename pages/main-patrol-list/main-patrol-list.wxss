@@ -12,63 +12,168 @@ page {
 }
 
 .page-title {
-  padding: 30rpx 0;
+  padding: 20rpx 0;
   text-align: center;
+  color: #0d3371;
+  letter-spacing: 2rpx;
 }
 
 .title-text {
-  font-size: 40rpx;
+  font-size: 50rpx;
   font-weight: bold;
   color: #0d3371;
+  display: block;
+}
+
+.sub-title-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #0d3371;
+  display: block;
+}
+
+/* 筛选区域样式 */
+.filter-area {
+  background-color: #fff;
+  border-radius: 15rpx;
+  margin: 0 20rpx 20rpx; /* 将左右边距移到这里 */
+  padding: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.08);
+}
+
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15rpx;
+  align-items: center;
+}
+
+.filter-item {
+  width: 48%;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+  border: 1rpx solid #eee;
+  box-sizing: border-box;
+}
+
+.filter-item.button-wrapper {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
+.filter-item.wide {
+  width: 100%;
+}
+
+.picker-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15rpx;
+}
+
+.picker-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.picker-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.button-row {
+  margin-top: 20rpx;
+  margin-bottom: 0;
+}
+
+.filter-button, .reset-button {
+  width: 48%;
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.filter-button {
+  background-color: #0d3371;
+  color: white;
+}
+
+.reset-button {
+  background-color: #e0e0e0;
+  color: #333;
 }
 
 .list-container {
   flex: 1;
-  padding: 0 20rpx;
+  padding: 0 30rpx; /* 恢复并统一左右内边距，这是控制卡片与屏幕边缘距离的正确方法 */
+  margin-top: 20rpx;
+  width: 100%;
+  box-sizing: border-box; /* 确保 padding 包含在 width 内 */
 }
 
-.record-item {
+/* --- 从 np-list.wxss 复制的卡片样式 --- */
+.record-card {
   background-color: #fff;
-  border-radius: 15rpx;
-  padding: 25rpx;
-  margin-bottom: 20rpx;
+  border-radius: 15rpx; /* 恢复圆角 */
   box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.08);
+  margin-bottom: 25rpx; /* 只保留下边距 */
+  padding: 30rpx;
+  box-sizing: border-box;
+  width: 100%; /* 宽度撑满带 padding 的父容器 */
 }
 
-.item-header {
+.card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 居中标题 */
   align-items: center;
   padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
   margin-bottom: 20rpx;
+  /* 移除边框，因为它现在在日期下方 */
 }
 
-.record-area {
-  font-size: 32rpx;
+.project-text {
+  font-size: 34rpx; /* 增大字体 */
+  color: #0d3371;
   font-weight: bold;
-  color: #333;
 }
 
-.record-status {
+.date-text {
+  display: block; /* 使其成为块级元素，占据一整行 */
   font-size: 26rpx;
-  padding: 5rpx 15rpx;
-  border-radius: 20rpx;
-  background-color: #e8f5e9; /* 绿色背景 */
-  color: #388e3c; /* 绿色文字 */
-}
-
-.record-status.abnormal {
-  background-color: #ffebee; /* 红色背景 */
-  color: #d32f2f; /* 红色文字 */
-}
-
-.item-body .info-text {
-  display: block;
-  font-size: 28rpx;
   color: #666;
-  line-height: 1.6;
+  padding-bottom: 20rpx; /* 日期下方的空间 */
+  margin-bottom: 20rpx; /* 与下方内容的间距 */
+  border-bottom: 1rpx solid #f0f0f0; /* 添加分割线 */
+  text-align: center; /* 居中显示日期 */
 }
+
+.card-body {
+  margin-bottom: 20rpx; /* 增加身体与底部的间距 */
+}
+
+.reason-text {
+  display: block;
+  font-size: 30rpx; /* 增大字体 */
+  color: #555;
+  line-height: 1.8; /* 增大行高 */
+}
+
+.card-footer {
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 20rpx; /* 增加底部区域空间 */
+}
+
+.operator-text {
+  font-size: 28rpx; /* 增大字体 */
+  color: #888;
+}
+/* --- 样式复制结束 --- */
 
 .empty-state {
   text-align: center;
@@ -85,13 +190,26 @@ page {
   padding: 20rpx;
   box-sizing: border-box;
   background-color: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
 }
 
 .btn {
-  width: 100%;
-  background-color: #0d3371;
-  color: white;
+  width: 48%;
   height: 80rpx;
   font-size: 32rpx;
   border-radius: 15rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.add-btn {
+  background-color: #0d3371;
+  color: white;
 } 

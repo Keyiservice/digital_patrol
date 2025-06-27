@@ -65,7 +65,18 @@
           </picker>
         </view>
       </view>
-      
+      <!-- 条码拍照 -->
+      <view class="form-item">
+        <text class="form-label">Barcode Photo:</text>
+        <view class="photo-container">
+          <view class="photo-button" bindtap="takePhoto" data-type="barcode">
+            <text class="photo-text">Take Photo</text>
+          </view>
+          <view wx:if="{{barcodePhoto}}" class="photo-preview">
+            <image class="preview-image" src="{{barcodePhoto}}" mode="aspectFit" bindtap="previewImage" data-photo="{{barcodePhoto}}"></image>
+          </view>
+        </view>
+      </view>
       <!-- 不合格位置拍照 -->
       <view class="form-item">
         <text class="form-label">Defect Location Photo:</text>

@@ -67,9 +67,9 @@ Page({
       return;
     }
     
-    // 导航到主线巡检页面
+    // 导航到主线巡检列表页面
     wx.navigateTo({
-      url: '/pages/main-patrol/main-patrol'
+      url: '/pages/main-patrol-list/main-patrol-list'
     });
   },
 
@@ -84,6 +84,54 @@ Page({
     // 导航到故障管理列表页面
     wx.navigateTo({
       url: '/pages/breakdown-management/breakdown-list'
+    });
+  },
+  
+  // TSV 按钮点击事件
+  onTSV() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
+    // 功能尚未实现，显示提示
+    wx.showToast({
+      title: 'TSV功能开发中',
+      icon: 'none',
+      duration: 2000
+    });
+  },
+  
+  // LPA 按钮点击事件
+  onLPA() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
+    // 功能尚未实现，显示提示
+    wx.showToast({
+      title: 'LPA功能开发中',
+      icon: 'none',
+      duration: 2000
+    });
+  },
+  
+  // UNSAFE REPORT 按钮点击事件
+  onUnsafeReport() {
+    // 检查是否已登录
+    if (!this.data.isLogin) {
+      this.showLoginRequiredToast();
+      return;
+    }
+    
+    // 功能尚未实现，显示提示
+    wx.showToast({
+      title: 'UNSAFE REPORT功能开发中',
+      icon: 'none',
+      duration: 2000
     });
   },
   

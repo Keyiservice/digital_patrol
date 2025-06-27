@@ -13,13 +13,51 @@
 
   </view>
   
-  <!-- 功能按钮区域 -->
-  <view class="menu-section">
-    <button style="width:80vw" class="menu-btn" bindtap="onQUAPatrol" hover-class="menu-btn-hover">QUA ONLINE PATROL</button>
-    <button style="width:80vw" class="menu-btn" bindtap="onNPManagement" hover-class="menu-btn-hover">NP MANAGEMENT</button>
-    <button style="width:80vw" class="menu-btn" bindtap="onMainPatrol" hover-class="menu-btn-hover">MAIN ONLINE PATROL</button>
-    <button style="width:80vw" class="menu-btn" bindtap="onGoTpmList" hover-class="menu-btn-hover">TPM EVIDENCE</button>
-    <button style="width:80vw" class="menu-btn" bindtap="onTPM" hover-class="menu-btn-hover">BREAKDOWN RECORD</button>
+  <!-- 功能按钮区域 - 网格布局 -->
+  <view class="grid-container">
+    <!-- 第一行 -->
+    <view class="grid-item" bindtap="onQUAPatrol">
+      <view class="grid-icon icon-qua"></view>
+      <text class="grid-text">QUA PATROL</text>
+    </view>
+    
+    <view class="grid-item" bindtap="onNPManagement">
+      <view class="grid-icon icon-np"></view>
+      <text class="grid-text">NP MANAGEMENT</text>
+    </view>
+    
+    <!-- 第二行 -->
+    <view class="grid-item" bindtap="onMainPatrol">
+      <view class="grid-icon icon-main"></view>
+      <text class="grid-text">MAIN PATROL</text>
+    </view>
+    
+    <view class="grid-item" bindtap="onGoTpmList">
+      <view class="grid-icon icon-tpm"></view>
+      <text class="grid-text">TPM EVIDENCE</text>
+    </view>
+    
+    <!-- 第三行 -->
+    <view class="grid-item" bindtap="onTPM">
+      <view class="grid-icon icon-breakdown"></view>
+      <text class="grid-text">BREAKDOWN</text>
+    </view>
+    
+    <view class="grid-item" bindtap="onTSV">
+      <view class="grid-icon icon-tsv"></view>
+      <text class="grid-text">TSV</text>
+    </view>
+    
+    <!-- 第四行 -->
+    <view class="grid-item" bindtap="onLPA">
+      <view class="grid-icon icon-lpa"></view>
+      <text class="grid-text">LPA</text>
+    </view>
+    
+    <view class="grid-item" bindtap="onUnsafeReport">
+      <view class="grid-icon icon-unsafe"></view>
+      <text class="grid-text">UNSAFE REPORT</text>
+    </view>
   </view>
   
   <!-- 底部登录注册区域 -->

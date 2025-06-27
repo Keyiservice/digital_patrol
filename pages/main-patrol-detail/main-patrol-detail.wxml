@@ -1,0 +1,56 @@
+<!--pages/main-patrol-detail/main-patrol-detail.wxml-->
+<view class="inspection-page-container">
+  <!-- 固定头部 -->
+  <view id="inspection-header">
+    <custom-header />
+    <view class="page-title">
+      <text class="title-text">MAIN PATROL DETAIL</text>
+      <text class="sub-title-text">EQUIPMENT INSPECTION RECORD</text>
+    </view>
+    <view class="info-section">
+      <view class="device-info">
+        <text class="device-id">{{record.deviceId}}</text>
+        <text class="device-name">{{record.deviceName}}</text>
+      </view>
+      <view class="datetime-display">
+        <text>巡检时间: {{record.inspectionTime}}</text>
+      </view>
+      <view class="datetime-display">
+        <text>巡检员: {{record.inspector}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 可滚动区域 -->
+  <scroll-view class="inspection-scroll-area" scroll-y="true" style="height: {{scrollHeight}}px;">
+    <view class="inspection-content">
+      <block wx:for="{{record.items}}" wx:key="id">
+        <view class="inspection-item">
+          <view class="item-header">
+            <text class="item-title">{{index + 1}}. {{item.label}}</text>
+          </view>
+          <view class="item-body">
+            <view class="result-photo-row">
+              <view class="result-section">
+                <text class="result-label">RESULT</text>
+                <text class="result-value {{item.isAbnormal ? 'abnormal' : ''}}">{{item.isAbnormal ? 'NG' : 'OK'}}</text>
+              </view>
+              <view class="picture-section" wx:if="{{item.imageUrl}}">
+                <image class="item-photo" src="{{item.imageUrl}}" mode="aspectFill" bindtap="previewImage" data-url="{{item.imageUrl}}"></image>
+              </view>
+            </view>
+            <view class="abnormal-section" wx:if="{{item.isAbnormal}}">
+              <text class="abnormal-desc-label">异常描述:</text>
+              <text class="abnormal-desc-text">{{item.abnormalDesc}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </scroll-view>
+
+  <!-- 固定底部 -->
+  <view class="bottom-section single-button" id="bottom-section">
+    <button class="btn back-btn" bindtap="goBack">BACK</button>
+  </view>
+</view> 

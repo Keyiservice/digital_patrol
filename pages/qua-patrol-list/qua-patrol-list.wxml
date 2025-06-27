@@ -24,7 +24,7 @@
         </view>
       </picker>
     </view>
-    <view class="filter-buttons">
+    <view class="filter-row button-row">
       <button class="btn filter-btn" bindtap="onFilter">筛选</button>
       <button class="btn reset-btn" bindtap="onReset">重置</button>
     </view>

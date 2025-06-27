@@ -1,4 +1,4 @@
-const db = wx.cloud.database();
+// pages/np-management/np-entry.js
 const util = require('../../utils/util.js');
 
 Page({
@@ -6,21 +6,33 @@ Page({
    * 页面的初始数据
    */
   data: {
-    projectOptions: ['D2XX', 'G68', 'P71A', 'P171', 'E371'],  // 默认项目选项
-    projectIndex: 0,  // 选中的项目索引
-    currentDate: '',  // 当前日期
-    currentTime: '',  // 当前时间
-    tNumber: '',  // T-NUMBER
-    reasonOptions: ['磕碰伤', '外观不良', '未进入cookie', '飞边不合格', '重量不合格', '焊接报警', 'CCD报警', '焊接不良', '氦检侧漏失败'],  // 默认不合格原因选项
-    reasonIndex: 0,  // 选中的不合格原因索引
-    defectLocationPhoto: '',  // 不合格位置照片
+    // 项目选择 - 直接在页面定义默认值
+    projectOptions: ['D2XX', 'G68', 'P71A', 'P171', 'E371'],
+    projectIndex: 0,
+    
+    // 日期时间
+    currentDate: '',
+    currentTime: '',
+    
+    // 不合格原因 - 直接在页面定义默认值
+    reasonOptions: ['磕碰伤', '外观不良', '未进入cookie', '飞边不合格', '重量不合格', '焊接报警', 'CCD报警', '焊接不良', '氦检侧漏失败'],
+    reasonIndex: 0,
+    
+    // 照片
+    barcodePhoto: '',
+    defectLocationPhoto: '',
+    
+    // 处理方法
     treatmentOptions: [
       { label: 'Rework', value: 'rework' },
       { label: 'Scrap', value: 'scrap' },
       { label: 'On-Hold', value: 'on_hold' },
       { label: 'Use as it', value: 'use_as_it' }
     ],
-    treatment: 'rework',  // 处理方法
+    treatment: 'rework',
+    tNumber: '', // T-NUMBER
+    
+    // 编辑模式
     isEditMode: false,
     recordId: ''
   },
@@ -29,7 +41,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log('页面加载');
     // 初始化当前日期和时间
     const now = new Date();
     const formatDate = util.formatDate(now);
@@ -83,6 +94,7 @@ Page({
               currentTime: record.time,
               tNumber: record['t-number'] || '',
               reasonIndex: reasonIndex >= 0 ? reasonIndex : 0,
+              barcodePhoto: record.barcodePhoto || '',
               defectLocationPhoto: record.defectLocationPhoto || '',
               treatment: this.getTreatmentValue(record.treatment)
             });
@@ -142,47 +154,39 @@ Page({
         currentTime: record.time,
         tNumber: record['t-number'] || '',
         reasonIndex: reasonIndex >= 0 ? reasonIndex : 0,
+        barcodePhoto: record.barcodePhoto || '',
         defectLocationPhoto: record.defectLocationPhoto || '',
         treatment: this.getTreatmentValue(record.treatment)
       });
     }
   },
 
-  // 项目选择变更处理函数
-  onProjectChange: function (e) {
-    console.log('项目选择变更:', e);
+  onProjectChange: function(e) {
     const index = e.detail.value;
     this.setData({
       projectIndex: index
     });
-    console.log('当前选中项目索引:', index, '项目名称:', this.data.projectOptions[index]);
   },
 
-  // 日期变更处理函数
-  onDateChange: function (e) {
-    console.log('日期变更:', e);
+  onDateChange: function(e) {
     this.setData({
       currentDate: e.detail.value
     });
   },
 
-  // 时间变更处理函数
-  onTimeChange: function (e) {
-    console.log('时间变更:', e);
+  onTimeChange: function(e) {
     this.setData({
       currentTime: e.detail.value
     });
   },
 
-  // T-NUMBER输入处理函数
-  onTNumberInput: function (e) {
+  onTNumberInput: function(e) {
     this.setData({
       tNumber: e.detail.value
     });
   },
 
-  // 扫描T-NUMBER
-  onScanTNumber: function () {
+  onScanTNumber: function() {
     wx.scanCode({
       scanType: ['barCode'],
       success: (res) => {
@@ -199,36 +203,42 @@ Page({
     });
   },
 
-  // 不合格原因选择变更处理函数
-  onReasonChange: function (e) {
-    console.log('不合格原因变更:', e);
+  onReasonChange: function(e) {
     const index = e.detail.value;
     this.setData({
       reasonIndex: index
     });
-    console.log('当前选中原因索引:', index, '原因:', this.data.reasonOptions[index]);
   },
 
   /**
-   * 拍照功能 - 简化版，直接使用本地图片路径
+   * 拍照功能
    */
   takePhoto: function(e) {
-    wx.chooseImage({
+    const photoType = e.currentTarget.dataset.type;
+    wx.chooseMedia({
       count: 1,
-      sizeType: ['compressed'], // 压缩图片，减少存储空间
+      mediaType: ['image'],
       sourceType: ['camera', 'album'],
       success: (res) => {
-        // 直接使用本地临时路径，不进行云存储上传
-        const tempFilePath = res.tempFilePaths[0];
-        this.setData({
-          defectLocationPhoto: tempFilePath
-        });
+        const tempFilePath = res.tempFiles[0].path;
+        wx.showLoading({ title: '上传中...' });
+        const cloudPath = `np-photos/${Date.now()}-${Math.floor(Math.random() * 1000)}.png`;
+        wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: tempFilePath,
+          success: (uploadRes) => {
+            wx.hideLoading();
+            const fileID = uploadRes.fileID;
+            if (photoType === 'barcode') {
+              this.setData({ barcodePhoto: fileID });
+            } else if (photoType === 'defectLocation') {
+              this.setData({ defectLocationPhoto: fileID });
+            }
           },
-      fail: (err) => {
-        console.error('选择图片失败:', err);
-        wx.showToast({
-          title: '选择图片失败',
-          icon: 'none'
+          fail: () => {
+            wx.hideLoading();
+            wx.showToast({ title: '上传失败', icon: 'none' });
+          }
         });
       }
     });
@@ -244,105 +254,35 @@ Page({
     }
   },
 
-  // 处理方法选择变更
-  onTreatmentChange: function (e) {
-    console.log('处理方法变更:', e);
+  onTreatmentChange: function(e) {
     this.setData({
       treatment: e.detail.value
     });
   },
 
   validateAndGetData: function() {
-    const { projectOptions, projectIndex, currentDate, currentTime, reasonOptions, reasonIndex, defectLocationPhoto, treatment, tNumber } = this.data;
-    
-    // 验证必填项
-    if (!projectOptions[projectIndex]) {
-      wx.showToast({ title: '请选择项目', icon: 'none' });
-      return null;
-    }
-    
-    if (!tNumber.trim()) {
-      wx.showToast({ title: '请输入T-NUMBER', icon: 'none' });
-      return null;
-    }
-    
-    if (!reasonOptions[reasonIndex]) {
-      wx.showToast({ title: '请选择不合格原因', icon: 'none' });
-      return null;
-    }
-    
-    if (!defectLocationPhoto) {
-      wx.showToast({ title: '请拍摄不合格位置照片', icon: 'none' });
-      return null;
-    }
-    
-    if (!treatment) {
-      wx.showToast({ title: '请选择处理方法', icon: 'none' });
-      return null;
-    }
-    
-    // 构建记录数据
+    const { projectOptions, projectIndex, currentDate, currentTime, reasonOptions, reasonIndex, barcodePhoto, defectLocationPhoto, treatment, tNumber } = this.data;
     const record = {
       project: projectOptions[projectIndex],
       date: currentDate,
       time: currentTime,
       't-number': tNumber,
       reason: reasonOptions[reasonIndex],
+      barcodePhoto: barcodePhoto,
       defectLocationPhoto: defectLocationPhoto,
       treatment: treatment
     };
-    
+    if (!record.project || !record.reason) {
+      wx.showToast({ title: '请填写所有必填项', icon: 'none' });
+      return null;
+    }
     return record;
   },
 
   onSave: function() {
     const recordData = this.validateAndGetData();
     if (!recordData) return;
-    
     wx.showLoading({ title: '保存中...' });
-    
-    // 如果是本地文件路径，先上传到云存储
-    if (this.data.defectLocationPhoto && !this.data.defectLocationPhoto.startsWith('cloud://')) {
-      this.uploadDefectPhoto(this.data.defectLocationPhoto)
-        .then(fileID => {
-          recordData.defectLocationPhoto = fileID;
-          this.saveToCloud(recordData);
-        })
-        .catch(err => {
-          wx.hideLoading();
-          console.error('照片上传失败:', err);
-          wx.showToast({
-            title: '照片上传失败，请重试',
-            icon: 'none'
-          });
-        });
-    } else {
-      // 如果已经是云存储路径或没有照片，直接保存
-      this.saveToCloud(recordData);
-    }
-  },
-  
-  // 上传不合格位置照片到云存储
-  uploadDefectPhoto: function(filePath) {
-    return new Promise((resolve, reject) => {
-      const timestamp = new Date().getTime();
-      const cloudPath = `np-photos/defect_${timestamp}.jpg`;
-      
-      wx.cloud.uploadFile({
-        cloudPath: cloudPath,
-        filePath: filePath,
-        success: res => {
-          resolve(res.fileID);
-        },
-        fail: err => {
-          reject(err);
-        }
-      });
-    });
-  },
-  
-  // 保存记录到云数据库
-  saveToCloud: function(recordData) {
     wx.cloud.callFunction({
       name: 'saveNpRecord',
       data: {
@@ -358,16 +298,17 @@ Page({
           wx.showToast({ title: (res.result && res.result.message) || '保存失败', icon: 'none' });
         }
       },
-      fail: (err) => {
+      fail: () => {
         wx.hideLoading();
-        console.error('保存记录失败:', err);
         wx.showToast({ title: '调用服务失败', icon: 'none' });
       }
     });
   },
 
-  // 退出页面
-  onExit: function () {
+  /**
+   * 退出页面
+   */
+  onExit: function() {
     wx.navigateBack();
   },
 

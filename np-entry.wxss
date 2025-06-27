@@ -96,26 +96,11 @@ page {
 /* Picker样式 */
 .picker-box {
   width: 100%;
-  border: 3rpx solid #0d3371; /* 加粗边框，使其更加明显 */
+  border: 2rpx solid #e0e0e0;
   border-radius: 10rpx;
-  background-color: #f0f9ff; /* 浅蓝色背景，增强视觉效果 */
+  background-color: #f9f9f9;
   padding: 20rpx;
   box-sizing: border-box;
-  position: relative;
-}
-
-.picker-box:active {
-  background-color: #e0f0ff; /* 点击时变色效果 */
-}
-
-.picker-box::after {
-  content: "▼"; /* 添加下拉箭头 */
-  position: absolute;
-  right: 20rpx;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #0d3371;
-  font-size: 24rpx;
 }
 
 .picker-content {
