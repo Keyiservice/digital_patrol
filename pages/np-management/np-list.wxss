@@ -299,7 +299,7 @@ page {
 .filter-button, .reset-button {
   flex: 1; /* 让按钮平分空间 */
   height: 70rpx;
-  line-height: 70rpx;
+  line-height: 40rpx;
   font-size: 30rpx;
 }
 

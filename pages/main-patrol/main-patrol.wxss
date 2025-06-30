@@ -204,7 +204,7 @@ page {
 
 .btn {
   height: 80rpx;
-  line-height: 80rpx;
+  line-height: 50rpx;
   border-radius: 40rpx;
   font-size: 32rpx;
   font-weight: bold;

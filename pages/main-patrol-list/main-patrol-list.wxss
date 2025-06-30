@@ -92,7 +92,7 @@ page {
 .filter-button, .reset-button {
   width: 48%;
   height: 70rpx;
-  line-height: 70rpx;
+  line-height: 40rpx;
   text-align: center;
   border-radius: 10rpx;
   font-size: 28rpx;

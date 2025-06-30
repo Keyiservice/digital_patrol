@@ -316,7 +316,7 @@
       font-size: 32rpx;
       font-weight: bold;
       height: 88rpx;
-      line-height: 88rpx;
+      line-height: 50rpx;
     }
     
     .previous-btn {

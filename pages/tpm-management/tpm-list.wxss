@@ -68,7 +68,7 @@ page {
 .filter-button, .reset-button {
   flex: 1;
   height: 70rpx;
-  line-height: 70rpx;
+  line-height: 40rpx;
   font-size: 30rpx;
 }
 .filter-button {
