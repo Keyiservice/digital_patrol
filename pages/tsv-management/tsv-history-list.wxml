@@ -1,0 +1,50 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">TOP SAFETY VISIT</text>
+    <text class="sub-title-text">TSV HISTORY</text>
+  </view>
+
+  <!-- 筛选区域 -->
+  <view class="filter-area">
+    <view class="filter-row">
+      <picker class="filter-picker" mode="date" fields="month" value="{{filterMonth}}" bindchange="onMonthChange">
+        <view class="picker-display">{{filterMonth || '选择月份'}}</view>
+      </picker>
+      <picker class="filter-picker" mode="selector" range="{{interviewerList}}" range-key="name" value="{{interviewerIndex}}" bindchange="onInterviewerChange">
+        <view class="picker-display">{{interviewerList[interviewerIndex].name || '选择访谈人'}}</view>
+      </picker>
+    </view>
+    <view class="filter-row button-row">
+      <button class="filter-button" bindtap="fetchReports">筛选</button>
+      <button class="reset-button" bindtap="onResetFilter">重置</button>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
+  <scroll-view scroll-y="true" class="records-scroll">
+    <block wx:if="{{reports.length > 0}}">
+      <view class="record-card" wx:for="{{reports}}" wx:key="_id" bindtap="viewDetail" data-id="{{item._id}}">
+        <view class="card-header">
+          <text class="project-text">{{item.interviewerName}} - {{item.intervieweeName}}</text>
+          <text class="date-text">{{item.date}}</text>
+        </view>
+        <view class="card-body">
+          <text class="detail-label">地点: {{item.location || '未指定'}}</text>
+          <text class="detail-label">时间: {{item.time || '未指定'}}</text>
+          <text class="detail-label">状态: {{item.status || '已完成'}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="no-records">暂无记录</view>
+    </block>
+  </scroll-view>
+
+  <!-- 底部操作按钮 -->
+  <view class="actions">
+    <button class="action-button back-btn" bindtap="goBack">返回</button>
+    <button class="action-button add-btn" bindtap="goToTaskList">我的待办任务</button>
+  </view>
+</view>

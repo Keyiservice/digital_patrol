@@ -95,11 +95,8 @@ Page({
       return;
     }
     
-    // 功能尚未实现，显示提示
-    wx.showToast({
-      title: 'TSV功能开发中',
-      icon: 'none',
-      duration: 2000
+    wx.navigateTo({
+      url: '/pages/tsv-management/tsv-history-list'
     });
   },
   
@@ -127,11 +124,8 @@ Page({
       return;
     }
     
-    // 功能尚未实现，显示提示
-    wx.showToast({
-      title: 'UNSAFE REPORT功能开发中',
-      icon: 'none',
-      duration: 2000
+    wx.navigateTo({
+      url: '/pages/unsafe-report/unsafe-report-list'
     });
   },
   

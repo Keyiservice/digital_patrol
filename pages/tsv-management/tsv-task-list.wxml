@@ -1,0 +1,40 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">TOP SAFETY VISIT</text>
+    <text class="sub-title-text">MY TASKS</text>
+  </view>
+
+  <!-- 记录列表 -->
+  <scroll-view scroll-y="true" class="records-scroll">
+    <block wx:if="{{tasks.length > 0}}">
+      <view class="record-card" wx:for="{{tasks}}" wx:key="_id">
+        <view class="card-header">
+          <text class="project-text">访谈任务 #{{index + 1}}</text>
+          <text class="date-text">{{item.taskYear}}年{{item.taskMonth}}月</text>
+        </view>
+        <view class="card-body">
+          <text class="detail-label">被访谈人: {{item.intervieweeName}}</text>
+          <text class="detail-label">职位: {{item.intervieweeJob || '未指定'}}</text>
+          <text class="detail-label">部门: {{item.intervieweeDept || '未指定'}}</text>
+        </view>
+        <view class="card-footer">
+          <button class="card-btn start-btn" catchtap="startInterview" data-task="{{item}}">开始访谈</button>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="no-records">
+        <view class="congrats-text">Congratulations!!!</view>
+        <text class="completion-text">太棒了！本月任务已全部完成！</text>
+      </view>
+    </block>
+  </scroll-view>
+
+  <!-- 底部操作按钮 -->
+  <view class="actions">
+    <button class="action-button back-btn" bindtap="goBack">返回</button>
+    <button class="action-button history-btn" bindtap="goToHistory">历史记录</button>
+  </view>
+</view>

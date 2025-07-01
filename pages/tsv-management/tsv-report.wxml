@@ -1,0 +1,120 @@
+<custom-header />
+<view class="container">
+  <view class="page-title">
+    <text class="title-text">TOP SAFETY VISIT</text>
+    <text class="sub-title-text">感谢您抽时间对工厂的HSE做出贡献</text>
+  </view>
+
+  <scroll-view scroll-y="true" class="form-scroll-view">
+    <!-- 1. 访谈日期 -->
+    <view class="form-group">
+      <view class="form-label required">1. 您进行访谈的日期是？</view>
+      <picker mode="date" value="{{formData.date}}" bindchange="bindDateChange">
+        <view class="picker-display">{{formData.date || '请选择'}}</view>
+      </picker>
+    </view>
+
+    <!-- 2. 访谈时间 -->
+    <view class="form-group">
+      <view class="form-label required">2. 您进行访谈的时间</view>
+      <picker mode="time" value="{{formData.time}}" bindchange="bindTimeChange">
+        <view class="picker-display">{{formData.time || '请选择'}}</view>
+      </picker>
+    </view>
+
+    <!-- 3. 访谈地点 -->
+    <view class="form-group">
+      <view class="form-label required">3. 您进行访谈的地点是？</view>
+      <input class="form-input" value="{{formData.location}}" placeholder="请输入" bindinput="handleInputChange" data-field="location" />
+    </view>
+
+    <!-- 4. 被访谈人员当时的作业内容 -->
+    <view class="form-group">
+      <view class="form-label required">4. 被访谈人员当时的作业内容是？</view>
+      <input class="form-input" value="{{formData.intervieweeTask}}" placeholder="请输入" bindinput="handleInputChange" data-field="intervieweeTask" />
+    </view>
+
+    <!-- 访谈人信息 -->
+    <view class="form-divider">访谈人信息</view>
+    <view class="form-group">
+      <view class="form-label required">5. 您的姓名是？</view>
+      <input class="form-input" value="{{formData.interviewerName}}" disabled />
+    </view>
+    <view class="form-group">
+      <view class="form-label required">6. 您所在的部门是？</view>
+      <input class="form-input" value="{{formData.interviewerDept}}" disabled />
+    </view>
+    <view class="form-group">
+      <view class="form-label required">7. 您的职位是？</view>
+      <input class="form-input" value="{{formData.interviewerJob}}" disabled />
+    </view>
+
+    <!-- 被访谈人信息 -->
+    <view class="form-divider">被访谈人信息</view>
+    <view class="form-group">
+      <view class="form-label required">8. 被访谈人员的姓名是？</view>
+      <input class="form-input" value="{{formData.intervieweeName}}" disabled />
+    </view>
+    <view class="form-group">
+      <view class="form-label required">9. 被访问人的部门是？</view>
+      <input class="form-input" value="{{formData.intervieweeDept}}" disabled />
+    </view>
+    <view class="form-group">
+      <view class="form-label required">10. 被访问人的职位是？</view>
+      <input class="form-input" value="{{formData.intervieweeJob}}" disabled />
+    </view>
+
+    <!-- 观察详情 -->
+    <view class="form-divider">观察详情</view>
+    <view class="form-group-textarea">
+      <view class="form-label">11. 您观察到被访问人员好的行为和实践有哪些？</view>
+      <textarea class="form-textarea" value="{{formData.goodBehavior}}" placeholder="请输入" bindinput="handleInputChange" data-field="goodBehavior" />
+    </view>
+    <view class="form-group-textarea">
+      <view class="form-label">12. 您观察到被访问人有哪些不安全行为？</view>
+      <textarea class="form-textarea" value="{{formData.unsafeBehavior}}" placeholder="请输入" bindinput="handleInputChange" data-field="unsafeBehavior" />
+    </view>
+    <view class="form-group-textarea">
+      <view class="form-label">13. 您观察到现场有哪些不安全状态？</view>
+      <textarea class="form-textarea" value="{{formData.unsafeCondition}}" placeholder="请输入" bindinput="handleInputChange" data-field="unsafeCondition" />
+    </view>
+    <view class="form-group-textarea">
+      <view class="form-label">14. 在OPmobility内部，最近在访问工位有什么类似的事故？</view>
+      <textarea class="form-textarea" value="{{formData.similarAccidents}}" placeholder="请输入" bindinput="handleInputChange" data-field="similarAccidents" />
+    </view>
+
+    <!-- 风险评估 -->
+    <view class="form-group">
+      <view class="form-label required">15. 现场存在重大风险吗？</view>
+      <radio-group class="radio-group" bindchange="handleRadioChange" data-field="bigRisk">
+        <label class="radio"><radio value="yes" checked="{{formData.bigRisk === 'yes'}}"/>是</label>
+        <label class="radio"><radio value="no" checked="{{formData.bigRisk === 'no'}}"/>否</label>
+      </radio-group>
+    </view>
+
+    <!-- 照片/视频上传 -->
+    <view class="form-group-textarea">
+      <view class="form-label">16. 您观察到的相关照片</view>
+      <view class="photos-container">
+        <view class="photo-list">
+          <view wx:for="{{photos}}" wx:key="index" class="photo-item">
+            <image class="photo-preview" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-index="{{index}}"></image>
+            <view class="delete-btn" catchtap="onDeletePhoto" data-index="{{index}}">×</view>
+          </view>
+          <view wx:if="{{photos.length < 9}}" class="add-photo-btn" bindtap="onAddPhoto">
+            <text class="add-icon">+</text>
+          </view>
+        </view>
+        <view class="upload-tips">最多9个，单个文件大小不超过MB，不限制文件格式</view>
+      </view>
+    </view>
+
+    <view style="height: 150rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn submit-btn" bindtap="onSubmit">提交</button>
+  </view>
+</view>
+

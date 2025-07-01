@@ -2,6 +2,13 @@
   "cloud":true,
   "pages": [
     "pages/index/index",
+    "pages/tsv-management/tsv-task-list",
+    "pages/tsv-management/tsv-report",
+    "pages/tsv-management/tsv-history-list",
+    "pages/tsv-management/tsv-detail",
+    "pages/unsafe-management/unsafe-list",
+    "pages/unsafe-management/unsafe-report",
+    "pages/unsafe-management/unsafe-detail",
     "pages/logs/logs",
     "pages/login/login",
     "pages/register/register",

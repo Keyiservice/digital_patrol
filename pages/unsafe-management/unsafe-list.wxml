@@ -1,0 +1,29 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">UNSAFE REPORT</text>
+    <text class="sub-title-text">UNSAFE LIST</text>
+  </view>
+
+  <!-- 记录列表 -->
+  <scroll-view scroll-y="true" class="records-scroll">
+    <block wx:if="{{records.length > 0}}">
+      <view class="record-card" wx:for="{{records}}" wx:key="_id" bindtap="onViewRecord" data-id="{{item._id}}">
+        <view class="card-header">
+          <text class="project-text">{{item.description}}</text>
+          <text class="date-text">{{item.date}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="no-records">暂无记录</view>
+    </block>
+  </scroll-view>
+
+  <!-- 底部操作按钮 -->
+  <view class="actions">
+    <button class="action-button back-btn" bindtap="onBack">返回</button>
+    <button class="action-button add-btn" bindtap="onAddNew">新增记录</button>
+  </view>
+</view>

@@ -1,0 +1,67 @@
+<custom-header />
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text class="title-text">UNSAFE REPORT</text>
+    <text class="sub-title-text">
+      <block wx:if="{{isViewMode}}">DETAIL</block>
+      <block wx:elif="{{isEditMode}}">EDIT</block>
+      <block wx:else>NEW</block>
+    </text>
+  </view>
+  
+  <scroll-view scroll-y="true" class="form-container">
+    <!-- 汇报人 -->
+    <view class="form-item">
+      <text class="form-label">汇报人:</text>
+      <input class="form-input {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" type="text" value="{{reporter}}" placeholder="请输入汇报人" bindinput="onReporterChange" />
+    </view>
+
+    <!-- 时间 -->
+    <view class="form-item">
+      <text class="form-label">时间:</text>
+      <picker class="form-picker {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" mode="date" value="{{date}}" bindchange="onDateChange">
+        <view class="picker-value">{{date || '请选择日期'}}</view>
+      </picker>
+    </view>
+    
+    <!-- 描述 -->
+    <view class="form-item">
+      <text class="form-label">描述:</text>
+      <textarea class="form-textarea {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" value="{{description}}" placeholder="请输入问题描述" bindinput="onDescriptionChange" />
+    </view>
+    
+    <!-- 照片 -->
+    <view class="form-item photos-section">
+      <text class="form-label">照片:</text>
+      <view class="photos-container">
+        <view class="photo-list">
+          <view wx:for="{{photos}}" wx:key="index" class="photo-item">
+            <image class="photo-preview" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-index="{{index}}"></image>
+            <view wx:if="{{!isViewMode}}" class="delete-btn" catchtap="onDeletePhoto" data-index="{{index}}">×</view>
+          </view>
+          <view wx:if="{{!isViewMode && photos.length < 9}}" class="add-photo-btn" bindtap="onAddPhoto">
+            <text class="add-icon">+</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 指定处理人 -->
+    <view class="form-item">
+      <text class="form-label">指定处理人:</text>
+      <input class="form-input {{isViewMode ? 'disabled' : ''}}" disabled="{{isViewMode}}" type="text" value="{{assignee}}" placeholder="请输入处理人" bindinput="onAssigneeChange" />
+    </view>
+    
+    <view style="height: 120rpx;"></view>
+  </scroll-view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-section">
+    <button class="nav-btn exit-btn" bindtap="onExit">
+      <block wx:if="{{isViewMode}}">返回</block>
+      <block wx:else>取消</block>
+    </button>
+    <button class="nav-btn save-btn" bindtap="onSave" wx:if="{{!isViewMode}}">保存</button>
+  </view>
+</view>

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "triggers": [
+    {
+      "name": "MonthlyTsvTaskGenerator",
+      "type": "timer",
+      "config": "0 0 13 * * * *"
+    }
+  ],
+  "timeout": 60
+} 

@@ -1,0 +1,77 @@
+<custom-header />
+<view class="container">
+  <view class="page-title">
+    <text class="title-text">TOP SAFETY VISIT</text>
+    <text class="sub-title-text">访谈详情</text>
+  </view>
+
+  <scroll-view scroll-y="true" class="form-scroll-view" wx:if="{{report}}">
+    <!-- 基础信息 -->
+    <view class="detail-group">
+      <view class="detail-item"><text class="label">访谈日期:</text><text class="value">{{report.date}}</text></view>
+      <view class="detail-item"><text class="label">访谈时间:</text><text class="value">{{report.time}}</text></view>
+      <view class="detail-item"><text class="label">访谈地点:</text><text class="value">{{report.location}}</text></view>
+      <view class="detail-item"><text class="label">被访谈人当时任务:</text><text class="value">{{report.intervieweeTask}}</text></view>
+    </view>
+
+    <!-- 访谈人信息 -->
+    <view class="form-divider">访谈人信息</view>
+    <view class="detail-group">
+      <view class="detail-item"><text class="label">姓名:</text><text class="value">{{report.interviewerName}}</text></view>
+      <view class="detail-item"><text class="label">部门:</text><text class="value">{{report.interviewerDept}}</text></view>
+      <view class="detail-item"><text class="label">职位:</text><text class="value">{{report.interviewerJob}}</text></view>
+    </view>
+
+    <!-- 被访谈人信息 -->
+    <view class="form-divider">被访谈人信息</view>
+    <view class="detail-group">
+      <view class="detail-item"><text class="label">姓名:</text><text class="value">{{report.intervieweeName}}</text></view>
+      <view class="detail-item"><text class="label">部门:</text><text class="value">{{report.intervieweeDept}}</text></view>
+      <view class="detail-item"><text class="label">职位:</text><text class="value">{{report.intervieweeJob}}</text></view>
+    </view>
+    
+    <!-- 观察详情 -->
+    <view class="form-divider">观察详情</view>
+    <view class="detail-group-long">
+      <view class="label-long">11. 好的行为和实践:</view>
+      <view class="value-long">{{report.goodBehavior || '无'}}</view>
+    </view>
+    <view class="detail-group-long">
+      <view class="label-long">12. 不安全行为:</view>
+      <view class="value-long">{{report.unsafeBehavior || '无'}}</view>
+    </view>
+    <view class="detail-group-long">
+      <view class="label-long">13. 不安全状态:</view>
+      <view class="value-long">{{report.unsafeCondition || '无'}}</view>
+    </view>
+    <view class="detail-group-long">
+      <view class="label-long">14. 类似事故:</view>
+      <view class="value-long">{{report.similarAccidents || '无'}}</view>
+    </view>
+
+    <!-- 风险 -->
+    <view class="form-divider">风险评估</view>
+    <view class="detail-group">
+      <view class="detail-item"><text class="label">现场存在重大风险:</text><text class="value danger-value-{{report.bigRisk}}">{{report.bigRisk === 'yes' ? '是' : '否'}}</text></view>
+    </view>
+    
+    <!-- 照片 -->
+    <view class="form-divider">相关照片</view>
+    <view class="photos-container">
+      <block wx:if="{{report.photos && report.photos.length > 0}}">
+        <view class="photo-list">
+          <image wx:for="{{report.photos}}" wx:key="index" class="photo-preview" src="{{item}}" mode="aspectFill" bindtap="onPreviewPhoto" data-url="{{item}}"></image>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="no-photo-tip">无照片</view>
+      </block>
+    </view>
+
+    <view style="height: 150rpx;"></view>
+  </scroll-view>
+
+  <view class="bottom-section">
+    <button class="nav-btn" bindtap="goBack">返回</button>
+  </view>
+</view>

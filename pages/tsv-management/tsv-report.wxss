@@ -1,0 +1,169 @@
+page {
+  background-color: #f8f8f8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.container {
+  padding: 20rpx;
+  padding-bottom: 140rpx; /* 为底部按钮留出空间 */
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+.title-text {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #0d3371;
+}
+.sub-title-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 10rpx;
+}
+
+.form-scroll-view {
+  height: calc(100vh - 220rpx); /* 根据实际情况调整 */
+}
+
+.form-group, .form-group-textarea {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 25rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.form-label {
+  display: block;
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+.form-label.required::before {
+  content: '*';
+  color: #e54d42;
+  margin-right: 4rpx;
+}
+
+.picker-display {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 30rpx;
+}
+
+.form-input, .form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 30rpx;
+}
+.form-input {
+  height: 80rpx;
+}
+.form-textarea {
+  height: 200rpx;
+}
+input[disabled] {
+  background-color: #f5f5f5;
+}
+
+.form-divider {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #0d3371;
+  padding: 40rpx 0 20rpx;
+  border-bottom: 2rpx solid #e0e0e0;
+  margin-bottom: 30rpx;
+}
+
+.radio-group {
+  display: flex;
+}
+.radio {
+  margin-right: 40rpx;
+}
+
+/* 照片上传 */
+.photos-container {
+  width: 100%;
+}
+.photo-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.photo-item {
+  position: relative;
+  width: 180rpx;
+  height: 180rpx;
+}
+.photo-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 8rpx;
+}
+.delete-btn {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 50%;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-photo-btn {
+  width: 180rpx;
+  height: 180rpx;
+  border: 2rpx dashed #ccc;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-icon {
+  font-size: 60rpx;
+  color: #ccc;
+}
+.upload-tips {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 15rpx;
+}
+
+/* 底部提交按钮 */
+.bottom-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20rpx 40rpx;
+  background-color: #fff;
+  box-shadow: 0 -2rpx 10rpx rgba(0,0,0,0.08);
+  box-sizing: border-box;
+}
+.submit-btn {
+  background-color: #0d3371;
+  color: white;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 34rpx;
+  border-radius: 44rpx;
+}
+.submit-btn:active {
+  background-color: #0a2a5e;
+}

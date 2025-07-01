@@ -1,0 +1,40 @@
+﻿accountName,姓名,职位,部门,是否为访谈人,是否为被访谈人
+xinchun.chen,陈新春,Plant Manager,GM,是,是
+hui.feng,冯辉,Finance Manager,FIN,是,是
+jingyang.xu,徐竞阳,Finance Cashier,FIN,否,是
+xi.lu,芦希,Chief Financial,FIN,否,是
+tiecheng.zhang,张铁成,Safety Manager,SAFETY,是,是
+na.li,李娜,HR Manager,HR,是,是
+baojie1,保洁1,Cleaner,HR,否,是
+baojie2,保洁2,Cleaner,HR,否,是
+bo.li,李博,Engineering Manager,ENG,是,是
+hui.zhou,周辉,Automation Engineer,ENG,否,是
+zhongwei.sun,孙忠伟,Blow molding Engineer,ENG,否,是
+yanchu.liu,刘延初,Maintenance leader,ENG,是,是
+wenbo.li,李文波,Maintenance technician,ENG,否,是
+tianfeng.zhao,赵天峰,Maintenance technician,ENG,否,是
+shuai.chen,陈帅,Maintenance technician,ENG,否,是
+chao.li,李超,Quality Engineer,QUA,否,是
+hong.zhang,张宏,Quality Manager,QUA,是,是
+kuineng.quan,全奎壬,Quality inspector,QUA,否,是
+geliang.lu,芦葛亮,Quality inspector,QUA,否,是
+lei.zhang,张磊,Quality inspector,QUA,否,是
+bo.sun,孙博,Quality Leader,QUA,是,是
+qiang.zhang,张强,Quality inspector,QUA,否,是
+yao.liu,刘尧,Logistic Surpervisior,LOG,是,是
+lulu.jiang,江璐璐,Planner,LOG,否,是
+yali.na,亚丽娜,MRO,LOG,否,是
+lina.chen,陈丽娜,Planner,LOG,否,是
+wenguang.zhou,邹文广,Logistic operator,LOG,否,是
+lizhe.dong,董立喆,Logistic operator,LOG,否,是
+chao.shen,沈超,Logistic leader,LOG,是,是
+yang.liu,刘洋,Logistic operator,LOG,否,是
+duo.zhao,赵铎,Production supervisor,PRO,是,是
+huan.wang,王欢,Operator,PRO,否,是
+hongbo.li,李洪博,Line leader,PRO,是,是
+chen.shi,施晨,Operator,PRO,否,是
+chengyu.jin,金城宇,Operator,PRO,否,是
+chen.zuo,左晨,line leader,PRO,是,是
+fengchen.hua,化凤辰,Operator,PRO,否,是
+yuqi.qian,钱宇奇,Operator,PRO,否,是
+bianyan.zhao,赵玢岩,Operator,PRO,否,是
