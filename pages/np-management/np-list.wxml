@@ -55,6 +55,14 @@
           <text class="operator-text">记录人: {{item.operator}}</text>
         </view>
       </view>
+      
+      <!-- 加载更多按钮 -->
+      <view class="load-more-container" wx:if="{{hasMore}}">
+        <button class="load-more-button" bindtap="loadMoreRecords">加载更多</button>
+      </view>
+      <view class="records-count" wx:if="{{records.length > 0}}">
+        已加载 {{records.length}}/{{total}} 条记录
+      </view>
     </block>
     <block wx:else>
       <view class="no-records">暂无不合格品记录</view>

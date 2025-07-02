@@ -44,6 +44,12 @@
           <button class="card-btn delete-btn" catchtap="onDeleteRecord" data-id="{{item._id}}">删除</button>
         </view>
       </view>
+      
+      <!-- 加载更多按钮 -->
+      <view wx:if="{{showLoadMore}}" class="load-more-container">
+        <button class="load-more-button" bindtap="loadAllRecords">加载更多记录</button>
+        <text class="load-more-hint">已显示 {{records.length}} / {{totalRecords}} 条记录</text>
+      </view>
     </block>
     <block wx:else>
       <view class="no-records">暂无记录</view>

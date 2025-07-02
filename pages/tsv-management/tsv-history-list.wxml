@@ -12,8 +12,8 @@
       <picker class="filter-picker" mode="date" fields="month" value="{{filterMonth}}" bindchange="onMonthChange">
         <view class="picker-display">{{filterMonth || '选择月份'}}</view>
       </picker>
-      <picker class="filter-picker" mode="selector" range="{{interviewerList}}" range-key="name" value="{{interviewerIndex}}" bindchange="onInterviewerChange">
-        <view class="picker-display">{{interviewerList[interviewerIndex].name || '选择访谈人'}}</view>
+      <picker class="filter-picker" mode="selector" range="{{interviewerList}}" range-key="accountName" value="{{interviewerIndex}}" bindchange="onInterviewerChange">
+        <view class="picker-display">{{interviewerList[interviewerIndex].accountName || '选择访谈人'}}</view>
       </picker>
     </view>
     <view class="filter-row button-row">
@@ -35,6 +35,12 @@
           <text class="detail-label">时间: {{item.time || '未指定'}}</text>
           <text class="detail-label">状态: {{item.status || '已完成'}}</text>
         </view>
+      </view>
+      
+      <!-- 加载更多按钮 -->
+      <view wx:if="{{showLoadMore}}" class="load-more-container">
+        <button class="load-more-button" bindtap="loadAllRecords">加载更多记录</button>
+        <text class="load-more-hint">当前仅显示最近一天的记录</text>
       </view>
     </block>
     <block wx:else>

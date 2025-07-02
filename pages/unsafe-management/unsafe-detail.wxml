@@ -53,3 +53,4 @@
     <button class="nav-btn delete-btn" bindtap="onDelete">删除</button>
   </view>
 </view>
+

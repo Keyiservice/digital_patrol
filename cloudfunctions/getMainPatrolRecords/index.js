@@ -10,7 +10,10 @@ const patrolCollection = db.collection('main_patrol_records');
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
-  const { filter = {} } = event;
+  const { filter = {}, limit } = event;
+
+  // 记录调用参数，便于调试
+  console.log('getMainPatrolRecords调用参数:', { filter, limit, openid: wxContext.OPENID });
 
   try {
     // 构建查询条件
@@ -19,9 +22,9 @@ exports.main = async (event, context) => {
     };
     
     // 如果传入了 _id，则优先使用 _id 查询
-    if (filter._id) {
+    if (filter && filter._id) {
       query._id = filter._id;
-    } else {
+    } else if (filter) {
       // 添加日期筛选
       if (filter.startDate && filter.endDate) {
         // 日期格式化，确保使用 / 作为分隔符
@@ -59,22 +62,44 @@ exports.main = async (event, context) => {
       }
     }
     
-    // 查询数据
-    const res = await patrolCollection
+    console.log('最终查询条件:', query);
+    
+    // 创建查询对象
+    let queryObj = patrolCollection
       .where(query)
-      .orderBy('createdAt', 'desc') // 按创建时间降序排列
-      .get();
+      .orderBy('createdAt', 'desc'); // 按创建时间降序排列
+    
+    // 如果指定了limit，则限制返回记录数量
+    if (limit && !isNaN(parseInt(limit))) {
+      const limitNum = parseInt(limit);
+      console.log(`应用limit限制: ${limitNum}条`);
+      queryObj = queryObj.limit(limitNum);
+    } else {
+      console.log('未指定limit或limit无效，返回全部记录');
+    }
+    
+    // 获取总数
+    const countResult = await patrolCollection.where(query).count();
+    const total = countResult.total;
+    console.log(`符合条件的记录总数: ${total}条`);
+    
+    // 执行查询
+    const res = await queryObj.get();
+    console.log(`实际返回记录数: ${res.data.length}条`);
     
     return {
       success: true,
-      data: res.data
+      data: res.data,
+      total: total,
+      query: query, // 返回查询条件，便于调试
+      limitApplied: limit ? parseInt(limit) : null
     };
   } catch (error) {
     console.error('获取巡检记录失败:', error);
     return {
       success: false,
       message: '获取失败',
-      error: error
+      error: error.message || error
     };
   }
 }; 

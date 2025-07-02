@@ -10,7 +10,13 @@ Page({
     treatmentOptions: ['ALL', 'Rework', 'Scrap', 'On-Hold', 'Use as it'], // 处理方式选项
     treatmentIndex: 0,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    // 新增分页相关数据
+    currentPage: 1,
+    pageSize: 10,
+    total: 0,
+    hasMore: true,
+    isFirstLoad: true
   },
 
   /**
@@ -28,7 +34,14 @@ Page({
    */
   onShow: function () {
     // 每次页面显示时刷新列表，确保有新增或修改的记录时能够显示
-    this.fetchRecords();
+    // 检查是否是首次加载
+    if (!this.data.isFirstLoad) {
+      this.fetchRecords();
+    } else {
+      this.setData({
+        isFirstLoad: false
+      });
+    }
   },
 
   /**
@@ -65,33 +78,55 @@ Page({
   /**
    * 获取记录列表
    */
-  fetchRecords: function (filter = null) {
+  fetchRecords: function (filter = null, loadMore = false) {
     wx.showLoading({
       title: 'Loading...',
       mask: true
     });
 
+    // 如果是加载更多，页码加1，否则重置为1
+    let currentPage = this.data.currentPage;
+    if (loadMore) {
+      currentPage += 1;
+    } else {
+      currentPage = 1;
+      this.setData({
+        records: []
+      });
+    }
+
     // 尝试从云函数获取记录
     try {
       wx.cloud.callFunction({
         name: 'getNpRecords',
-        data: { filter },
+        data: { 
+          filter,
+          page: currentPage,
+          pageSize: this.data.pageSize,
+          loadAll: false
+        },
         success: res => {
           wx.hideLoading();
           
           // 检查是否成功获取记录
           if (res && res.result && res.result.data) {
-            // 按创建时间降序排序
-            const sortedRecords = res.result.data.sort((a, b) => {
-              return b.createTime - a.createTime;
-            });
+            // 合并数据
+            let records = loadMore ? [...this.data.records, ...res.result.data] : res.result.data;
+            
+            // 检查是否还有更多数据
+            const hasMore = records.length < res.result.total;
             
             this.setData({
-              records: sortedRecords
+              records,
+              currentPage,
+              total: res.result.total,
+              hasMore
             });
           } else {
             // 如果云获取失败，尝试从本地存储获取
-            this.getRecordsFromStorage();
+            if (!loadMore) {
+              this.getRecordsFromStorage();
+            }
             console.error('未获取到云记录数据');
           }
         },
@@ -99,8 +134,10 @@ Page({
           wx.hideLoading();
           console.error('[云函数] [getNpRecords] 调用失败：', err);
           
-          // 从本地存储获取
-          this.getRecordsFromStorage();
+          // 从本地存储获取，仅在非加载更多时
+          if (!loadMore) {
+            this.getRecordsFromStorage();
+          }
           
           wx.showToast({
             title: '展示本地数据',
@@ -113,11 +150,28 @@ Page({
       wx.hideLoading();
       console.error('云函数调用出错：', e);
       
-      // 从本地存储获取
-      this.getRecordsFromStorage();
+      // 从本地存储获取，仅在非加载更多时
+      if (!loadMore) {
+        this.getRecordsFromStorage();
+      }
       
       wx.showToast({
         title: '展示本地数据',
+        icon: 'none',
+        duration: 2000
+      });
+    }
+  },
+
+  /**
+   * 加载更多记录
+   */
+  loadMoreRecords: function() {
+    if (this.data.hasMore) {
+      this.fetchRecords(null, true);
+    } else {
+      wx.showToast({
+        title: '没有更多记录了',
         icon: 'none',
         duration: 2000
       });
@@ -136,7 +190,9 @@ Page({
     });
     
     this.setData({
-      records: sortedRecords
+      records: sortedRecords,
+      hasMore: false,
+      total: sortedRecords.length
     });
   },
 

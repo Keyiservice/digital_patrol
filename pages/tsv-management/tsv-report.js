@@ -29,17 +29,33 @@ Page({
     eventChannel.on('acceptDataFromOpenerPage', (res) => {
       const taskInfo = res.data;
       const now = new Date();
+      
+      console.log('从任务列表接收到的数据:', taskInfo);
+      
+      // 设置基本表单数据
       this.setData({
         taskId: taskInfo._id,
         'formData.date': util.formatDate(now),
         'formData.time': util.formatTime(now).substring(11, 16),
-        'formData.interviewerName': taskInfo.interviewerName,
-        'formData.interviewerDept': taskInfo.interviewerDept,
-        'formData.interviewerJob': taskInfo.interviewerJob,
-        'formData.intervieweeName': taskInfo.intervieweeName,
-        'formData.intervieweeDept': taskInfo.intervieweeDept,
-        'formData.intervieweeJob': taskInfo.intervieweeJob,
+        'formData.interviewerName': taskInfo.interviewerName || '',
+        'formData.interviewerDept': taskInfo.interviewerDept || '未知部门',
+        'formData.interviewerJob': taskInfo.interviewerJob || '未知职位',
+        'formData.intervieweeName': taskInfo.intervieweeName || '',
+        'formData.intervieweeDept': taskInfo.intervieweeDept || '未知部门',
+        'formData.intervieweeJob': taskInfo.intervieweeJob || '未知职位',
       });
+      
+      // 如果部门信息为空或未知，尝试从用户信息中获取
+      if (!taskInfo.interviewerDept || taskInfo.interviewerDept === '未知部门') {
+        this.loadInterviewerInfo();
+      }
+      
+      // 如果被访谈人部门信息为空或未知，尝试从数据库获取
+      if (!taskInfo.intervieweeDept || taskInfo.intervieweeDept === '未知部门') {
+        // 尝试使用accountName或name作为账号名
+        const intervieweeAccountName = taskInfo.intervieweeAccountName || taskInfo.intervieweeName;
+        this.loadIntervieweeInfo(intervieweeAccountName);
+      }
     });
   },
   
@@ -155,5 +171,118 @@ Page({
     });
     const results = await Promise.all(uploadTasks);
     return results.map(res => res.fileID);
+  },
+  
+  // 加载访谈人信息
+  loadInterviewerInfo() {
+    // 从本地存储获取当前用户信息
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo) {
+      console.warn('无法获取本地用户信息，将使用默认部门信息');
+      return;
+    }
+    
+    const accountName = userInfo.accountName || userInfo.name;
+    if (!accountName) {
+      console.warn('用户账号名为空，将使用默认部门信息');
+      return;
+    }
+    
+    console.log('尝试获取访谈人信息，账号名:', accountName);
+    
+    // 调用云函数获取用户详细信息
+    wx.cloud.callFunction({
+      name: 'getPlantUsers',
+      data: {
+        accountName: accountName
+      },
+      success: res => {
+        console.log('获取访谈人信息结果:', res);
+        if (res.result && res.result.success && res.result.data && res.result.data.length > 0) {
+          const userData = res.result.data[0];
+          console.log('访谈人原始数据:', userData);
+          
+          // 尝试多种可能的字段名获取部门
+          const department = userData.department || userData['部门'] || this.data.formData.interviewerDept;
+          const position = userData.position || userData['职位'] || this.data.formData.interviewerJob;
+          
+          this.setData({
+            'formData.interviewerDept': department,
+            'formData.interviewerJob': position
+          });
+          console.log('已更新访谈人信息 - 部门:', department, '职位:', position);
+        } else {
+          console.warn('未找到访谈人信息，使用默认值');
+          // 确保即使没找到也设置默认值
+          this.setData({
+            'formData.interviewerDept': this.data.formData.interviewerDept || '未知部门',
+            'formData.interviewerJob': this.data.formData.interviewerJob || '未知职位'
+          });
+        }
+      },
+      fail: err => {
+        console.error('调用获取用户信息云函数失败:', err);
+        // 失败时也设置默认值
+        this.setData({
+          'formData.interviewerDept': this.data.formData.interviewerDept || '未知部门',
+          'formData.interviewerJob': this.data.formData.interviewerJob || '未知职位'
+        });
+      }
+    });
+  },
+  
+  // 加载被访谈人信息
+  loadIntervieweeInfo(accountName) {
+    if (!accountName) {
+      console.warn('被访谈人账号名为空，将使用默认部门信息');
+      // 如果没有账号名，直接使用默认值
+      this.setData({
+        'formData.intervieweeDept': '未知部门',
+        'formData.intervieweeJob': '未知职位'
+      });
+      return;
+    }
+    
+    console.log('尝试获取被访谈人信息，账号名:', accountName);
+    
+    // 调用云函数获取被访谈人详细信息
+    wx.cloud.callFunction({
+      name: 'getPlantUsers',
+      data: {
+        accountName: accountName
+      },
+      success: res => {
+        console.log('获取被访谈人信息结果:', res);
+        if (res.result && res.result.success && res.result.data && res.result.data.length > 0) {
+          const userData = res.result.data[0];
+          console.log('被访谈人原始数据:', userData);
+          
+          // 尝试多种可能的字段名获取部门
+          const department = userData.department || userData['部门'] || this.data.formData.intervieweeDept;
+          const position = userData.position || userData['职位'] || this.data.formData.intervieweeJob;
+          
+          this.setData({
+            'formData.intervieweeDept': department,
+            'formData.intervieweeJob': position
+          });
+          console.log('已更新被访谈人信息 - 部门:', department, '职位:', position);
+        } else {
+          console.warn('未找到被访谈人信息，使用默认值');
+          // 确保即使没找到也设置默认值
+          this.setData({
+            'formData.intervieweeDept': this.data.formData.intervieweeDept || '未知部门',
+            'formData.intervieweeJob': this.data.formData.intervieweeJob || '未知职位'
+          });
+        }
+      },
+      fail: err => {
+        console.error('调用获取被访谈人信息云函数失败:', err);
+        // 失败时也设置默认值
+        this.setData({
+          'formData.intervieweeDept': this.data.formData.intervieweeDept || '未知部门',
+          'formData.intervieweeJob': this.data.formData.intervieweeJob || '未知职位'
+        });
+      }
+    });
   }
 });

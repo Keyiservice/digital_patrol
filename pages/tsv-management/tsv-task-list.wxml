@@ -8,14 +8,23 @@
 
   <!-- 记录列表 -->
   <scroll-view scroll-y="true" class="records-scroll">
-    <block wx:if="{{tasks.length > 0}}">
+    <!-- 加载中状态 -->
+    <block wx:if="{{isLoading}}">
+      <view class="loading-container">
+        <view class="loading-icon"></view>
+        <text class="loading-text">正在加载任务...</text>
+      </view>
+    </block>
+    
+    <!-- 有任务数据时显示列表 -->
+    <block wx:elif="{{tasks.length > 0}}">
       <view class="record-card" wx:for="{{tasks}}" wx:key="_id">
         <view class="card-header">
           <text class="project-text">访谈任务 #{{index + 1}}</text>
           <text class="date-text">{{item.taskYear}}年{{item.taskMonth}}月</text>
         </view>
         <view class="card-body">
-          <text class="detail-label">被访谈人: {{item.intervieweeName}}</text>
+          <text class="detail-label">被访谈人: {{item.intervieweeName || '未指定'}}</text>
           <text class="detail-label">职位: {{item.intervieweeJob || '未指定'}}</text>
           <text class="detail-label">部门: {{item.intervieweeDept || '未指定'}}</text>
         </view>
@@ -24,6 +33,8 @@
         </view>
       </view>
     </block>
+    
+    <!-- 无任务时显示完成信息 -->
     <block wx:else>
       <view class="no-records">
         <view class="congrats-text">Congratulations!!!</view>

@@ -2,6 +2,9 @@ Page({
   data: {
     records: [],
     filteredRecords: [],
+    isFirstLoad: true,  // 标记是否首次加载
+    showLoadMore: false, // 是否显示加载更多按钮
+    totalRecords: 0, // 记录总数
     // 筛选条件
     statusOptions: ['全部状态', '待维修', '待质检', '已完成'],
     statusIndex: 0,
@@ -10,18 +13,19 @@ Page({
   },
 
   onLoad() {
-    this.fetchRecords();
+    this.fetchRecords(null, true); // 首次加载只显示未完成的故障记录
   },
 
   onShow() {
     // onShow可以不强制刷新
   },
 
-  fetchRecords(filter = null) {
+  fetchRecords(filter = null, pendingOnly = false) {
     wx.showLoading({ title: '加载中...' });
+    
     wx.cloud.callFunction({
       name: 'getBreakdownRecords',
-      data: { filter },
+      data: { filter, pendingOnly },
       success: res => {
         wx.hideLoading();
         if (res.result && res.result.success) {
@@ -34,16 +38,41 @@ Page({
             }
             return record;
           });
-          this.setData({ records: records, filteredRecords: records });
+          
+          const hasMoreRecords = res.result.total > records.length;
+          
+          this.setData({ 
+            records: records, 
+            filteredRecords: records,
+            isFirstLoad: false,
+            showLoadMore: pendingOnly && hasMoreRecords, // 如果是只显示未完成且有更多记录，则显示加载更多按钮
+            totalRecords: res.result.total || 0
+          });
         } else {
+          this.setData({ 
+            records: [],
+            filteredRecords: [],
+            showLoadMore: false
+          });
           wx.showToast({ title: '加载失败', icon: 'none' });
         }
       },
       fail: err => {
         wx.hideLoading();
+        this.setData({ 
+          records: [],
+          filteredRecords: [],
+          showLoadMore: false
+        });
         wx.showToast({ title: '请求失败', icon: 'none' });
+        console.error("failed to call getBreakdownRecords", err);
       }
     });
+  },
+
+  // 加载所有故障记录
+  loadAllRecords() {
+    this.fetchRecords();
   },
 
   onStatusChange(e) {
@@ -70,16 +99,18 @@ Page({
     Object.keys(filter).forEach(key => {
       if (!filter[key] || filter[key] === '全部状态') delete filter[key];
     });
-    this.fetchRecords(Object.keys(filter).length > 0 ? filter : null);
+    this.fetchRecords(Object.keys(filter).length > 0 ? filter : null, false);
+    this.setData({ showLoadMore: false }); // 筛选后不显示加载更多按钮
   },
 
   onReset() {
     this.setData({
       statusIndex: 0,
       startDate: '',
-      endDate: ''
+      endDate: '',
+      showLoadMore: false // 重置后不显示加载更多按钮
     });
-    this.fetchRecords();
+    this.fetchRecords(null, true); // 重置后显示未完成的记录
   },
 
   onViewDetails(e) {
@@ -149,7 +180,7 @@ Page({
         wx.hideLoading();
         if (res && res.result && res.result.success) {
           wx.showToast({ title: '删除成功', icon: 'success' });
-          this.fetchRecords();
+          this.fetchRecords(null, this.data.isFirstLoad); // 保持当前视图状态
         } else {
           wx.showToast({ title: '删除失败', icon: 'error' });
         }
@@ -170,7 +201,7 @@ Page({
         localRecords.splice(index, 1);
         wx.setStorageSync('breakdownRecords', localRecords);
         wx.showToast({ title: '删除成功', icon: 'success' });
-        this.fetchRecords();
+        this.fetchRecords(null, this.data.isFirstLoad); // 保持当前视图状态
       } else {
         wx.showToast({ title: '记录不存在', icon: 'error' });
       }

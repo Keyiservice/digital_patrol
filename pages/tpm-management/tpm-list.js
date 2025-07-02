@@ -1,6 +1,8 @@
 Page({
   data: {
     records: [],
+    isFirstLoad: true,  // 标记是否首次加载
+    showLoadMore: false, // 是否显示加载更多按钮
     // 筛选条件
     projectOptions: ['ALL', 'UTILITY', 'BMM', 'G68', 'P71A', 'P171', 'E371'],
     projectIndex: 0,
@@ -16,11 +18,12 @@ Page({
     deviceOptions: ['全部设备'],
     deviceIndex: 0,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    totalRecords: 0
   },
 
   onLoad() {
-    this.fetchRecords();
+    this.fetchRecords(null, 5); // 首次加载只显示最近5条记录
   },
   
   onProjectChange(e) {
@@ -64,6 +67,7 @@ Page({
     });
 
     this.fetchRecords(filter);
+    this.setData({ showLoadMore: false }); // 筛选后不显示加载更多按钮
   },
 
   onReset() {
@@ -72,28 +76,48 @@ Page({
       deviceOptions: this.data.deviceMap['ALL'],
       deviceIndex: 0,
       startDate: '',
-      endDate: ''
+      endDate: '',
+      showLoadMore: false // 重置后不显示加载更多按钮
     });
-    this.fetchRecords();
+    this.fetchRecords(null, 5);
   },
 
-  fetchRecords(filter = null) {
+  // 加载所有历史记录
+  loadAllRecords() {
+    this.fetchRecords(null);
+  },
+
+  fetchRecords(filter = null, limit = null) {
     wx.showLoading({ title: '加载中...' });
+    
     wx.cloud.callFunction({
       name: 'getTpmRecords',
-      data: { filter },
+      data: { filter, limit },
       success: res => {
         wx.hideLoading();
         if (res.result && res.result.success) {
-          this.setData({ records: res.result.data });
+          const hasMoreRecords = res.result.total > res.result.data.length;
+          
+          this.setData({ 
+            records: res.result.data,
+            isFirstLoad: false,
+            showLoadMore: limit && hasMoreRecords, // 如果有限制且还有更多记录，则显示加载更多按钮
+            totalRecords: res.result.total || 0
+          });
         } else {
-          this.setData({ records: [] });
+          this.setData({ 
+            records: [],
+            showLoadMore: false
+          });
           wx.showToast({ title: '加载失败', icon: 'none' });
         }
       },
       fail: () => {
         wx.hideLoading();
-        this.setData({ records: [] });
+        this.setData({ 
+          records: [],
+          showLoadMore: false
+        });
         wx.showToast({ title: '请求失败', icon: 'none' });
       }
     });
@@ -139,7 +163,7 @@ Page({
         wx.hideLoading();
         if (res.result && res.result.success) {
           wx.showToast({ title: '删除成功' });
-          this.fetchRecords(); // 刷新列表
+          this.fetchRecords(null, this.data.isFirstLoad ? 5 : null); // 刷新列表，保持当前视图状态
         } else {
           wx.showToast({ title: '删除失败', icon: 'none' });
         }

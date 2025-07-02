@@ -160,10 +160,11 @@ input[disabled] {
   background-color: #0d3371;
   color: white;
   height: 88rpx;
-  line-height: 88rpx;
+  line-height: 58rpx;
   font-size: 34rpx;
   border-radius: 44rpx;
 }
 .submit-btn:active {
   background-color: #0a2a5e;
 }
+

@@ -125,7 +125,7 @@ Page({
     }
     
     wx.navigateTo({
-      url: '/pages/unsafe-report/unsafe-report-list'
+      url: '/pages/unsafe-management/unsafe-list'
     });
   },
   

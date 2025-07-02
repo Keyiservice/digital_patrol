@@ -71,6 +71,12 @@
           <text class="delete-icon">×</text>
         </view>
       </view>
+      
+      <!-- 加载更多按钮 -->
+      <view wx:if="{{showLoadMore}}" class="load-more-container">
+        <button class="load-more-button" bindtap="loadAllRecords">加载全部记录</button>
+        <text class="load-more-hint">已显示 {{filteredRecords.length}} / {{totalRecords}} 条记录</text>
+      </view>
     </view>
     
     <!-- 底部间距 -->

@@ -176,3 +176,29 @@ page {
   background-color: #f0f0f0;
   color: #333;
 }
+
+/* 添加加载更多按钮的样式 */
+.load-more-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+  margin-top: 20rpx;
+}
+
+.load-more-button {
+  width: 80%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 28rpx;
+  border-radius: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.load-more-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}

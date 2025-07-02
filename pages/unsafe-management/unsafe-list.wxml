@@ -15,6 +15,12 @@
           <text class="date-text">{{item.date}}</text>
         </view>
       </view>
+      
+      <!-- 加载更多按钮 -->
+      <view wx:if="{{showLoadMore}}" class="load-more-container">
+        <button class="load-more-button" bindtap="loadAllRecords">加载全部记录</button>
+        <text class="load-more-hint">已显示 {{records.length}} / {{totalRecords}} 条记录</text>
+      </view>
     </block>
     <block wx:else>
       <view class="no-records">暂无记录</view>
@@ -27,3 +33,4 @@
     <button class="action-button add-btn" bindtap="onAddNew">新增记录</button>
   </view>
 </view>
+

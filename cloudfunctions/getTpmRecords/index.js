@@ -7,7 +7,7 @@ const _ = db.command
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
-    const { filter } = event;
+    const { filter, limit } = event;
     let query = db.collection('tpm_records');
     let whereClause = {};
 
@@ -16,6 +16,7 @@ exports.main = async (event, context) => {
       createTime: _.exists(true)
     }).orderBy('createTime', 'desc');
 
+    // 处理筛选条件
     if (filter && Object.keys(filter).length > 0) {
       if (filter.project) whereClause.project = filter.project;
       if (filter.device) whereClause.device = filter.device;
@@ -32,8 +33,9 @@ exports.main = async (event, context) => {
       return { success: true, data: data };
 
     } else {
-      // 默认加载
-      const { data } = await orderedQuery.limit(10).get();
+      // 默认加载，如果指定了limit就使用指定的值，否则使用默认值10
+      const recordLimit = limit || 10;
+      const { data } = await orderedQuery.limit(recordLimit).get();
       // 获取总数
       const totalRes = await query.count();
       

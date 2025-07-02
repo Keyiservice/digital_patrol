@@ -75,3 +75,4 @@
     <button class="nav-btn" bindtap="goBack">返回</button>
   </view>
 </view>
+

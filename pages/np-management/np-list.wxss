@@ -250,6 +250,33 @@ page {
   box-shadow: 0 4rpx 8rpx rgba(30, 58, 138, 0.3);
 }
 
+/* 加载更多按钮容器 */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 20rpx 0;
+  width: 100%;
+}
+
+/* 加载更多按钮样式 */
+.load-more-button {
+  background-color: #f8f8f8;
+  color: #666;
+  font-size: 28rpx;
+  padding: 12rpx 30rpx;
+  border-radius: 30rpx;
+  border: 1px solid #ddd;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 记录计数器样式 */
+.records-count {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
 /* 筛选区域 */
 .filter-area {
   padding: 20rpx;

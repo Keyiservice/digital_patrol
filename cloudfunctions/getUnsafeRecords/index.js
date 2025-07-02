@@ -1,10 +1,11 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
+const _ = db.command;
 
 exports.main = async (event, context) => {
   try {
-    const { id } = event;
+    const { id, filter, limit } = event;
     const collection = db.collection('unsafe_records');
 
     if (id) {
@@ -15,11 +16,35 @@ exports.main = async (event, context) => {
         data: record.data,
       };
     } else {
-      // 否则，获取所有记录，按日期降序排序
-      const records = await collection.orderBy('date', 'desc').get();
+      let query = {};
+      
+      // 如果提供了筛选条件
+      if (filter && Object.keys(filter).length > 0) {
+        if (filter.startDate && filter.endDate) {
+          query.date = _.gte(filter.startDate).and(_.lte(filter.endDate));
+        } else if (filter.startDate) {
+          query.date = _.gte(filter.startDate);
+        } else if (filter.endDate) {
+          query.date = _.lte(filter.endDate);
+        }
+        
+        // 其他可能的筛选条件
+        if (filter.reporter) query.reporter = filter.reporter;
+        if (filter.location) query.location = filter.location;
+      }
+      
+      // 获取记录总数
+      const countResult = await collection.count();
+      const total = countResult.total;
+      
+      // 获取记录，如果指定了limit就使用指定的值，否则使用默认值10
+      const recordLimit = limit || 10;
+      const records = await collection.where(query).orderBy('date', 'desc').limit(recordLimit).get();
+      
       return {
         success: true,
         data: records.data,
+        total: total
       };
     }
   } catch (error) {

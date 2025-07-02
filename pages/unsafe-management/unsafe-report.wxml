@@ -65,3 +65,4 @@
     <button class="nav-btn save-btn" bindtap="onSave" wx:if="{{!isViewMode}}">保存</button>
   </view>
 </view>
+

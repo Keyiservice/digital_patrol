@@ -3,10 +3,12 @@ Page({
     reports: [],
     isLoading: true,
     currentUser: '',
+    isFirstLoad: true,  // 标记是否首次加载
+    showLoadMore: false, // 是否显示加载更多按钮
     
     // 筛选条件
     filterMonth: '',
-    interviewerList: [{_id: 'all', name: '全部访谈人'}], // 默认值
+    interviewerList: [{_id: 'all', name: '全部访谈人', accountName: '全部访谈人'}], // 默认值
     interviewerIndex: 0,
   },
 
@@ -16,17 +18,36 @@ Page({
     if (userInfo) {
       this.setData({ currentUser: userInfo.name || userInfo.accountName });
     }
-    this.fetchInitialData();
+    this.fetchInitialData(true); // 首次加载只显示前一天的数据
   },
 
-  async fetchInitialData() {
+  async fetchInitialData(onlyRecentDay = false) {
     this.setData({ isLoading: true });
+    
+    // 计算日期范围
+    let dateRange = null;
+    if (onlyRecentDay) {
+      // 获取前一天的日期范围
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      
+      // 前一天的0点到今天的23:59:59
+      dateRange = {
+        start: yesterday.toISOString(),
+        end: today.toISOString()
+      };
+    }
+    
     // Promise.all 可以并行处理两个独立的请求
     try {
       const [reportsRes, interviewersRes] = await Promise.all([
         wx.cloud.callFunction({ 
           name: 'getTsvReports', 
-          data: { currentUser: this.data.currentUser } 
+          data: { 
+            currentUser: this.data.currentUser,
+            dateRange: dateRange
+          } 
         }),
         wx.cloud.callFunction({ 
           name: 'getPlantUsers', 
@@ -35,7 +56,11 @@ Page({
       ]);
 
       if (reportsRes.result?.success) {
-        this.setData({ reports: reportsRes.result.data });
+        this.setData({ 
+          reports: reportsRes.result.data,
+          isFirstLoad: false,
+          showLoadMore: onlyRecentDay && reportsRes.result.data.length > 0 // 如果是首次加载且有数据，则显示加载更多按钮
+        });
       } else {
         throw new Error('获取报告失败');
       }
@@ -43,7 +68,7 @@ Page({
       if (interviewersRes.result?.success && interviewersRes.result.data.length > 0) {
         // 确保访谈人列表包含"全部"选项和数据库中的访谈人
         this.setData({
-          interviewerList: [{_id: 'all', name: '全部访谈人'}].concat(interviewersRes.result.data)
+          interviewerList: [{_id: 'all', name: '全部访谈人', accountName: '全部访谈人'}].concat(interviewersRes.result.data)
         });
       } else {
         throw new Error('获取访谈人列表失败');
@@ -57,12 +82,17 @@ Page({
     }
   },
 
+  // 加载所有历史记录
+  loadAllRecords() {
+    this.fetchInitialData(false);
+  },
+
   async fetchReports() {
     this.setData({ isLoading: true });
     const selectedInterviewer = this.data.interviewerList[this.data.interviewerIndex];
     const filter = {
       month: this.data.filterMonth,
-      interviewerName: selectedInterviewer._id === 'all' ? '' : selectedInterviewer.name,
+      accountName: selectedInterviewer._id === 'all' ? '' : selectedInterviewer.accountName,
     };
     
     try {
@@ -74,7 +104,10 @@ Page({
         }
       });
       if (res.result?.success) {
-        this.setData({ reports: res.result.data });
+        this.setData({ 
+          reports: res.result.data,
+          showLoadMore: false // 筛选后不显示加载更多按钮
+        });
       } else {
         throw new Error('筛选失败');
       }
@@ -109,7 +142,8 @@ Page({
       if (res.result?.success) {
         this.setData({ 
           reports: res.result.data,
-          isLoading: false
+          isLoading: false,
+          showLoadMore: false // 重置后不显示加载更多按钮
         });
       }
     }).catch(err => {

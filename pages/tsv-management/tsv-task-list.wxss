@@ -62,17 +62,27 @@ page {
 .card-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 20rpx;
+  margin-top: 25rpx;
+  padding-top: 15rpx;
+  border-top: 1px solid #f0f0f0;
 }
 .card-btn {
   background-color: #eee;
-  font-size: 26rpx;
-  padding: 5rpx 20rpx;
+  font-size: 28rpx;
+  padding: 15rpx 30rpx;
   margin-left: 15rpx;
+  border-radius: 8rpx;
+  line-height: 1.2;
+  min-height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .start-btn {
   background-color: #0d3371;
   color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(13, 51, 113, 0.3);
 }
 .no-records {
   text-align: center;
@@ -81,6 +91,36 @@ page {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* 加载中样式 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300rpx;
+  padding: 50rpx 0;
+}
+
+.loading-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #0d3371;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 30rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 30rpx;
+  color: #666;
 }
 .congrats-text {
   font-size: 60rpx;
