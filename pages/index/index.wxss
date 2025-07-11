@@ -54,7 +54,7 @@
 
 /* 标题区域 - 包含主标题的容器 */
 .title-section {
-  margin-bottom: 80rpx;      /* 减小底部外边距 */
+  margin-bottom: 40rpx;      /* 从 80rpx 减小到 40rpx，将所有内容上移 */
   width: 100%;               /* 确保标题区域宽度 */
 }
 

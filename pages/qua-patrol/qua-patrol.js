@@ -49,17 +49,22 @@ Page({
     // **新增**：加载动态项目列表
     this.loadProjectOptions();
 
-    // 获取上一页传递的参数
+    // 获取上一页传递的参数，并增加健壮性检查
     try {
       const eventChannel = this.getOpenerEventChannel();
-      eventChannel.on('acceptDataFromPreviousPage', (data) => {
-        console.log('接收到上一页数据:', data);
-        this.setData({
-          previousPageData: data.data || {}
+      // 只有当 eventChannel 有效时，才进行监听
+      if (eventChannel && typeof eventChannel.on === 'function') {
+        eventChannel.on('acceptDataFromPreviousPage', (data) => {
+          console.log('接收到上一页数据:', data);
+          this.setData({
+            previousPageData: data.data || {}
+          });
         });
-      });
+      } else {
+        console.log('未通过 EventChannel 接收到数据。');
+      }
     } catch (error) {
-      console.error('获取上一页数据失败:', error);
+      console.error('处理 EventChannel 时发生异常:', error);
       this.setData({
         previousPageData: {}
       });
@@ -77,8 +82,9 @@ Page({
         name: 'getProjectOptions',
         success: res => {
           if (res.result && res.result.success) {
+            // 最终修正：确保从返回的 data 对象中正确提取 projects 数组
             this.setData({
-              projects: res.result.data
+              projects: res.result.data.projects
             });
           } else {
             wx.showToast({
@@ -250,37 +256,34 @@ Page({
   },
 
   /**
-   * 处理下一页按钮点击
+   * “下一步”或“开始”按钮点击
    */
   onNext: function() {
-    // 验证表单
+    // 1. 验证表单
     if (!this.validateForm()) {
-      return;
+      return; // 如果验证失败，则不继续
     }
     
-    // 保存选择数据
+    // 2. 准备要传递给下一页的数据
     const data = {
-      ...this.data.previousPageData, // 包含上一页的数据
+      ...this.data.previousPageData,
       projectSelected: this.data.projects[this.data.projectIndex],
       processSelected: this.data.processes[this.data.processIndex],
       shiftSelected: this.data.shiftSelected
     };
-    
-    console.log('跳转到cookie_number页面，传递数据:', data);
-    
-    // 先跳转到cookie_number页面
+
+    // 3. 跳转到 cookie_number 页面，并传递数据
     wx.navigateTo({
       url: '/pages/cookie_number/cookie_number',
       success: function(res) {
-        // 传递数据给cookie_number页面
+        // 通过 eventChannel 向新打开的页面传递数据
         res.eventChannel.emit('acceptDataFromPreviousPage', { data: data });
       },
       fail: function(err) {
-        console.error('跳转到cookie_number页面失败:', err);
+        console.error('跳转到 cookie_number 页面失败:', err);
         wx.showToast({
           title: '页面跳转失败',
-          icon: 'none',
-          duration: 2000
+          icon: 'none'
         });
       }
     });

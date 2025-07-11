@@ -6,7 +6,7 @@
   <view class="selection-wrapper" wx:if="{{!inspectionStarted}}">
     <view class="page-title">
       <text class="title-text">QUA ONLINE PATROL</text>
-      <text class="sub-title-text">巡检前准备</text>
+      <text class="sub-title-text">Project selection</text>
     </view>
     
     <view class="selection-card">
@@ -41,12 +41,12 @@
       </view>
     </view>
 
-    <button class="list-btn" bindtap="goToList">查看巡检列表</button>
-
     <view class="bottom-buttons">
-      <button class="back-btn" bindtap="onPrevious">返回主页</button>
-      <button class="start-btn" bindtap="onNext">开始巡检</button>
+      <button class="back-btn" bindtap="onPrevious">Back</button>
+      <button class="start-btn" bindtap="onNext">Start</button>
     </view>
+
+    <button class="list-btn" bindtap="goToList">查看巡检列表</button>
   </view>
 
   <!-- 阶段二：巡检界面 -->
@@ -93,7 +93,12 @@
                 </view>
               </view>
               <view class="abnormal-section" wx:if="{{item.isAbnormal}}">
-                <textarea placeholder="请描述异常情况 (必填)" value="{{item.abnormalDesc}}" data-id="{{item.id}}" bindinput="onAbnormalInput"></textarea>
+                <textarea 
+                  class="abnormal-desc-input {{item.isThickness ? 'thickness-input' : ''}}"
+                  placeholder="请描述异常情况 (必填)" 
+                  value="{{item.abnormalDesc}}" 
+                  data-id="{{item.id}}" 
+                  bindinput="onAbnormalInput"></textarea>
               </view>
             </view>
           </view>

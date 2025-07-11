@@ -77,14 +77,16 @@ page {
   display: flex;
   justify-content: space-between;
   margin-top: 60rpx;
-  gap: 20rpx;
+  gap: 30rpx; /* 稍微增大按钮间距 */
+  width: 100%; /* 确保容器占满宽度 */
 }
 
+/* 调整“开始”和“返回”按钮的样式 */
 .start-btn, .back-btn {
-  width: 100%;
-  height: 90rpx;
+  flex: 1; /* 让它们平分空间 */
+  height: 100rpx; /* 增加高度 */
   color: white;
-  font-size: 34rpx;
+  font-size: 36rpx; /* 增加字体大小 */
   border-radius: 15rpx;
   display: flex;
   justify-content: center;
@@ -93,10 +95,11 @@ page {
 
 .start-btn {
   background-color: #0d3371;
+  /* flex: 2; */ /* 移除此行，让两个按钮等宽 */
 }
 
 .back-btn {
-  background-color: #888;
+  background-color: #aaa; /* 使用稍浅的灰色 */
 }
 
 /* 页面标题 */
@@ -232,10 +235,18 @@ page {
   width: 100%;
   height: 150rpx;
   border: 1rpx solid #ddd;
-  border-radius: 8rpx;
-  padding: 20rpx;
+  border-radius: 10rpx;
+  padding: 15rpx;
   box-sizing: border-box;
+  margin-top: 15rpx;
+  background-color: #fff;
   font-size: 28rpx;
+}
+
+/* 为厚度检查项的输入框提供特定样式 */
+.abnormal-section .thickness-input {
+  height: 250rpx; /* 增加高度 */
+  font-size: 32rpx; /* 增大字体 */
 }
 
 /* 底部按钮 */
@@ -390,12 +401,12 @@ page {
 
 .list-btn {
   width: 100%;
-  height: 80rpx;
-  background-color: #16a085;
+  height: 100rpx; /* 与上方按钮高度一致 */
+  margin-top: 150rpx; /* 显著加大与上方按钮组的间距 */
+  background-color: #0d3371; /* 使用主题色 */
   color: white;
-  font-size: 32rpx;
+  font-size: 36rpx;
   border-radius: 15rpx;
-  margin-top: 20rpx;
   display: flex;
   justify-content: center;
   align-items: center;

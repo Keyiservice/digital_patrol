@@ -1,13 +1,20 @@
+var hasNG = function(items) {
+  if (!items || !items.length) {
+    return false;
+  }
+  return items.some(function(sub) {
+    return sub.result !== 'OK' && (!sub.photos || sub.photos.length === 0);
+  });
+};
+
 var getStatus = function(items) {
   if (!items || !items.length) {
     return '数据错误';
   }
-  var hasNG = items.some(function(sub) {
-    return sub.result !== 'OK' && (!sub.photos || sub.photos.length === 0);
-  });
-  return hasNG ? '有NG项' : '全部OK';
+  return hasNG(items) ? '有NG项' : '全部OK';
 }
 
 module.exports = {
-  getStatus: getStatus
+  getStatus: getStatus,
+  hasNG: hasNG // 导出新的函数
 }; 

@@ -10,11 +10,34 @@ Page({
     filterTNumber: '',
     filterInspector: '',
     startDate: '',
-    endDate: ''
+    endDate: '',
+    // 下拉选项
+    projectOptions: [],
+    processOptions: [],
+    // 用于 picker 的索引
+    projectIndex: -1,
+    processIndex: -1
   },
 
   onLoad: function (options) {
     this.loadRecords();
+    this.loadFilterOptions(); // 新增：加载筛选选项
+  },
+
+  // 新增：加载筛选选项的函数
+  loadFilterOptions: function() {
+    wx.cloud.callFunction({
+      name: 'getProjectOptions', // 我们将创建这个云函数
+      success: res => {
+        if (res.result.success) {
+          const { projects, processes } = res.result.data;
+          this.setData({
+            projectOptions: ['全部项目', ...projects], // 添加一个“全部”选项
+            processOptions: ['全部工序', ...processes]
+          });
+        }
+      }
+    });
   },
 
   onPullDownRefresh: function () {
@@ -67,6 +90,26 @@ Page({
     });
   },
 
+  // 新增：处理 Picker 选择的函数
+  onFilterPickerChange: function(e) {
+    const { field } = e.currentTarget.dataset;
+    const index = e.detail.value;
+    
+    if (field === 'filterProject') {
+      const selectedProject = this.data.projectOptions[index];
+      this.setData({
+        filterProject: index == 0 ? '' : selectedProject, // 如果选择“全部”，则值为空字符串
+        projectIndex: index
+      });
+    } else if (field === 'filterProcess') {
+      const selectedProcess = this.data.processOptions[index];
+      this.setData({
+        filterProcess: index == 0 ? '' : selectedProcess,
+        processIndex: index
+      });
+    }
+  },
+
   // 日期选择变化
   onDateChange: function(e) {
     const { field } = e.currentTarget.dataset;
@@ -105,7 +148,9 @@ Page({
       filterTNumber: '',
       filterInspector: '',
       startDate: '',
-      endDate: ''
+      endDate: '',
+      projectIndex: -1, // 重置 picker 索引
+      processIndex: -1
     });
     this.loadRecords();
   },

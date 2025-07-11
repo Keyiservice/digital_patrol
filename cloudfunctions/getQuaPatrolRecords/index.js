@@ -21,10 +21,25 @@ exports.main = async (event, context) => {
     } 
     // 场景二：按条件筛选
     else if (filter && Object.keys(filter).length > 0) {
-      if (filter.process) whereClause.process = _.all.includes([filter.process]);
-      if (filter.project) whereClause.project = _.all.includes([filter.project]);
-      if (filter.tNumber) whereClause.tNumber = _.all.includes([filter.tNumber]);
-      if (filter.inspector) whereClause.inspector = _.all.includes([filter.inspector]);
+      // 精确匹配
+      if (filter.process) whereClause.process = filter.process;
+      if (filter.project) whereClause.project = filter.project;
+
+      // 模糊匹配
+      if (filter.tNumber) {
+        whereClause.tNumber = db.RegExp({
+          regexp: filter.tNumber,
+          options: 'i', // i 表示大小写不敏感
+        });
+      }
+      if (filter.inspector) {
+        whereClause.inspector = db.RegExp({
+          regexp: filter.inspector,
+          options: 'i',
+        });
+      }
+      
+      // 日期范围匹配
       if (filter.startDate && filter.endDate) {
         whereClause.inspectionTime = _.gte(filter.startDate).and(_.lte(filter.endDate + ' 23:59:59'));
       } else if (filter.startDate) {

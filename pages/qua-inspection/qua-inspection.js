@@ -102,7 +102,8 @@
                   result: '', // 用于 OK/NG
                   photos: [],
                   type: isThicknessItem ? 'input' : 'radio', // 'input' 用于手动输入，'radio' 用于单选
-                  value: '' // 用于存储手动输入的值
+                  value: '', // 用于存储手动输入的值
+                  isThickness: isThicknessItem // 添加一个标记，用于在WXML中区分样式
                 };
               });
               this.setData({ inspectionItems: inspectionItems });

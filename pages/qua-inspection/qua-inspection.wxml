@@ -49,7 +49,7 @@
               <view wx:if="{{item.type === 'input'}}" class="details-section--single">
                 <view class="result-section">
                   <text class="result-label">MEASURED VALUE</text>
-                  <input wx:if="{{!isViewMode}}" class="input-field" type="digit" value="{{item.value}}" data-item-index="{{itemIndex}}" bindinput="onItemInputChange" placeholder="请输入测量值"/>
+                  <input wx:if="{{!isViewMode}}" class="input-field {{item.isThickness ? 'thickness-input' : ''}}" type="digit" value="{{item.value}}" data-item-index="{{itemIndex}}" bindinput="onItemInputChange" placeholder="请输入测量值"/>
                   <view wx:else class="result-text">
                     <text class="value-text">{{item.result || item.value || '无记录'}}</text>
                   </view>

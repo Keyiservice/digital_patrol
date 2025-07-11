@@ -5,20 +5,30 @@
   <!-- 筛选区域 -->
   <view class="filter-section">
     <view class="filter-row">
-      <input class="filter-input" placeholder="工序" value="{{filterProcess}}" bindinput="onFilterInputChange" data-field="filterProcess" />
-      <input class="filter-input" placeholder="项目" value="{{filterProject}}" bindinput="onFilterInputChange" data-field="filterProject" />
+      <!-- 工序选择器 -->
+      <picker class="filter-picker" mode="selector" range="{{processOptions}}" bindchange="onFilterPickerChange" data-field="filterProcess">
+        <view class="picker">
+          {{filterProcess || '选择工序'}}
+        </view>
+      </picker>
+      <!-- 项目选择器 -->
+      <picker class="filter-picker" mode="selector" range="{{projectOptions}}" bindchange="onFilterPickerChange" data-field="filterProject">
+        <view class="picker">
+          {{filterProject || '选择项目'}}
+        </view>
+      </picker>
     </view>
     <view class="filter-row">
       <input class="filter-input" placeholder="T-Number" value="{{filterTNumber}}" bindinput="onFilterInputChange" data-field="filterTNumber" />
       <input class="filter-input" placeholder="巡检员" value="{{filterInspector}}" bindinput="onFilterInputChange" data-field="filterInspector" />
     </view>
     <view class="filter-row">
-      <picker mode="date" value="{{startDate}}" bindchange="onDateChange" data-field="startDate">
+      <picker class="date-picker" mode="date" value="{{startDate}}" bindchange="onDateChange" data-field="startDate">
         <view class="picker">
           开始日期: {{startDate || '请选择'}}
         </view>
       </picker>
-      <picker mode="date" value="{{endDate}}" bindchange="onDateChange" data-field="endDate">
+      <picker class="date-picker" mode="date" value="{{endDate}}" bindchange="onDateChange" data-field="endDate">
         <view class="picker">
           结束日期: {{endDate || '请选择'}}
         </view>
@@ -35,7 +45,7 @@
       <view class="record-card" wx:for="{{filteredRecords}}" wx:key="_id" bindtap="viewRecord" data-id="{{item._id}}">
         <view class="card-header">
           <text class="process-text">{{item.process}} - {{item.project}}</text>
-          <text class="status-text">{{tools.getStatus(item.items)}}</text>
+          <text class="status-text {{tools.hasNG(item.items) ? 'ng' : ''}}">{{tools.getStatus(item.items)}}</text>
         </view>
         <view class="card-body">
           <view class="info-row">
@@ -63,7 +73,8 @@
     </block>
   </scroll-view>
 
+  <!-- 操作按钮 -->
   <view class="bottom-section">
-    <button class="nav-btn back-btn" bindtap="onBack">返回</button>
+    <button class="btn back-btn" bindtap="onBack">返回</button>
   </view>
 </view> 

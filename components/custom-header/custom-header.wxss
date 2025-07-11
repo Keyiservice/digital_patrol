@@ -7,6 +7,7 @@
   height: 220rpx; /* 增加高度以保持logo大小不变 */
   background-color: #0d3371;
   box-sizing: border-box;
+  overflow: hidden; /* 新增：确保 aspectFill 裁剪的内容不溢出 */
 }
 
 .logo-image {

@@ -25,16 +25,16 @@ Page({
     // 获取设备列表
     this.getDeviceOptions();
     
-    // 在onLoad时就开始加载最新5条数据，不等待onShow
-    console.log('onLoad: 首次加载最新5条数据');
-    this.fetchRecords(null, 5);
+    // 在onLoad时就开始加载最新10条数据，不等待onShow
+    console.log('onLoad: 首次加载最新10条数据');
+    this.fetchRecords(null, 10);
   },
 
   onShow() {
     // 页面显示时，如果不是首次加载且没有进行过筛选，则刷新数据
     if (!this.data.isFirstLoad && !this.data.hasFiltered) {
-      console.log('onShow: 刷新最新5条数据');
-      this.fetchRecords(null, 5);
+      console.log('onShow: 刷新最新10条数据');
+      this.fetchRecords(null, 10);
     } else {
       console.log('onShow: 跳过加载，isFirstLoad=', this.data.isFirstLoad, 'hasFiltered=', this.data.hasFiltered);
     }

@@ -187,6 +187,25 @@
       border-color: #e0e0e0;
     }
     
+    .result-section .input-field {
+      flex-grow: 1;
+      border: 1rpx solid #ccc;
+      border-radius: 10rpx;
+      padding: 10rpx 20rpx;
+      font-size: 30rpx;
+      text-align: center;
+    }
+
+    /* 为厚度检查项的输入框提供特定样式，增大点击区域 */
+    .result-section .thickness-input {
+      height: 120rpx; /* 直接设置一个较大的固定高度 */
+      line-height: 120rpx; /* 确保文字垂直居中 */
+      padding: 0 20rpx; /* 移除垂直内边距，仅保留水平内边距 */
+      font-size: 32rpx;
+      font-weight: bold;
+    }
+    
+    /* --- 结果显示样式 --- */
     .result-text {
       padding: 20rpx;
       border-radius: 10rpx;

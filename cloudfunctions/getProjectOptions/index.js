@@ -8,31 +8,42 @@ const db = cloud.database();
 // 云函数入口函数
 exports.main = async (event, context) => {
   try {
-    // 1. 使用基础的 get() 命令，只获取 "Project" 字段
-    const res = await db.collection('qua_inspection_plans').field({
-      Project: true
-    }).limit(1000).get();
+    // 使用聚合操作来获取不重复的字段值
+    const projectResult = await db.collection('qua_patrol_records').aggregate()
+      .group({
+        _id: '$project',
+      })
+      .project({
+        _id: 0,
+        name: '$_id'
+      })
+      .end();
 
-    if (res && res.data) {
-      // 2. 在云函数内手动去重
-      const projectSet = new Set(res.data.map(item => item.Project));
-      const uniqueProjects = Array.from(projectSet);
+    const processResult = await db.collection('qua_patrol_records').aggregate()
+      .group({
+        _id: '$process',
+      })
+      .project({
+        _id: 0,
+        name: '$_id'
+      })
+      .end();
 
-      return {
-        success: true,
-        data: uniqueProjects.sort() // 按字母顺序排序
-      };
-    } else {
-      return {
-        success: false,
-        message: '未找到任何项目记录'
-      };
-    }
+    const projects = projectResult.list.map(item => item.name).filter(Boolean); // 过滤掉null或空值
+    const processes = processResult.list.map(item => item.name).filter(Boolean);
+
+    return {
+      success: true,
+      data: {
+        projects,
+        processes
+      }
+    };
   } catch (e) {
-    console.error(e);
+    console.error('获取筛选选项失败', e);
     return {
       success: false,
-      message: '数据库查询失败'
+      message: '获取选项失败'
     };
   }
 } 

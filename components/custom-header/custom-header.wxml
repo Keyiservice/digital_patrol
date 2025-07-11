@@ -1,3 +1,3 @@
 <view class="custom-header-container">
-  <image class="logo-image" src="/logo/LOGO.jpeg" mode="aspectFit"></image>
+  <image class="logo-image" src="/logo/LOGO_new.jpg" mode="aspectFill"></image>
 </view> 
